@@ -267,3 +267,17 @@ log*.txt
 
 #Terraform files
 terraform/.terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+crash.log
+*.pem
+*.key
+*.p12
+*.pkcs12
+*.env
+*.tfvars
+*.swp
+*.swo
+*.DS_Store
