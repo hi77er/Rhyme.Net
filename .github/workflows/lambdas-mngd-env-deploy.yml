@@ -1,0 +1,55 @@
+name: Deploy .NET Lambdas to AWS Managed Environment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # For OIDC authentication
+      contents: read # For checkout
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Required to get changes
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam:<YOUR_AWS_ACCOUNT_ID>:role/<YOUR_OIDC_ROLE> # Replace with your IAM role ARN
+          aws-region: <YOUR_AWS_REGION> # e.g., us-east-1
+
+      - name: Get changed projects
+        id: changed-projects
+        run: |
+          changed_files=$(git diff --name-only HEAD~1 HEAD)
+          project_paths=$(find . -name "*.csproj" -print0 | xargs -0 grep -l "Lambda" | grep -v "/test/")
+          changed_projects=""
+          for project_path in $project_paths; do
+            project_dir=$(dirname "$project_path")
+            if [[ $changed_files == *"$project_dir"* ]]; then
+              changed_projects="$changed_projects $project_dir"
+            fi
+          done
+          echo "changed_projects=$changed_projects" >> $GITHUB_OUTPUT
+
+      - name: Build and deploy Lambda functions
+        if: steps.changed-projects.outputs.changed_projects != ''
+        run: |
+          for project_dir in ${{ steps.changed-projects.outputs.changed_projects }}; do
+            project_name=$(basename "$project_dir")
+            dotnet publish "$project_dir" -c Release -o "$project_dir/publish"
+            zip -r "$project_name.zip" "$project_dir/publish"
+            aws lambda update-function-code --function-name "$project_name" --zip-file fileb://"$project_name.zip"
+            rm "$project_name.zip"
+          done
+        env:
+          AWS_REGION: <YOUR_AWS_REGION>
