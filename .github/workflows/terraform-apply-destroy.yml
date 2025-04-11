@@ -29,7 +29,11 @@ jobs:
           aws-region: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -backend=true
+        working-directory: terraform
+
+      - name: Terraform Validate State
+        run: terraform state list || terraform refresh
         working-directory: terraform
 
       - name: Terraform Plan
