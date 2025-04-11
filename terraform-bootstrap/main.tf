@@ -49,25 +49,13 @@ resource "aws_s3_bucket_policy" "example_bucket_policy" {
         Effect   = "Allow"
         Principal = "*"
         Action   = [
+          "s3:DeleteObject",
           "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject"
+          "s3:PutObject"
         ]
         Resource = [
           "${aws_s3_bucket.terraform_state.arn}/*"     # Object-level actions
         ]
-        Resource = "$"
-      },
-      {
-        Effect   = "Allow"
-        Principal = "*"
-        Action   = [
-          "s3:ListObjectsV2"
-        ]
-        Resource = [
-          "${aws_s3_bucket.terraform_state.arn}",       # Bucket-level actions
-        ]
-        Resource = "$"
       }
     ]
   })
