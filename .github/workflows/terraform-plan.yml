@@ -16,29 +16,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Run Bootstrap Module # This module is responsible for creating the S3 bucket for state storage
-        if: ${{ !env.BOOTSTRAP_MODULE_EXECUTED && github.event.inputs.action == 'bootstrap' }}
-        run: |
-          cd terraform/bootstrap
-          terraform init
-          terraform apply -auto-approve
-          echo "BOOTSTRAP_MODULE_EXECUTED=true" >> $GITHUB_ENV
-      
-      - name: Retrieve Terraform State Artifact # Downloads the state file to the terraform directory
-        if: ${{ env.BOOTSTRAP_MODULE_EXECUTED }}
-        uses: actions/download-artifact@v3
-        with:
-          name: terraform-state
-          path: terraform/
-      
       - name: Setup Terraform
-        if: ${{ env.BOOTSTRAP_MODULE_EXECUTED }}
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: latest
 
       - name: Configure AWS Credentials
-        if: ${{ env.BOOTSTRAP_MODULE_EXECUTED }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} 
@@ -46,28 +29,10 @@ jobs:
           aws-region: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
 
       - name: Terraform Init
-        if: ${{ env.BOOTSTRAP_MODULE_EXECUTED }}
         run: terraform init -backend=true
         working-directory: terraform
 
-      - name: Terraform Validate State
-        if: ${{ env.BOOTSTRAP_MODULE_EXECUTED }}
-        run: terraform state list || terraform refresh
-        working-directory: terraform
- 
       - name: Terraform Plan
-        if: ${{ env.BOOTSTRAP_MODULE_EXECUTED }}
         run: terraform plan -no-color
         working-directory: terraform
            
-      - name: Run Terraform Action # apply or destroy, depending on the inputs.action
-        if: ${{ env.BOOTSTRAP_MODULE_EXECUTED }}
-        run: terraform ${{ github.event.inputs.action }} -no-color -auto-approve
-        working-directory: terraform
-
-      - name: Save Terraform State as Artifact
-        if: ${{ env.BOOTSTRAP_MODULE_EXECUTED && github.event.inputs.action == 'apply' }}  # Save state to the Backend (S3 Bucket) only when applying resources
-        uses: actions/upload-artifact@v3
-        with:
-          name: terraform-state
-          path: terraform/terraform.tfstate
