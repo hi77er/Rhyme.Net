@@ -6,7 +6,12 @@ terraform {
       version = "~> 5.0" 
     }
   }
-} 
+  backend "s3" {
+    bucket         = "terraform-state-${var.env}"
+    key            = "terraform.tfstate"
+    region         = var.aws_region
+  }
+}
 
 provider "aws" {
   region = var.aws_region
