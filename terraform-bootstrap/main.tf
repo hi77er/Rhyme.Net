@@ -57,8 +57,8 @@ resource "aws_s3_bucket_policy" "example_bucket_policy" {
           "s3:DeleteObject"
         ]
         Resource  = [
-          "${aws_s3_bucket.example_bucket.arn}",       # Bucket-level actions
-          "${aws_s3_bucket.example_bucket.arn}/*"     # Object-level actions
+          "${aws_s3_bucket.terraform_state.arn}",       # Bucket-level actions
+          "${aws_s3_bucket.terraform_state.arn}/*"     # Object-level actions
         ]
       }
     ]
