@@ -50,8 +50,8 @@ resource "aws_s3_bucket_policy" "example_bucket_policy" {
         Principal = "*"
         Action   = [
           "s3:GetObject",
-          "s3:ListObjects",
-          "s3:PutObject"
+          "s3:PutObject",
+          "s3:ListObjectsV2"
         ]
         Resource = "${aws_s3_bucket.terraform_state.arn}/*"
       }
