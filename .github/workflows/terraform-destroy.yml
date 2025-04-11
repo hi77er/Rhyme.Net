@@ -1,0 +1,43 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch: # Allows manual triggering from the GitHub UI
+
+jobs:
+  terraform-destroy:
+    name: Terraform Destroy
+    runs-on: ubuntu-latest
+    environment: production #Or whatever environment you are destroying.
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: latest # Or specify a version
+
+      - name: Configure AWS Credentials (or GCP, Azure, etc.)
+        uses: aws-actions/configure-aws-credentials@v2 # Example for AWS
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }} #or other cloud provider credential setups.
+          
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        continue-on-error: true #So that the workflow doesn't fail if the destroy fails.
+        # Add any necessary variables or flags here, e.g.,
+        # env:
+        #   TF_VAR_my_variable: ${{ secrets.MY_VARIABLE }}
+        # Or:
+        # run: terraform destroy -var="my_variable=my_value" -auto-approve
+
+      - name: Cleanup (Optional)
+        run: |
+          rm -rf .terraform
+          rm -f terraform.tfstate
+          rm -f terraform.tfstate.backup

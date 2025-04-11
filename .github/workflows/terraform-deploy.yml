@@ -1,4 +1,4 @@
-name: Deploy Infrastructure with Terraform
+name: Terraform Deploy
 
 on:
   workflow_dispatch: # Allow manual triggering
