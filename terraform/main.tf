@@ -7,9 +7,9 @@ terraform {
     }
   }
   backend "s3" {
-    bucket         = "terraform-state-${var.env}"
+    bucket         = "terraform-state-dev"
     key            = "terraform.tfstate"
-    region         = var.aws_region
+    region         = "eu-central-1"
   }
 }
 
