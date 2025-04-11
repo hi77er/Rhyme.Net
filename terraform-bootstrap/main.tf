@@ -51,9 +51,14 @@ resource "aws_s3_bucket_policy" "example_bucket_policy" {
         Action   = [
           "s3:GetObject",
           "s3:PutObject",
-          "s3:ListObjectsV2"
+          "s3:ListObjectsV2",
+          "s3:DeleteObject"
         ]
-        Resource = "${aws_s3_bucket.terraform_state.arn}/*"
+        Resource = [
+          "${aws_s3_bucket.terraform_state.arn}",       # Bucket-level actions
+          "${aws_s3_bucket.terraform_state.arn}/*"     # Object-level actions
+        ]
+        Resource = "$"
       }
     ]
   })
