@@ -13,7 +13,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "terraform-state-${var.env}"
+  bucket = "rhyme-net-terraform-state-${var.env}"
 
   tags = {
     Name = "Terraform State Bucket"
@@ -50,6 +50,7 @@ resource "aws_s3_bucket_policy" "example_bucket_policy" {
         Principal = "*"
         Action   = [
           "s3:GetObject",
+          "s3:ListObjects",
           "s3:PutObject"
         ]
         Resource = "${aws_s3_bucket.terraform_state.arn}/*"
