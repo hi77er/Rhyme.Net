@@ -2,6 +2,11 @@ name: Terraform Deploy
 
 on:
   workflow_dispatch: # Allow manual triggering
+    inputs:
+      action:
+        description: "Terraform action (apply/destroy)"
+        required: true
+        default: "apply"
 
 jobs:
   deploy:
@@ -31,12 +36,12 @@ jobs:
         run: terraform plan -no-color
         working-directory: terraform
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -no-color
+      - name: Run Terraform Action
+        run: terraform ${{ github.event.inputs.action }} -no-color -auto-approve
         working-directory: terraform
 
-      - name: Upload Terraform State # so the destroy workflow can use them.
-        uses: actions/upload-artifact@v3
-        with:
-          name: terraform-state
-          path: terraform.tfstate
+      # - name: Upload Terraform State # so the destroy workflow can use them.
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: terraform-state
+      #     path: terraform.tfstate
