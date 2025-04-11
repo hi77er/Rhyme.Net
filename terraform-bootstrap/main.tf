@@ -52,14 +52,18 @@ resource "aws_s3_bucket_policy" "example_bucket_policy" {
     Statement = [
       {
         Effect   = "Allow"
-        Principal = "*"
-        Action   = [
-          "s3:DeleteObject",
+        Principal = {
+          AWS = "arn:aws:iam::533792392727:user/rhume-net-github-actions-user"
+        }
+        Action    = [
           "s3:GetObject",
-          "s3:PutObject"
+          "s3:PutObject",
+          "s3:ListBucket",
+          "s3:DeleteObject"
         ]
-        Resource = [
-          "${aws_s3_bucket.terraform_state.arn}/*"     # Object-level actions
+        Resource  = [
+          "${aws_s3_bucket.example_bucket.arn}",       # Bucket-level actions
+          "${aws_s3_bucket.example_bucket.arn}/*"     # Object-level actions
         ]
       }
     ]
