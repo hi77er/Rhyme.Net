@@ -8,7 +8,7 @@ terraform {
   }
   backend "s3" {
     bucket  = "rhyme-net-terraform-state-dev"
-    key     = "state/terraform.tfstate"
+    key     = "terraform.tfstate"
     encrypt = true
     region  = "eu-central-1"
     dynamodb_table = "terraform-state-lock-dev"  
