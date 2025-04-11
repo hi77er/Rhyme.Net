@@ -16,13 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      # - name: Retrieve Terraform State Artifact # Downloads the state file to the terraform directory
-      #   if: github.event.inputs.action == 'destroy'  # Save state to the Backend (S3 Bucket) only when applying resources
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: terraform-state
-      #     path: terraform/
-      
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -51,10 +44,3 @@ jobs:
       - name: Run Terraform Action # apply or destroy, depending on the inputs.action
         run: terraform ${{ github.event.inputs.action }} -no-color -auto-approve
         working-directory: terraform
-
-      # - name: Save Terraform State as Artifact
-      #   if: github.event.inputs.action == 'apply'  # Save state to the Backend (S3 Bucket) only when applying resources
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: terraform-state
-      #     path: terraform/terraform.tfstate
