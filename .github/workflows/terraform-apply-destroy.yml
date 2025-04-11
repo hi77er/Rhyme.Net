@@ -20,7 +20,7 @@ jobs:
         if: github.event.inputs.action == 'destroy'  # Save state to the Backend (S3 Bucket) only when applying resources
         uses: actions/download-artifact@v4
         with:
-          name: terraform-state
+          name: terraform.tfstate
           path: terraform/
       
       - name: Setup Terraform
