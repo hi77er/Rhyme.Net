@@ -22,7 +22,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }} #or other cloud provider credential setups.
+          aws-region: ${{ vars.AWS_EU_CENTRAL_1_REGION }} #or other cloud provider credential setups.
           
       - name: Terraform Init
         run: terraform init
