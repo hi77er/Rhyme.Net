@@ -1,0 +1,36 @@
+name: Terraform Bootstrap
+
+on:
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} 
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
+          aws-region: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
+
+      - name: Terraform Init
+        run: terraform init -backend=true
+        working-directory: terraform-bootstrap
+
+      - name: Terraform Plan
+        run: terraform plan -no-color
+        working-directory: terraform-bootstrap
+           
+      - name: Terraform Apply # apply or destroy, depending on the inputs.action
+        run: terraform apply -no-color -auto-approve
+        working-directory: terraform-bootstrap

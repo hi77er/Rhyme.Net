@@ -7,9 +7,11 @@ terraform {
     }
   }
   backend "s3" {
-    bucket         = "terraform-state-dev"
-    key            = "terraform.tfstate"
-    region         = "eu-central-1"
+    bucket  = "terraform-state-dev"
+    key     = "state/terraform.tfstate"
+    encrypt = true
+    region  = "eu-central-1"
+    dynamodb_table = "terraform-state-lock-dev"
   }
 }
 
