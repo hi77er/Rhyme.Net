@@ -34,3 +34,9 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve -no-color
         working-directory: terraform
+
+      - name: Upload Terraform State # so the destroy workflow can use them.
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-state
+          path: terraform.tfstate

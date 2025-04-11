@@ -12,10 +12,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Download Terraform State
+        uses: actions/download-artifact@v3
         with:
-          terraform_version: latest # Or specify a version
+          name: terraform-state
 
       - name: Configure AWS Credentials (or GCP, Azure, etc.)
         uses: aws-actions/configure-aws-credentials@v2 # Example for AWS
@@ -24,6 +24,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_EU_CENTRAL_1_REGION }} #or other cloud provider credential setups.
           
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: latest # Or specify a version
+
       - name: Terraform Init
         run: terraform init
 
