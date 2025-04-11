@@ -20,6 +20,11 @@ resource "aws_s3_bucket" "terraform_state" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "example_block" {
+  bucket                  = aws_s3_bucket.terraform_state.id
+  block_public_policy     = false
+}
+
 # To prevent accidential overwrites, we can enable versioning on the S3 bucket
 resource "aws_s3_bucket_versioning" "enable_versioning" {
   bucket = aws_s3_bucket.terraform_state.id
