@@ -1,8 +1,4 @@
-using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public class DynamoRepository<T> where T : class
 {

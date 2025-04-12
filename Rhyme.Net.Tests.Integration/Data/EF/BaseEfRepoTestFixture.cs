@@ -1,5 +1,4 @@
 ﻿using Ardalis.SharedKernel;
-using Rhyme.Net.Core.Domain.MenuAggregate;
 using Rhyme.Net.Infrastructure.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +39,5 @@ public abstract class BaseEfRepoTestFixture<TDomainAggregate> where TDomainAggre
   {
     return new EfRepository<TDomainAggregate>(_dbContext);
   }
-
 
 }
