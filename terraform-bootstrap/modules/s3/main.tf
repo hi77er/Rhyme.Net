@@ -1,8 +1,8 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "rhyme-net-terraform-state-${var.env}"
+  bucket = "centralized-terraform-state-holder"
 
   tags = {
-    Name = "Terraform State Bucket"
+    Name = "Centralized Terraform State Holder Bucket"
   }
 }
 
