@@ -5,13 +5,13 @@ using Rhyme.Net.Core.Domain.OrderAggregate.Events;
 
 namespace Rhyme.Net.Core.Domain.OrderAggregate;
 
-[DynamoDBTable("Orders")]
+[DynamoDBTable("Orders-{}")]
 public class Order : HasDomainEventsBase, IAggregateRoot
 {
-  [DynamoDBHashKey("Id")]
+  [DynamoDBHashKey("id")]
   public Guid Id { get; protected set; } = Guid.NewGuid();
 
-  [DynamoDBRangeKey("StoreId")]
+  [DynamoDBRangeKey("storeId")]
   [DynamoDBGlobalSecondaryIndexRangeKey("storeId-index")]
   public Guid StoreId { get; private set; }
 
@@ -19,10 +19,10 @@ public class Order : HasDomainEventsBase, IAggregateRoot
   // [DynamoDBProperty("Items")]
   public IEnumerable<OrderItem> Items => _items.AsReadOnly();
 
-  [DynamoDBProperty("Status")]
+  [DynamoDBProperty("status")]
   public OrderStatus Status { get; private set; } = OrderStatus.Initiated;
 
-  [DynamoDBProperty("Total")]
+  [DynamoDBProperty("total")]
   public decimal Total => Items.Sum(x => x.Price);
 
   /// <summary>

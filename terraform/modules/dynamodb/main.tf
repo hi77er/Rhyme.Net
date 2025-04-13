@@ -7,6 +7,7 @@ resource "aws_dynamodb_table" "orders" {
   name           = "orders-${var.env}"
   billing_mode   = "PAY_PER_REQUEST"
   hash_key       = "id"
+  range_key      = "storeId"
 
   attribute {
     name = "id"
@@ -16,11 +17,5 @@ resource "aws_dynamodb_table" "orders" {
   attribute {
     name = "storeId"
     type = "S"
-  }
-  
-  global_secondary_index {
-    name            = "storeId-index"
-    hash_key        = "storeId"
-    projection_type = "ALL"
   }
 }

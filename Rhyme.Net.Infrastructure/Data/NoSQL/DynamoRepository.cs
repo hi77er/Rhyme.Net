@@ -21,8 +21,24 @@ public class DynamoRepository<T> where T : class
 
   public async Task SaveAsync(T item)
   {
-    await _dbContext.SaveAsync(item);
+    var newTableName = ConstructTableName();
+    var config = new DynamoDBOperationConfig()
+    {
+      OverrideTableName = newTableName
+    };
+
+    await _dbContext.SaveAsync(item, config);
   }
+
+  private string ConstructTableName()
+  {
+    var env = Environment.GetEnvironmentVariable("ENV") ?? "dev";
+    var entityNameLowerCase = typeof(T).Name.ToLower();
+    var pluralized = entityNameLowerCase.EndsWith("s") ? entityNameLowerCase : $"{entityNameLowerCase}s";
+    var newTableName = $"{pluralized}-{env}";
+    return newTableName;
+  }
+
 
   public async Task DeleteAsync(T item)
   {
