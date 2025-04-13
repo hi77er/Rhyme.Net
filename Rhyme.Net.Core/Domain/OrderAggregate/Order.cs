@@ -20,15 +20,19 @@ public class Order : EntityBase<Guid>, IAggregateRoot
   public IEnumerable<OrderItem> Items => _items.AsReadOnly();
 
   // [DynamoDBProperty("Status")]
-  public OrderStatus Status { get; private set; }
+  public OrderStatus Status { get; private set; } = OrderStatus.Initiated;
 
   [DynamoDBProperty("Total")]
   public decimal Total => Items.Sum(x => x.Price);
 
+  public Order()
+  {
+    // Parameterless constructor for DynamoDB
+  }
+
   public Order(Guid storeId)
   {
     StoreId = Guard.Against.Expression(x => x == Guid.Empty, storeId, "storeId");
-    Status = OrderStatus.Initiated;
   }
 
   public void AddItem(OrderItem item)
@@ -64,6 +68,6 @@ public class Order : EntityBase<Guid>, IAggregateRoot
   {
     var itemNames = this.Items.Select(x => x.ProductName).ToList();
     var itemsLabel = string.Join(", ", itemNames);
-    return $"{Id}: Status: {Status.Name}; Items: {itemsLabel}; Total: {Total.ToString("C")}";
+    return $"{Id}: Status: {Status?.Name}; Items: {itemsLabel}; Total: {Total.ToString("C")}";
   }
 }
