@@ -10,6 +10,12 @@ public class OrderItem : EntityBase<Guid>
   public string ProductDescription { get; set; } = string.Empty;
   public decimal Price { get; private set; }
 
+
+  /// <summary>
+  /// Default constructor for DynamoDB
+  /// </summary>
+  public OrderItem() { }
+
   public OrderItem(string productName, string? productDescription, decimal price)
   {
     ProductName = Guard.Against.NullOrWhiteSpace(productName, "productName");

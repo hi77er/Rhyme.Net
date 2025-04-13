@@ -25,10 +25,10 @@ public class Order : HasDomainEventsBase, IAggregateRoot
   [DynamoDBProperty("Total")]
   public decimal Total => Items.Sum(x => x.Price);
 
-  public Order()
-  {
-    // Parameterless constructor for DynamoDB
-  }
+  /// <summary>
+  /// Default constructor for DynamoDB
+  /// </summary>
+  public Order() {}
 
   public Order(Guid storeId)
   {
