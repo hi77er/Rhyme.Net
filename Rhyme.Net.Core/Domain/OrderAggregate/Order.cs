@@ -12,13 +12,14 @@ public class Order : EntityBase<Guid>, IAggregateRoot
   public new Guid Id { get; protected set; } = Guid.NewGuid();
 
   [DynamoDBRangeKey("StoreId")]
+  [DynamoDBGlobalSecondaryIndexRangeKey("storeId-index")]
   public Guid StoreId { get; private set; }
 
   private readonly List<OrderItem> _items = new();
-  [DynamoDBProperty("Items")]
+  // [DynamoDBProperty("Items")]
   public IEnumerable<OrderItem> Items => _items.AsReadOnly();
 
-  [DynamoDBProperty("Status")]
+  // [DynamoDBProperty("Status")]
   public OrderStatus Status { get; private set; }
 
   [DynamoDBProperty("Total")]
