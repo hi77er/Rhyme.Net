@@ -19,7 +19,7 @@ public class Order : HasDomainEventsBase, IAggregateRoot
   // [DynamoDBProperty("Items")]
   public IEnumerable<OrderItem> Items => _items.AsReadOnly();
 
-  // [DynamoDBProperty("Status")]
+  [DynamoDBProperty("Status")]
   public OrderStatus Status { get; private set; } = OrderStatus.Initiated;
 
   [DynamoDBProperty("Total")]
@@ -28,7 +28,7 @@ public class Order : HasDomainEventsBase, IAggregateRoot
   /// <summary>
   /// Default constructor for DynamoDB
   /// </summary>
-  public Order() {}
+  public Order() { }
 
   public Order(Guid storeId)
   {
@@ -68,6 +68,6 @@ public class Order : HasDomainEventsBase, IAggregateRoot
   {
     var itemNames = this.Items.Select(x => x.ProductName).ToList();
     var itemsLabel = string.Join(", ", itemNames);
-    return $"{Id}: Status: {Status?.Name}; Items: {itemsLabel}; Total: {Total.ToString("C")}";
+    return $"{Id}: Status: {Status}; Items: {itemsLabel}; Total: {Total}";
   }
 }

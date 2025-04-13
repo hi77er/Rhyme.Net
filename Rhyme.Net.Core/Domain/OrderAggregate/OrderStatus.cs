@@ -1,18 +1,9 @@
-﻿using Ardalis.SmartEnum;
+﻿namespace Rhyme.Net.Core.Domain.OrderAggregate;
 
-namespace Rhyme.Net.Core.Domain.OrderAggregate;
-
-public class OrderStatus : SmartEnum<OrderStatus>
+public enum OrderStatus
 {
-  public static readonly OrderStatus Initiated = new("Initiated", 0);
-  public static readonly OrderStatus Submitted = new("Submitted", 1);
-  public static readonly OrderStatus InProgress = new("In progress", 2);
-  public static readonly OrderStatus Complete = new("Complete", 3);
-
-  /// <summary>
-  /// Default constructor for DynamoDB
-  /// </summary>
-  protected OrderStatus() : base("Initiated", 0) { }
-
-  protected OrderStatus(string name, int value) : base(name, value) { }
+  Initiated = 0,
+  Submitted = 1,
+  InProgress = 2,
+  Complete = 3
 }
