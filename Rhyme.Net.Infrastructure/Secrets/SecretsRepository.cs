@@ -23,21 +23,19 @@ public class SecretsRepository
     /// <returns>The secret value as a string.</returns>
     public async Task<string> GetSecretAsync(string secretName)
     {
-        try
+        var request = new GetSecretValueRequest()
         {
-            var request = new GetSecretValueRequest()
-            {
-                SecretId = secretName,
-                VersionStage = "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified.
-            };
+            SecretId = secretName,
+            VersionStage = "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified.
+        };
 
-            var response = await _secretsManager.GetSecretValueAsync(request);
+        var response = await _secretsManager.GetSecretValueAsync(request);
 
-            return response.SecretString ?? throw new Exception("Secret value is null.");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Failed to retrieve secret: {ex.Message}");
-        }
+        var secretData = JsonSerializer.Deserialize<Dictionary<string, string>>(response.SecretString);
+
+        if (secretData != null && secretData.TryGetValue(secretName, out var secretKey))
+            return secretKey;
+        else
+            throw new Exception($"Failed to retrieve secret value for {secretName}.");
     }
 }
