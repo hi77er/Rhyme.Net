@@ -11,7 +11,7 @@ public class Order : EntityBase<Guid>, IAggregateRoot
   [DynamoDBHashKey("Id")]
   public new Guid Id { get; protected set; } = Guid.NewGuid();
 
-  [DynamoDBGlobalSecondaryIndexHashKey("StoreId")]
+  [DynamoDBRangeKey("StoreId")]
   public Guid StoreId { get; private set; }
 
   private readonly List<OrderItem> _items = new();
