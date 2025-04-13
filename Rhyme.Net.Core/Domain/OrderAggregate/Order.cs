@@ -6,10 +6,10 @@ using Rhyme.Net.Core.Domain.OrderAggregate.Events;
 namespace Rhyme.Net.Core.Domain.OrderAggregate;
 
 [DynamoDBTable("Orders")]
-public class Order : EntityBase<Guid>, IAggregateRoot
+public class Order : HasDomainEventsBase, IAggregateRoot
 {
   [DynamoDBHashKey("Id")]
-  public new Guid Id { get; protected set; } = Guid.NewGuid();
+  public Guid Id { get; protected set; } = Guid.NewGuid();
 
   [DynamoDBRangeKey("StoreId")]
   [DynamoDBGlobalSecondaryIndexRangeKey("storeId-index")]
