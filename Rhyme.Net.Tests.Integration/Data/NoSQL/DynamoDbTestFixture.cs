@@ -51,9 +51,9 @@ public class DynamoDbTestFixture<TDomainAggregate> where TDomainAggregate : clas
     return new AmazonDynamoDBClient(credentials, config);
   }
 
-  protected DynamoRepository<Order> GetRepository()
+  protected DynamoRepository<Order, Guid> GetRepository()
   {
-    return new DynamoRepository<Order>(_dbContext);
+    return new DynamoRepository<Order, Guid>(_dbContext);
   }
 
 }
