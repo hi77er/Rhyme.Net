@@ -6,7 +6,7 @@ namespace Rhyme.Net.Core.Converters;
 
 public class ListConverter<T> : IPropertyConverter
 {
-  public DynamoDBEntry? ToEntry(object value)
+  public DynamoDBEntry ToEntry(object value)
   {
     if (value is IList<T> list)
     {
@@ -17,10 +17,10 @@ public class ListConverter<T> : IPropertyConverter
       }
       return dynamoList;
     }
-    return null;
+    return string.Empty;
   }
 
-  public object? FromEntry(DynamoDBEntry entry)
+  public object FromEntry(DynamoDBEntry entry)
   {
     if (entry is DynamoDBList dynamoList)
     {
@@ -34,6 +34,6 @@ public class ListConverter<T> : IPropertyConverter
       }
       return list;
     }
-    return null;
+    return Enumerable.Empty<T>();
   }
 }
