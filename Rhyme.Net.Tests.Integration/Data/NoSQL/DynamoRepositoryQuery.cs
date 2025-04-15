@@ -12,9 +12,10 @@ public class DynamoRepositoryQuery : DynamoDbTestFixture<Order>
   {
     // Arrange
     var matchingEntity = SampleData.GetTestOrders().First();
-    var nonMatchingEntity = SampleData.GetTestOrders().First();
+    var nonMatchingEntity = SampleData.GetTestOrders().Last();
     var condition = new ScanCondition("Id", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, matchingEntity.Id.ToString());
     var repository = GetRepository();
+    
     await repository.SaveAsync(matchingEntity);
     await repository.SaveAsync(nonMatchingEntity);
 
@@ -23,7 +24,11 @@ public class DynamoRepositoryQuery : DynamoDbTestFixture<Order>
 
     // Assert
     Assert.Single(filteredEntities);
-    Assert.Equal(matchingEntity.Id, filteredEntities.GetEnumerator().Current.Id);
+    Assert.Equal(matchingEntity.Id, filteredEntities.Single().Id);
+
+    // Clean up
+    await repository.DeleteAsync(matchingEntity);
+    await repository.DeleteAsync(nonMatchingEntity);
   }
 
 }

@@ -1,6 +1,7 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
 using Ardalis.GuardClauses;
 using Ardalis.SharedKernel;
+using Rhyme.Net.Core.Converters;
 using Rhyme.Net.Core.Domain.OrderAggregate.Events;
 
 namespace Rhyme.Net.Core.Domain.OrderAggregate;
@@ -9,14 +10,16 @@ namespace Rhyme.Net.Core.Domain.OrderAggregate;
 public class Order : HasDomainEventsBase, IAggregateRoot
 {
   [DynamoDBHashKey("id")]
+  [DynamoDBProperty(Converter = typeof(GuidConverter))]
   public Guid Id { get; protected set; } = Guid.NewGuid();
 
   [DynamoDBRangeKey("storeId")]
   [DynamoDBGlobalSecondaryIndexRangeKey("storeId-index")]
+  [DynamoDBProperty(Converter = typeof(GuidConverter))]
   public Guid StoreId { get; set; }
 
-  [DynamoDBProperty("items")]
-  public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
+  [DynamoDBProperty("items", Converter = typeof(ListConverter<OrderItem>))]
+  public IList<OrderItem> Items { get; set; } = new List<OrderItem>();
 
   [DynamoDBProperty("status")]
   public OrderStatus Status { get; set; } = OrderStatus.Initiated;

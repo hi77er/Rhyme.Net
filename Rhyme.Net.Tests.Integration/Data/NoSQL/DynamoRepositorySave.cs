@@ -11,15 +11,17 @@ public class DynamoRepositorySave : DynamoDbTestFixture<Order>
   {
     // Arrange
     var repository = GetRepository();
-    var testEntity = new Order(Guid.NewGuid());
+    var testEntity = SampleData.GetTestOrders().First();
 
     // Act
     await repository.SaveAsync(testEntity);
-    var retrievedEntity = await repository.GetByIdAsync(testEntity.Id);
+    var retrievedEntity = await repository.GetByIdAsync(testEntity.Id, testEntity.StoreId);
 
     // Assert
     Assert.NotNull(retrievedEntity);
     Assert.Equal(testEntity.Id, retrievedEntity.Id);
+    Assert.Equal(testEntity.StoreId, retrievedEntity.StoreId);
+    Assert.Equal(testEntity.Status, retrievedEntity.Status);
 
     // Clean up
     await repository.DeleteAsync(retrievedEntity);

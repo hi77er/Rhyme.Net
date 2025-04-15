@@ -23,8 +23,8 @@ public class OrderItem : EntityBase<Guid>
     Price = Guard.Against.Negative(price, "price");
   }
 
-  public override string ToString()
-  {
-    return $"Order Item Id: {Id}; Name: {ProductName}; Description: {ProductDescription}; Price: {Price.ToString("C")}";
-  }
+  // public override string ToString()
+  // {
+  //   return $"Order Item Id: {Id}; Name: {ProductName}; Description: {ProductDescription}; Price: {Price.ToString("C")}";
+  // }
 }

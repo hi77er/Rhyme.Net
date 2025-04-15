@@ -16,7 +16,7 @@ public class DynamoRepositoryDelete : DynamoDbTestFixture<Order>
 
     // Act
     await repository.DeleteAsync(testEntity);
-    var deletedEntity = await repository.GetByIdAsync(testEntity.Id);
+    var deletedEntity = await repository.GetByIdAsync(testEntity.Id, testEntity.StoreId);
 
     // Assert
     Assert.Null(deletedEntity);

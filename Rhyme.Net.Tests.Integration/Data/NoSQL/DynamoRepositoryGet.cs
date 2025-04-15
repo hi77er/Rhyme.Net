@@ -15,7 +15,7 @@ public class DynamoRepositoryGet : DynamoDbTestFixture<Order>
     await repository.SaveAsync(testEntity);
 
     // Act
-    var retrievedEntity = await repository.GetByIdAsync(testEntity.Id);
+    var retrievedEntity = await repository.GetByIdAsync(testEntity.Id, testEntity.StoreId);
 
     // Assert
     Assert.NotNull(retrievedEntity);
@@ -41,6 +41,10 @@ public class DynamoRepositoryGet : DynamoDbTestFixture<Order>
     // Assert
     Assert.Contains(allEntities, e => e.Id == entity1.Id);
     Assert.Contains(allEntities, e => e.Id == entity2.Id);
+
+    // Clean up
+    await repository.DeleteAsync(entity1);
+    await repository.DeleteAsync(entity2);
   }
 
 }
