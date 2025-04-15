@@ -1,8 +1,10 @@
 using Amazon.DynamoDBv2.DataModel;
 using Rhyme.Net.Core.Converters;
 
+namespace Rhyme.Net.Core.EventSourcing;
+
 [DynamoDBTable("events")]
-public class Events
+public class Event
 {
   [DynamoDBHashKey("id")]
   [DynamoDBProperty(Converter = typeof(GuidConverter))]

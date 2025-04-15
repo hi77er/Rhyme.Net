@@ -14,8 +14,8 @@ public class DynamoRepositoryQuery : DynamoDbTestFixture<Order>
     var matchingEntity = SampleData.GetTestOrders().First();
     var nonMatchingEntity = SampleData.GetTestOrders().Last();
     var condition = new ScanCondition("Id", Amazon.DynamoDBv2.DocumentModel.ScanOperator.Equal, matchingEntity.Id.ToString());
-    var repository = GetRepository();
-    
+    var repository = GetOrdersRepository();
+
     await repository.SaveAsync(matchingEntity);
     await repository.SaveAsync(nonMatchingEntity);
 

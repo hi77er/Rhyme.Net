@@ -1,6 +1,6 @@
 namespace Rhyme.Net.Core.EventSourcing;
 
-public enum EventStream
+public enum Aggregate
 {
   Order,
   Payment,

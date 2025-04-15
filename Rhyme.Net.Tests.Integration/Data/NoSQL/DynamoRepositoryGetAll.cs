@@ -11,7 +11,7 @@ public class DynamoRepositoryGet : DynamoDbTestFixture<Order>
   {
     // Arrange
     var testEntity = SampleData.GetTestOrders().First();
-    var repository = GetRepository();
+    var repository = GetOrdersRepository();
     await repository.SaveAsync(testEntity);
 
     // Act
@@ -31,7 +31,7 @@ public class DynamoRepositoryGet : DynamoDbTestFixture<Order>
     // Arrange
     var entity1 = SampleData.GetTestOrders().First();
     var entity2 = SampleData.GetTestOrders().Skip(1).First();
-    var repository = GetRepository();
+    var repository = GetOrdersRepository();
     await repository.SaveAsync(entity1);
     await repository.SaveAsync(entity2);
 

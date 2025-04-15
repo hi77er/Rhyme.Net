@@ -3,6 +3,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
 using Ardalis.SharedKernel;
 using Rhyme.Net.Core.Domain.OrderAggregate;
+using Rhyme.Net.Core.EventSourcing;
 using Rhyme.Net.Infrastructure.Secrets;
 using Xunit;
 
@@ -51,9 +52,13 @@ public class DynamoDbTestFixture<TDomainAggregate> where TDomainAggregate : clas
     return new AmazonDynamoDBClient(credentials, config);
   }
 
-  protected DynamoRepository<Order, Guid> GetRepository()
+  protected DynamoRepository<Order, Guid> GetOrdersRepository()
   {
     return new DynamoRepository<Order, Guid>(_dbContext);
   }
 
+  protected DynamoRepository<Event, Guid> GetEventsRepository()
+  {
+    return new DynamoRepository<Event, Guid>(_dbContext);
+  }
 }

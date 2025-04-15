@@ -1,8 +1,10 @@
+namespace Rhyme.Net.Core.EventSourcing;
+
 public enum EventIssuer
 {
-  Barista = 0,
-  Customer = 1,
-  POS = 2,
-  Loyalty = 3,
+  Barista,
+  Customer,
+  POS,
+  Loyalty,
 
 }

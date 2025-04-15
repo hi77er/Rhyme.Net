@@ -21,7 +21,8 @@ public class DynamoRepository<T, TId> where T : class
       
   public async Task<IEnumerable<T>> QueryAsync(IEnumerable<ScanCondition> conditions)
     => await _dbContext.ScanAsync<T>(conditions, _config).GetRemainingAsync();
-  public async Task<T> GetByIdAsync(Guid id, Guid storeId) => await _dbContext.LoadAsync<T>(id, storeId, _config);
+  public async Task<T> GetByIdAsync(Guid id) => await _dbContext.LoadAsync<T>(id, _config);
+  public async Task<T> GetByIdAsync(Guid id, Guid hashKey) => await _dbContext.LoadAsync<T>(id, hashKey, _config);
   public async Task SaveAsync(T item) => await _dbContext.SaveAsync(item, _config);
   public async Task DeleteAsync(T item) => await _dbContext.DeleteAsync(item, _config);
 

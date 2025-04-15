@@ -3,14 +3,14 @@ using Xunit;
 
 namespace Rhyme.Net.Tests.Integration.Data.NoSQL;
 
-public class DynamoRepositorySave : DynamoDbTestFixture<Order>
+public class DynamoRepositoryCRUD : DynamoDbTestFixture<Order>
 {
 
   [Fact]
-  public async Task SaveAsync_ShouldSaveItem()
+  public async Task SaveGetDelete_ShouldSaveGetDeleteItem()
   {
     // Arrange
-    var repository = GetRepository();
+    var repository = GetOrdersRepository();
     var testEntity = SampleData.GetTestOrders().First();
 
     // Act
@@ -22,6 +22,15 @@ public class DynamoRepositorySave : DynamoDbTestFixture<Order>
     Assert.Equal(testEntity.Id, retrievedEntity.Id);
     Assert.Equal(testEntity.StoreId, retrievedEntity.StoreId);
     Assert.Equal(testEntity.Status, retrievedEntity.Status);
+
+    testEntity.UpdateStatus();
+    await repository.SaveAsync(testEntity);
+
+    var updatedEntity = await repository.GetByIdAsync(testEntity.Id, testEntity.StoreId);
+    Assert.NotNull(updatedEntity);
+    Assert.Equal(testEntity.Id, updatedEntity.Id);
+    Assert.Equal(testEntity.StoreId, updatedEntity.StoreId);
+    Assert.Equal(testEntity.Status, updatedEntity.Status);
 
     // Clean up
     await repository.DeleteAsync(retrievedEntity);
