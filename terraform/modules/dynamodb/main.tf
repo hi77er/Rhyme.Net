@@ -6,10 +6,16 @@ variable "env" {
 resource "aws_dynamodb_table" "events" {
   name           = "events-${var.env}"
   billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
+  hash_key       = "aggregateName"
+  range_key      = "aggregateId"
 
   attribute {
-    name = "id"
+    name = "aggregateName"
+    type = "S"
+  }
+  
+  attribute {
+    name = "aggregateId"
     type = "S"
   }
 }

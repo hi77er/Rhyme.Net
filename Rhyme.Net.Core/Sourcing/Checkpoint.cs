@@ -1,6 +1,6 @@
 using Amazon.DynamoDBv2.DataModel;
 
-namespace Rhyme.Net.Core.EventSourcing;
+namespace Rhyme.Net.Core.Sourcing;
 
 [DynamoDBTable("checkpoints")]
 public class Checkpoints

@@ -10,12 +10,15 @@ public static class DynamoDbConfiguration
     var secretKey = Environment.GetEnvironmentVariable("DYNAMODB_SECRET_KEY");
     var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION");
 
-    if (string.IsNullOrEmpty(serviceUrl) || string.IsNullOrEmpty(accessKey) || string.IsNullOrEmpty(secretKey) || string.IsNullOrEmpty(region))
+    if (string.IsNullOrEmpty(serviceUrl) ||
+        string.IsNullOrEmpty(accessKey) ||
+        string.IsNullOrEmpty(secretKey) ||
+        string.IsNullOrEmpty(region))
     {
       throw new InvalidOperationException("DynamoDB environment variables are not properly configured.");
     }
 
-    var config = new AmazonDynamoDBConfig
+    var config = new AmazonDynamoDBConfig()
     {
       ServiceURL = serviceUrl,
       RegionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region)

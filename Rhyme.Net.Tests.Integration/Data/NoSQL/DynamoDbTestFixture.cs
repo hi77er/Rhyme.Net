@@ -3,7 +3,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
 using Ardalis.SharedKernel;
 using Rhyme.Net.Core.Domain.OrderAggregate;
-using Rhyme.Net.Core.EventSourcing;
+using Rhyme.Net.Core.Sourcing;
 using Rhyme.Net.Infrastructure.Secrets;
 using Xunit;
 

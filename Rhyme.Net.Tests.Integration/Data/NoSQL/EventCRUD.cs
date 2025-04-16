@@ -15,11 +15,10 @@ public class EventCRUD : DynamoDbTestFixture<Order>
 
     // Act
     await repository.SaveAsync(testEntity);
-    var retrievedEntity = await repository.GetByIdAsync(testEntity.Id);
+    var retrievedEntity = await repository.GetByIdAsync(testEntity!.Name!.Value.ToString(), testEntity.AggregateId);
 
     // Assert
     Assert.NotNull(retrievedEntity);
-    Assert.Equal(testEntity.Id, retrievedEntity.Id);
     Assert.Equal(testEntity.AggregateId, retrievedEntity.AggregateId);
     Assert.Equal(testEntity.AggregateName, retrievedEntity.AggregateName);
     Assert.Equal(testEntity.Name, retrievedEntity.Name);

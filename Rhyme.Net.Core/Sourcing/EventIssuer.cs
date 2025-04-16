@@ -1,4 +1,4 @@
-namespace Rhyme.Net.Core.EventSourcing;
+namespace Rhyme.Net.Core.Sourcing;
 
 public enum EventIssuer
 {

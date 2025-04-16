@@ -1,7 +1,5 @@
 using Ardalis.GuardClauses;
 using Ardalis.SharedKernel;
-using Rhyme.Net.Core.Domain.ProductAggregate;
-using Rhyme.Net.Core.Domain.MenuAggregate.Events;
 
 namespace Rhyme.Net.Core.Domain.MenuAggregate;
 

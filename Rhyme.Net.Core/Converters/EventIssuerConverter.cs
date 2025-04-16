@@ -1,6 +1,6 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
-using Rhyme.Net.Core.EventSourcing;
+using Rhyme.Net.Core.Sourcing;
 
 namespace Rhyme.Net.Core.Converters;
 

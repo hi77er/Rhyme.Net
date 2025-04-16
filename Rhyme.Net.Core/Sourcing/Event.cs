@@ -1,29 +1,23 @@
 using Amazon.DynamoDBv2.DataModel;
 using Rhyme.Net.Core.Converters;
+using Rhyme.Net.Core.Interfaces;
 
-namespace Rhyme.Net.Core.EventSourcing;
+namespace Rhyme.Net.Core.Sourcing;
 
 [DynamoDBTable("events")]
-public class Event
+public class Event : IEvent
 {
-  [DynamoDBHashKey("id")]
-  [DynamoDBProperty(Converter = typeof(GuidConverter))]
-  public Guid Id { get; set; }
+  [DynamoDBHashKey("aggregateName")]
+  public string AggregateName { get; set; } = string.Empty;
+
+  [DynamoDBRangeKey("aggregateId")]
+  public string AggregateId { get; set; } = string.Empty;
+
+  [DynamoDBProperty("name", Converter = typeof(EventNameConverter))]
+  public EventName? Name { get; set; }
 
   [DynamoDBProperty("sequenceNumber")]
   public int SequenceNumber { get; set; }
-
-  [DynamoDBProperty("name")]
-  public string Name { get; set; } = string.Empty;
-
-  [DynamoDBProperty("stream", Converter = typeof(EventStreamConverter))]
-  public EventStream? Stream { get; set; }
-
-  [DynamoDBProperty("aggregateName")]
-  public string AggregateName { get; set; } = string.Empty;
-
-  [DynamoDBProperty("aggregateId")]
-  public string AggregateId { get; set; } = string.Empty;
 
   [DynamoDBProperty("issuer", Converter = typeof(EventIssuerConverter))]
   public EventIssuer? Issuer { get; set; }
