@@ -5,10 +5,10 @@ namespace Rhyme.Net.Infrastructure.Data.NoSQL;
 
 public class OrderRepository : DynamoRepository<Order, Guid>
 {
-    public OrderRepository(IDynamoDBContext dbContext) : base(dbContext)
-    {
+  public OrderRepository(IDynamoDBContext dbContext) : base(dbContext)
+  {
 
-    }
+  }
 
 
   public Order Get(string aggregateName, Guid aggregateId)

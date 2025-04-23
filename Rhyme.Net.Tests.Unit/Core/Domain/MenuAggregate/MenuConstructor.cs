@@ -1,7 +1,7 @@
 ﻿using Rhyme.Net.Core.Domain.MenuAggregate;
 using Xunit;
 
-namespace Rhyme.Net.UnitTests.Core.Domain.MenuAggregate;
+namespace Rhyme.Net.Tests.Unit.Core.Domain.MenuAggregate;
 
 public class MenuConstructor
 {

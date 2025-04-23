@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 
-namespace Clean.Architecture.UnitTests.Core.Services;
+namespace Rhyme.Net.Tests.Unit.Core.Services;
 
 public class DeleteMenuSevice_DeleteMenu
 {

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Amazon.DynamoDBv2.DataModel;
 using Ardalis.GuardClauses;
 using Ardalis.SharedKernel;
@@ -42,7 +43,6 @@ public class Order : HasDomainEventsBase, IAggregateRoot
 
   public void AddItem(OrderItem item)
   {
-    Guard.Against.Null(item, "item");
     Items.Add(item);
 
     var domainEvent = new NewOrderItemAddedEvent(this, item);
@@ -117,13 +117,13 @@ public class Order : HasDomainEventsBase, IAggregateRoot
 
   private void ApplyOrderSubmittedEvent(IEvent evt)
   {
-    Guard.Against.Expression(x => x.Equals(EventName.OrderSubmitted), evt.Name!.Value, nameof(evt.Name.Value));
+    Guard.Against.Expression(x => !x.Equals(EventName.OrderSubmitted), evt.Name!.Value, nameof(evt.Name.Value));
     Status = OrderStatus.Submitted;
   }
 
   private void ApplyOrderCompletedEvent(IEvent evt)
   {
-    Guard.Against.Expression(x => x.Equals(EventName.OrderCompleted), evt.Name!.Value, nameof(evt.Name.Value));
+    Guard.Against.Expression(x => !x.Equals(EventName.OrderCompleted), evt.Name!.Value, nameof(evt.Name.Value));
     Status = OrderStatus.Complete;
   }
 
@@ -215,6 +215,7 @@ public class Order : HasDomainEventsBase, IAggregateRoot
   {
     Guard.Against.Null(payload, nameof(payload));
     Guard.Against.Null(payload.Item, nameof(payload.Item));
+    Guard.Against.Negative(payload.Item.Price, nameof(payload.Item.Price));
   }
 
   private void ValidatePayload(OrderItemRemovedPayload? payload)

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Ardalis.GuardClauses;
 
 namespace Rhyme.Net.Core.Domain.OrderAggregate;
@@ -7,7 +8,8 @@ public class OrderItem
   public Guid Id { get; set; } = Guid.NewGuid();
   public string ProductName { get; set; } = string.Empty;
   public string ProductDescription { get; set; } = string.Empty;
-  public decimal Price { get; private set; }
+  public decimal Price { get; set; }
+  
   public IEnumerable<SelectedAddOn> SelectedAddOns { get; private set; } = new List<SelectedAddOn>();
   public IEnumerable<SelectedModifier> SelectedModifiers { get; private set; } = new List<SelectedModifier>();
 

@@ -5,7 +5,6 @@ using Ardalis.SharedKernel;
 using Rhyme.Net.Core.Domain.OrderAggregate;
 using Rhyme.Net.Core.Sourcing;
 using Rhyme.Net.Infrastructure.Secrets;
-using Xunit;
 
 namespace Rhyme.Net.Tests.Integration.Data.NoSQL;
 
