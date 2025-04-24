@@ -22,7 +22,9 @@ jobs:
     permissions:
       id-token: write # For OIDC authentication
       contents: read # For checkout
-    
+    outputs:
+      changed_projects: ${{ steps.detect.outputs.changed_projects }}
+
     steps:
     ## Step used for debuging
     # - name: Test
@@ -50,17 +52,30 @@ jobs:
     - name: Get changed projects
       id: changed-projects
       run: |
-        changed_files=$(git diff --name-only HEAD~1 HEAD)
-        project_paths=$(find . -name "*.csproj" -print0 | xargs -0 grep -l "Lambda" | grep -v "/test/")
-        changed_projects=""
-        for project_path in $project_paths; do
-          project_dir=$(dirname "$project_path")
-          if [[ $changed_files == *"$project_dir"* ]]; then
-            changed_projects="$changed_projects $project_dir"
+        CHANGED_PROJECTS=()
+        
+        for project in $(find . -name '*.csproj'); do
+          project_dir=$(dirname "$project")
+          project_name=$(basename "$project" .csproj)
+          
+          # Check if project name ends with 'Lambda'
+          if [[ "$project_name" == *Lambda ]]; then
+            # Check if any files within the project directory were modified in the last commit
+            if git diff --name-only HEAD^ HEAD -- "$project_dir" | grep -q .; then
+              CHANGED_PROJECTS+=("$project_name")
+            fi
           fi
         done
-        echo "changed_projects=$changed_projects" >> $GITHUB_OUTPUT
+        
+        # Convert array to space-separated string for output
+        CHANGED_PROJECTS_STR="${CHANGED_PROJECTS[@]}"
+        echo "Changed Lambda Projects: $CHANGED_PROJECTS_STR"
+        echo "changed_projects=$CHANGED_PROJECTS_STR" >> "$GITHUB_ENV"
 
+    - name: Log Changed Lambda Projects
+      run: |
+        echo "Changed Lambda Projects: ${{ env.changed_projects }}"
+        
     # - name: Build and deploy Lambda functions
     #   if: steps.changed-projects.outputs.changed_projects != ''
     #   run: |
