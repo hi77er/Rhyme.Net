@@ -3,10 +3,22 @@ name: Terraform Apply / Destroy
 on:
   workflow_dispatch: # Allow manual triggering
     inputs:
+      environment:
+        description: 'Select environment'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - production
       action:
         description: "Terraform action (apply/destroy)"
         required: true
         default: "apply"
+        type: choice
+        options:
+          - apply
+          - destroy
 
 jobs:
   deploy:

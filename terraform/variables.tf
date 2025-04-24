@@ -23,3 +23,26 @@ variable "ecr_net_lambdas_repo_prefix" {
   description = "Name of the ECR repository used to deploy .Net lambda containers to"
   default     = "dotnet8-lambda-repo"
 }
+
+variable "api_gateway_lambda_definitions" {
+  default = {
+    "new-order-lambda" = {
+      lambda_name = "NewOrderLambda-${var.env}"
+      filename = "../Rhyme.Net.Commands.NewOrderLambda/src/Rhyme.Net.Commands.NewOrderLambda/publish/NewOrderLambda.zip"
+      memory_size = 128
+      timeout     = 60
+      handler     = "Rhyme.Net.Commands.NewOrderLambda::Rhyme.Net.Commands.NewOrderLambda.Function::FunctionHandler"
+      runtime     = "dotnet8"
+      http_method   = "POST"
+    }
+    "get-order-lambda" = {
+      lambda_name = "GetOrdersLambda-${var.env}"
+      memory_size = 128
+      timeout     = 60
+      filename    = "../Rhyme.Net.Queries.GetOrdersLambda/src/Rhyme.Net.Queries.GetOrdersLambda/publish/GetOrdersLambda.zip"
+      handler     = "Rhyme.Net.Queries.GetOrdersLambda::Rhyme.Net.Queries.GetOrdersLambda.Function::FunctionHandler"
+      runtime     = "dotnet8"
+      http_method   = "GET"
+    }
+  }
+}

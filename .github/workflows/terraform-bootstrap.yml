@@ -2,7 +2,15 @@ name: Terraform Bootstrap
 
 on:
   workflow_dispatch: # Allow manual triggering
-
+    inputs:
+      environment:
+        description: 'Select environment'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - production
 jobs:
   deploy:
     runs-on: ubuntu-latest

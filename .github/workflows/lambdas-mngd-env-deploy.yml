@@ -2,54 +2,82 @@ name: Deploy .NET Lambdas to AWS Managed Environment
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select environment'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - production
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    
+    env:
+      ENVIRONMENT: ${{ inputs.environment }}  # Adjust when clicking the "Run workflow" button in GitHub Actions portal
+    
     permissions:
       id-token: write # For OIDC authentication
       contents: read # For checkout
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2 # Required to get changes
+      - name: Test
+        run: echo "ENV variable is ${{ vars.ENV }}"
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
+      #   with:
+      #     fetch-depth: 2 # Required to get changes
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam:<YOUR_AWS_ACCOUNT_ID>:role/<YOUR_OIDC_ROLE> # Replace with your IAM role ARN
-          aws-region: <YOUR_AWS_REGION> # e.g., us-east-1
+      # - name: Setup .NET
+      #   uses: actions/setup-dotnet@v4
+      #   with:
+      #     dotnet-version: '8.0.x'
 
-      - name: Get changed projects
-        id: changed-projects
-        run: |
-          changed_files=$(git diff --name-only HEAD~1 HEAD)
-          project_paths=$(find . -name "*.csproj" -print0 | xargs -0 grep -l "Lambda" | grep -v "/test/")
-          changed_projects=""
-          for project_path in $project_paths; do
-            project_dir=$(dirname "$project_path")
-            if [[ $changed_files == *"$project_dir"* ]]; then
-              changed_projects="$changed_projects $project_dir"
-            fi
-          done
-          echo "changed_projects=$changed_projects" >> $GITHUB_OUTPUT
+      # - name: Install AWS Lambda Tools
+      #   run: dotnet tool install -g Amazon.Lambda.Tools
 
-      - name: Build and deploy Lambda functions
-        if: steps.changed-projects.outputs.changed_projects != ''
-        run: |
-          for project_dir in ${{ steps.changed-projects.outputs.changed_projects }}; do
-            project_name=$(basename "$project_dir")
-            dotnet publish "$project_dir" -c Release -o "$project_dir/publish"
-            zip -r "$project_name.zip" "$project_dir/publish"
-            aws lambda update-function-code --function-name "$project_name" --zip-file fileb://"$project_name.zip"
-            rm "$project_name.zip"
-          done
-        env:
-          AWS_REGION: <YOUR_AWS_REGION>
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} 
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
+      #     aws-region: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
+
+      # - name: Get changed projects
+      #   id: changed-projects
+      #   run: |
+      #     changed_files=$(git diff --name-only HEAD~1 HEAD)
+      #     project_paths=$(find . -name "*.csproj" -print0 | xargs -0 grep -l "Lambda" | grep -v "/test/")
+      #     changed_projects=""
+      #     for project_path in $project_paths; do
+      #       project_dir=$(dirname "$project_path")
+      #       if [[ $changed_files == *"$project_dir"* ]]; then
+      #         changed_projects="$changed_projects $project_dir"
+      #       fi
+      #     done
+      #     echo "changed_projects=$changed_projects" >> $GITHUB_OUTPUT
+
+      # - name: Build and deploy Lambda functions
+      #   if: steps.changed-projects.outputs.changed_projects != ''
+      #   run: |
+      #     for project_dir in ${{ steps.changed-projects.outputs.changed_projects }}; do
+      #       # Updating Lambda function code using ZIP files
+      #       dotnet publish "$project_dir" -c Release -o "$project_dir/publish"
+      #       zip -r "$project_name.zip" "$project_dir/publish"
+      #       function_name="${project_name}-${{ vars.ENV }}"
+      #       # echo "Updating Lambda function code: $function_name"
+      #       aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
+      #       rm "$project_name.zip"
+
+      #       # Deploying Lambda via Amazon Lambda Tools
+      #       # project_name=$(basename "$project_dir")
+      #       # function_name="${project_name}-${{ vars.ENV }}"
+      #       # echo "Deploying Lambda function: $function_name"
+      #       # dotnet lambda deploy-function --project "$project_dir/$project_name.csproj" --function-name "$function_name"
+      #     done
+      #   env:
+      #     AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
