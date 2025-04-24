@@ -27,7 +27,7 @@ variable "ecr_net_lambdas_repo_prefix" {
 variable "api_gateway_lambda_definitions" {
   default = {
     "new-order-lambda" = {
-      lambda_name = "NewOrderLambda-${var.env}"
+      lambda_name = "NewOrderLambda-dev"
       filename = "../Rhyme.Net.Commands.NewOrderLambda/src/Rhyme.Net.Commands.NewOrderLambda/publish/NewOrderLambda.zip"
       memory_size = 128
       timeout     = 60
@@ -36,7 +36,7 @@ variable "api_gateway_lambda_definitions" {
       http_method   = "POST"
     }
     "get-order-lambda" = {
-      lambda_name = "GetOrdersLambda-${var.env}"
+      lambda_name = "GetOrdersLambda-dev"
       memory_size = 128
       timeout     = 60
       filename    = "../Rhyme.Net.Queries.GetOrdersLambda/src/Rhyme.Net.Queries.GetOrdersLambda/publish/GetOrdersLambda.zip"
