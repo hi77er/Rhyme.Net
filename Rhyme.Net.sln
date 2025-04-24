@@ -15,6 +15,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Tests.Unit", "Rhy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Tests.Integration", "Rhyme.Net.Tests.Integration\Rhyme.Net.Tests.Integration.csproj", "{3F5456DF-74D2-448A-AB9D-C32F47D6A175}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rhyme.Net.Queries.GetOrdersLambda", "Rhyme.Net.Queries.GetOrdersLambda", "{8AEDC6A7-5B5F-2E5E-0FFE-A3D3DB15B7A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{80FB345B-8219-1F2F-EFF6-E65393CDE67F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Queries.GetOrdersLambda", "Rhyme.Net.Queries.GetOrdersLambda\src\Rhyme.Net.Queries.GetOrdersLambda\Rhyme.Net.Queries.GetOrdersLambda.csproj", "{A0BCB060-C4AD-471A-A503-B23B92222516}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,8 +103,24 @@ Global
 		{3F5456DF-74D2-448A-AB9D-C32F47D6A175}.Release|x64.Build.0 = Release|Any CPU
 		{3F5456DF-74D2-448A-AB9D-C32F47D6A175}.Release|x86.ActiveCfg = Release|Any CPU
 		{3F5456DF-74D2-448A-AB9D-C32F47D6A175}.Release|x86.Build.0 = Release|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Debug|x64.Build.0 = Debug|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Debug|x86.Build.0 = Debug|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Release|x64.ActiveCfg = Release|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Release|x64.Build.0 = Release|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Release|x86.ActiveCfg = Release|Any CPU
+		{A0BCB060-C4AD-471A-A503-B23B92222516}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{80FB345B-8219-1F2F-EFF6-E65393CDE67F} = {8AEDC6A7-5B5F-2E5E-0FFE-A3D3DB15B7A8}
+		{A0BCB060-C4AD-471A-A503-B23B92222516} = {80FB345B-8219-1F2F-EFF6-E65393CDE67F}
 	EndGlobalSection
 EndGlobal
