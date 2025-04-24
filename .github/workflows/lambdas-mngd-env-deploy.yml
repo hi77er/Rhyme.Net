@@ -22,7 +22,9 @@ jobs:
 
     steps:
       - name: Test
-        run: echo "ENV variable is ${{ vars.ENV }}"
+        run: 
+          echo "Inputs environment is ${{ inputs.environment }}"
+          echo "ENV variable is ${{ vars.ENV }}"
 
       # - name: Checkout code
       #   uses: actions/checkout@v4
