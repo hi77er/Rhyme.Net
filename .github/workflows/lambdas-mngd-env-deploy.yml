@@ -22,8 +22,6 @@ jobs:
     permissions:
       id-token: write # For OIDC authentication
       contents: read # For checkout
-    outputs:
-      changed_projects: ${{ steps.detect.outputs.changed_projects }}
 
     steps:
     ## Step used for debuging
@@ -72,10 +70,6 @@ jobs:
         echo "Changed Lambda Projects: $CHANGED_PROJECTS_STR"
         echo "changed_projects=$CHANGED_PROJECTS_STR" >> "$GITHUB_ENV"
 
-    - name: Log Changed Lambda Projects
-      run: |
-        echo "Changed Lambda Projects: ${{ env.changed_projects }}"
-        
     # - name: Build and deploy Lambda functions
     #   if: steps.changed-projects.outputs.changed_projects != ''
     #   run: |
