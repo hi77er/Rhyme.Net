@@ -15,6 +15,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }} # Adjust when clicking the "Run workflow" button in GitHub Actions portal
 
     steps:
       - name: Checkout code

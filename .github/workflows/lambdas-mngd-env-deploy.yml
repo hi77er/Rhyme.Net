@@ -15,10 +15,7 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    
-    env:
-      ENVIRONMENT: ${{ inputs.environment }}  # Adjust when clicking the "Run workflow" button in GitHub Actions portal
-    
+    environment: ${{ inputs.environment }} # Adjust when clicking the "Run workflow" button in GitHub Actions portal
     permissions:
       id-token: write # For OIDC authentication
       contents: read # For checkout
