@@ -37,9 +37,6 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Install AWS Lambda Tools
-      run: dotnet tool install -g Amazon.Lambda.Tools
-
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -66,18 +63,19 @@ jobs:
       run: |
         for project_dir in ${{ steps.changed-projects.outputs.changed_projects }}; do
           # Updating Lambda function code using ZIP files
+          
+          echo "Publishing Lambda function to project dir: $project_dir"
           dotnet publish "$project_dir" -c Release -o "$project_dir/publish"
+          
+          echo "Zipping Lambda function to project dir: $project_dir"/publish $project_name.zip"
           zip -r "$project_name.zip" "$project_dir/publish"
+          
           function_name="${project_name}-${{ vars.ENV }}"
-          # echo "Updating Lambda function code: $function_name"
+          echo "Updating Lambda function code: $function_name"
           aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
+          
+          echo "removing zip"
           rm "$project_name.zip"
-
-          # Deploying Lambda via Amazon Lambda Tools
-          # project_name=$(basename "$project_dir")
-          # function_name="${project_name}-${{ vars.ENV }}"
-          # echo "Deploying Lambda function: $function_name"
-          # dotnet lambda deploy-function --project "$project_dir/$project_name.csproj" --function-name "$function_name"
         done
       env:
         AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
