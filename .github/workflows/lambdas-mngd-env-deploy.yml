@@ -77,8 +77,10 @@ jobs:
           # Updating Lambda function code using ZIP files
           
           echo "Publishing Lambda function to project dir: $project_dir"
-          dotnet publish "$project_dir" -c Release -o "$project_dir/publish"
-          
+
+          dotnet restore "$project_dir" /p:PublishReadyToRun=true
+          dotnet publish "$project_dir" -c Release -o "$project_dir/publish" /p:PublishReadyToRun=true
+
           echo "Zipping Lambda function to project dir: $project_dir/publish $project_name.zip ..."
           zip -r "$project_name.zip" "$project_dir/publish"
           echo "Lambda zipped."
