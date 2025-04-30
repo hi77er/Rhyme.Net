@@ -68,6 +68,7 @@ jobs:
         # Convert array to space-separated string for output
         CHANGED_PROJECTS_STR="${CHANGED_PROJECTS[@]}"
         echo "Changed Lambda Projects: $CHANGED_PROJECTS_STR"
+        echo "changed_projects=$CHANGED_PROJECTS" >> "$GITHUB_ENV"
 
     - name: Build and deploy Lambda functions
       if: steps.changed-projects.outputs.changed_projects != ''
@@ -84,9 +85,9 @@ jobs:
           
           function_name="${project_name}-${{ vars.ENV }}"
 
-          # echo "Updating Lambda function code: $function_name ..."
-          # aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
-          # echo "Lambda updated."
+          echo "Updating Lambda function code: $function_name ..."
+          aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
+          echo "Lambda updated."
           
           echo "Removing zip ..."
           rm "$project_name.zip"
