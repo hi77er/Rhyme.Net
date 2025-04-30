@@ -68,12 +68,12 @@ jobs:
         # Convert array to space-separated string for output
         CHANGED_PROJECTS_STR="${CHANGED_PROJECTS[@]}"
         echo "Changed Lambda Projects: $CHANGED_PROJECTS_STR"
-        echo "::set-output name=changed_projects::$CHANGED_PROJECTS"
+        echo "changed_projects=$CHANGED_PROJECTS" >> "$GITHUB_ENV"
 
     - name: Build and deploy Lambda functions
-      if: steps.changed-projects.outputs.changed_projects != ''
+      if: env.changed_projects != ''
       run: |
-        for project_dir in ${{ steps.changed-projects.outputs.changed_projects }}; do
+        for project_dir in ${changed_projects//,/ }; do
           # Updating Lambda function code using ZIP files
           
           echo "Publishing Lambda function to project dir: $project_dir"
