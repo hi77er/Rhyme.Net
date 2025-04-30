@@ -26,20 +26,20 @@ variable "ecr_net_lambdas_repo_prefix" {
 
 variable "api_gateway_lambda_definitions" {
   default = {
-    "new-order-lambda" = {
+    "NewOrderLambda-dev" = {
       lambda_name = "NewOrderLambda-dev"
-      filename = "../Rhyme.Net.Commands.NewOrderLambda/src/Rhyme.Net.Commands.NewOrderLambda/publish/NewOrderLambda.zip"
+      # filename = "../Rhyme.Net.Commands.NewOrderLambda/src/Rhyme.Net.Commands.NewOrderLambda/publish/NewOrderLambda.zip"
       memory_size = 128
       timeout     = 60
       handler     = "Rhyme.Net.Commands.NewOrderLambda::Rhyme.Net.Commands.NewOrderLambda.Function::FunctionHandler"
       runtime     = "dotnet8"
       http_method   = "POST"
     }
-    "get-order-lambda" = {
+    "GetOrdersLambda-dev" = {
       lambda_name = "GetOrdersLambda-dev"
       memory_size = 128
       timeout     = 60
-      filename    = "../Rhyme.Net.Queries.GetOrdersLambda/src/Rhyme.Net.Queries.GetOrdersLambda/publish/GetOrdersLambda.zip"
+      # filename    = "../Rhyme.Net.Queries.GetOrdersLambda/src/Rhyme.Net.Queries.GetOrdersLambda/publish/GetOrdersLambda.zip"
       handler     = "Rhyme.Net.Queries.GetOrdersLambda::Rhyme.Net.Queries.GetOrdersLambda.Function::FunctionHandler"
       runtime     = "dotnet8"
       http_method   = "GET"
