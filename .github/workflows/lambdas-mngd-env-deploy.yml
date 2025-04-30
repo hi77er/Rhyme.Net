@@ -78,8 +78,9 @@ jobs:
           
           echo "Publishing Lambda function to project dir: $project_dir"
 
-          dotnet restore "$project_dir" /p:PublishReadyToRun=true
-          dotnet publish "$project_dir" -c Release -o "$project_dir/publish" /p:PublishReadyToRun=true
+          # dotnet restore "$project_dir" /p:PublishReadyToRun=true
+          dotnet publish -c Release -r linux-x64 --self-contained 
+          # dotnet publish "$project_dir" -c Release -o "$project_dir/publish" /p:PublishReadyToRun=true
 
           echo "Zipping Lambda function to project dir: $project_dir/publish $project_name.zip ..."
           zip -r "$project_name.zip" "$project_dir/publish"
