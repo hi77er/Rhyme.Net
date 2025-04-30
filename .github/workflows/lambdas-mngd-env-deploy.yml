@@ -60,7 +60,7 @@ jobs:
           if [[ "$project_name" == *Lambda ]]; then
             # Check if any files within the project directory were modified in the last commit
             if git diff --name-only HEAD^ HEAD -- "$project_dir" | grep -q .; then
-              changed_projects+=("$project_name")
+              changed_projects+=("$project_dir")
             fi
           fi
         done
