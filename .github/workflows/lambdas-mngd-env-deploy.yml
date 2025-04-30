@@ -79,7 +79,7 @@ jobs:
           echo "Publishing Lambda function to project dir: $project_dir"
           dotnet publish "$project_dir" -c Release -o "$project_dir/publish"
           
-          echo "Zipping Lambda function to project dir: $project_dir"/publish $project_name.zip ..."
+          echo "Zipping Lambda function to project dir: $project_dir/publish $project_name.zip ..."
           zip -r "$project_name.zip" "$project_dir/publish"
           echo "Lambda zipped."
           
