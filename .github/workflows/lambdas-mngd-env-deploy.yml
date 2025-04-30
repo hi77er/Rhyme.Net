@@ -68,12 +68,12 @@ jobs:
         # Convert array to space-separated string for output
         CHANGED_PROJECTS_STR="${CHANGED_PROJECTS[@]}"
         echo "Changed Lambda Projects: $CHANGED_PROJECTS_STR"
-        echo "changed_projects=$CHANGED_PROJECTS" >> "$GITHUB_ENV"
+        echo "changed_projects=$CHANGED_PROJECTS_STR" >> "$GITHUB_ENV"
 
     - name: Build and deploy Lambda functions
       if: env.changed_projects != ''
       run: |
-        for project_dir in ${changed_projects//,/ }; do
+        for project_dir in ${env.changed_projects}; do
           # Updating Lambda function code using ZIP files
           
           echo "Publishing Lambda function to project dir: $project_dir"
