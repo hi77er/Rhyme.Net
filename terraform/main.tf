@@ -33,9 +33,9 @@ module "lambdas" {
   api_gateway_lambda_definitions  = var.api_gateway_lambda_definitions
 }
 
-module "apigateway" {
-  source                          = "./modules/apigateway"
-  env                             = var.env
-  api_gateway_lambda_definitions  = var.api_gateway_lambda_definitions
-  api_gateway_lambda_invoke_arns  = module.lambdas.api_gateway_lambda_invoke_arns
-}
+# module "apigateway" {
+#   source                          = "./modules/apigateway"
+#   env                             = var.env
+#   api_gateway_lambda_definitions  = var.api_gateway_lambda_definitions
+#   api_gateway_lambda_invoke_arns  = module.lambdas.api_gateway_lambda_invoke_arns
+# }
