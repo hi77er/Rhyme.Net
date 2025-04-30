@@ -68,7 +68,7 @@ jobs:
         # Convert array to space-separated string for output
         CHANGED_PROJECTS_STR="${CHANGED_PROJECTS[@]}"
         echo "Changed Lambda Projects: $CHANGED_PROJECTS_STR"
-        echo "changed_projects=$CHANGED_PROJECTS" >> "$GITHUB_ENV"
+        echo "::set-output name=changed_projects::$CHANGED_PROJECTS"
 
     - name: Build and deploy Lambda functions
       if: steps.changed-projects.outputs.changed_projects != ''
