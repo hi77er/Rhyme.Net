@@ -3,7 +3,7 @@ resource "aws_lambda_function" "lambda" {
 
   function_name = each.key
   filename      = each.value.filename # In case deployed as CONTAINER IMAGE: REMOVE - filename and SET - package_type  = "Image" 
-  source_code_hash = each.value.source_code_hash # In case deployed as CONTAINER IMAGE: REMOVE - source_code_hash
+  # source_code_hash = each.value.source_code_hash # In case deployed as CONTAINER IMAGE: REMOVE - source_code_hash
   handler       = each.value.handler  # In case deployed as CONTAINER IMAGE: REMOVE - handler and SET - image_uri = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.ecr_net_lambdas_repo_prefix}/${each.value.lambda_name}-${var.env}:latest"
   runtime       = each.value.runtime  # In case deployed as CONTAINER IMAGE: REMOVE - runtime
   memory_size   = each.value.memory_size
