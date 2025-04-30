@@ -50,7 +50,7 @@ jobs:
     - name: Get changed projects
       id: changed-projects
       run: |
-        CHANGED_PROJECTS=()
+        changed_projects=()
         
         for project in $(find . -name '*.csproj'); do
           project_dir=$(dirname "$project")
@@ -60,20 +60,20 @@ jobs:
           if [[ "$project_name" == *Lambda ]]; then
             # Check if any files within the project directory were modified in the last commit
             if git diff --name-only HEAD^ HEAD -- "$project_dir" | grep -q .; then
-              CHANGED_PROJECTS+=("$project_name")
+              changed_projects+=("$project_name")
             fi
           fi
         done
         
         # Convert array to space-separated string for output
-        CHANGED_PROJECTS_STR="${CHANGED_PROJECTS[@]}"
-        echo "Changed Lambda Projects: $CHANGED_PROJECTS_STR"
-        echo "changed_projects=$CHANGED_PROJECTS_STR" >> "$GITHUB_ENV"
+        changed_projects_str="${changed_projects[@]}"
+        echo "Changed Lambda Projects: $changed_projects_str"
+        echo "CHANGED_PROJECTS=$changed_projects_str" >> "$GITHUB_ENV"
 
     - name: Build and deploy Lambda functions
-      if: env.changed_projects != ''
+      if: env.CHANGED_PROJECTS != ''
       run: |
-        for project_dir in ${env.changed_projects}; do
+        for project_dir in $CHANGED_PROJECTS; do
           # Updating Lambda function code using ZIP files
           
           echo "Publishing Lambda function to project dir: $project_dir"
