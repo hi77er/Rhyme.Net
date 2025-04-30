@@ -19,11 +19,9 @@ provider "aws" {
   region = var.aws_region
 }
 
-module "apigateway" {
-  source                          = "./modules/apigateway"
-  env                             = var.env
-  api_gateway_lambda_definitions  = var.api_gateway_lambda_definitions
-  api_gateway_lambda_invoke_arns  = module.lambdas.api_gateway_lambda_invoke_arns
+module "dynamodb" {
+  source = "./modules/dynamodb"
+  env    = var.env
 }
 
 module "lambdas" {
@@ -35,7 +33,9 @@ module "lambdas" {
   api_gateway_lambda_definitions  = var.api_gateway_lambda_definitions
 }
 
-module "dynamodb" {
-  source = "./modules/dynamodb"
-  env    = var.env
+module "apigateway" {
+  source                          = "./modules/apigateway"
+  env                             = var.env
+  api_gateway_lambda_definitions  = var.api_gateway_lambda_definitions
+  api_gateway_lambda_invoke_arns  = module.lambdas.api_gateway_lambda_invoke_arns
 }

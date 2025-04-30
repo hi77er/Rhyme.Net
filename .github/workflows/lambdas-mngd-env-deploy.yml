@@ -68,26 +68,29 @@ jobs:
         # Convert array to space-separated string for output
         CHANGED_PROJECTS_STR="${CHANGED_PROJECTS[@]}"
         echo "Changed Lambda Projects: $CHANGED_PROJECTS_STR"
-        echo "changed_projects=$CHANGED_PROJECTS_STR" >> "$GITHUB_ENV"
 
-    # - name: Build and deploy Lambda functions
-    #   if: steps.changed-projects.outputs.changed_projects != ''
-    #   run: |
-    #     for project_dir in ${{ steps.changed-projects.outputs.changed_projects }}; do
-    #       # Updating Lambda function code using ZIP files
+    - name: Build and deploy Lambda functions
+      if: steps.changed-projects.outputs.changed_projects != ''
+      run: |
+        for project_dir in ${{ steps.changed-projects.outputs.changed_projects }}; do
+          # Updating Lambda function code using ZIP files
           
-    #       echo "Publishing Lambda function to project dir: $project_dir"
-    #       dotnet publish "$project_dir" -c Release -o "$project_dir/publish"
+          echo "Publishing Lambda function to project dir: $project_dir"
+          dotnet publish "$project_dir" -c Release -o "$project_dir/publish"
           
-    #       echo "Zipping Lambda function to project dir: $project_dir"/publish $project_name.zip"
-    #       zip -r "$project_name.zip" "$project_dir/publish"
+          echo "Zipping Lambda function to project dir: $project_dir"/publish $project_name.zip ..."
+          zip -r "$project_name.zip" "$project_dir/publish"
+          echo "Lambda zipped."
           
-    #       function_name="${project_name}-${{ vars.ENV }}"
-    #       echo "Updating Lambda function code: $function_name"
-    #       aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
+          function_name="${project_name}-${{ vars.ENV }}"
+
+          # echo "Updating Lambda function code: $function_name ..."
+          # aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
+          # echo "Lambda updated."
           
-    #       echo "removing zip"
-    #       rm "$project_name.zip"
-    #     done
-    #   env:
-    #     AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
+          echo "Removing zip ..."
+          rm "$project_name.zip"
+          echo "zip removed."
+        done
+      env:
+        AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
