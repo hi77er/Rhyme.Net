@@ -84,21 +84,21 @@ jobs:
           short_name="${project_name##*.}"
           echo "Processing short name: $short_name in directory $project_dir"
 
-          # # Build and publish
-          # dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained 
+          # Build and publish
+          dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained 
 
-          # # Zip function
-          # zip -r "$short_name.zip" "$project_dir/publish"
-          # echo "Lambda zipped."
+          # Zip function
+          zip -r "$short_name.zip" "$project_dir/publish"
+          echo "Lambda zipped."
 
-          # # Deploy to AWS Lambda
-          # function_name="${short_name}-${{ vars.ENV }}"
-          # aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$short_name.zip"
-          # echo "Lambda updated."
+          # Deploy to AWS Lambda
+          function_name="${short_name}-${{ vars.ENV }}"
+          aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$short_name.zip"
+          echo "Lambda updated."
 
-          # # Cleanup
-          # rm "$short_name.zip"
-          # echo "Zip removed."
+          # Cleanup
+          rm "$short_name.zip"
+          echo "Zip removed."
         done
       env:
         AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
