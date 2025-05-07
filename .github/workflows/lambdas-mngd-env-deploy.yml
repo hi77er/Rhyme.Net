@@ -50,51 +50,48 @@ jobs:
     - name: Get changed projects
       id: changed-projects
       run: |
-        changed_projects=()
-        
+        # Initialize an empty dictionary
+        echo 'CHANGED_PROJECTS={}' >> $GITHUB_ENV
+
         for project in $(find . -name '*.csproj'); do
           project_dir=$(dirname "$project")
           project_name=$(basename "$project" .csproj)
-          
-          # Check if project name ends with 'Lambda'
+
           if [[ "$project_name" == *Lambda ]]; then
-            # Check if any files within the project directory were modified in the last commit
             if git diff --name-only HEAD^ HEAD -- "$project_dir" | grep -q .; then
-              changed_projects+=("$project_dir")
+              echo "Found changes in project: $project_name at $project_dir"
+
+              # Append project name and directory to the existing dictionary
+              updated_dict=$(jq --arg key "$project_name" --arg value "$project_dir" \
+                '. + {($key): $value}' <<< "$CHANGED_PROJECTS")
+
+              # Overwrite the environment variable with updated dictionary
+              echo "CHANGED_PROJECTS=$updated_dict" >> $GITHUB_ENV
             fi
           fi
         done
-        
-        # Convert array to space-separated string for output
-        changed_projects_str="${changed_projects[@]}"
-        echo "Changed Lambda Projects: $changed_projects_str"
-        echo "CHANGED_PROJECTS=$changed_projects_str" >> "$GITHUB_ENV"
 
     - name: Build and deploy Lambda functions
       if: env.CHANGED_PROJECTS != ''
       run: |
-        for project_dir in $CHANGED_PROJECTS; do
-          # Updating Lambda function code using ZIP files
-          
-          echo "Publishing Lambda function to project dir: $project_dir"
+        echo "$CHANGED_PROJECTS" | jq -r 'to_entries[] | "\(.key) \(.value)"' | while read project_name project_dir; do
+          echo "Processing $project_name in directory $project_dir"
 
-          # dotnet restore "$project_dir" /p:PublishReadyToRun=true
-          dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained 
-          # dotnet publish "$project_dir" -c Release -o "$project_dir/publish" /p:PublishReadyToRun=true
+          # # Build and publish
+          # dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained 
 
-          echo "Zipping Lambda function to project dir: $project_dir/publish $project_name.zip ..."
-          zip -r "$project_name.zip" "$project_dir/publish" 
-          echo "Lambda zipped."
-          
-          function_name="${project_name}-${{ vars.ENV }}"
+          # # Zip function
+          # zip -r "$project_name.zip" "$project_dir/publish" 
+          # echo "Lambda zipped."
 
-          echo "Updating Lambda function code: $function_name ..."
-          aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
-          echo "Lambda updated."
-          
-          echo "Removing zip ..."
-          rm "$project_name.zip"
-          echo "zip removed."
+          # # Deploy to AWS Lambda
+          # function_name="${project_name}-${{ vars.ENV }}"
+          # aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
+          # echo "Lambda updated."
+
+          # # Cleanup
+          # rm "$project_name.zip"
+          # echo "Zip removed."
         done
       env:
         AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
