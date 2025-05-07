@@ -76,26 +76,28 @@ jobs:
     - name: Build and deploy Lambda functions
       if: steps.changed-projects.outputs.CHANGED_PROJECTS != '{}'
       run: |
-        # Decode JSON dictionary before processing
+        # Decode JSON dictionary
         changed_projects=$(echo '${{ steps.changed-projects.outputs.CHANGED_PROJECTS }}' | jq -c '.')
 
         echo "$changed_projects" | jq -r 'to_entries[] | "\(.key) \(.value)"' | while read project_name project_dir; do
-          echo "Processing $project_name in directory $project_dir"
+          # Extract substring after the last `.`
+          short_name="${project_name##*.}"
+          echo "Processing short name: $short_name in directory $project_dir"
 
           # # Build and publish
           # dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained 
 
           # # Zip function
-          # zip -r "$project_name.zip" "$project_dir/publish"
+          # zip -r "$short_name.zip" "$project_dir/publish"
           # echo "Lambda zipped."
 
           # # Deploy to AWS Lambda
-          # function_name="${project_name}-${{ vars.ENV }}"
-          # aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
+          # function_name="${short_name}-${{ vars.ENV }}"
+          # aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$short_name.zip"
           # echo "Lambda updated."
 
           # # Cleanup
-          # rm "$project_name.zip"
+          # rm "$short_name.zip"
           # echo "Zip removed."
         done
       env:
