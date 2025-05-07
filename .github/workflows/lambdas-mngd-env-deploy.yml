@@ -52,45 +52,51 @@ jobs:
       run: |
         dict="{}"
 
-        for project in $(find . -name '*.csproj'); do
-          project_dir=$(dirname "$project")
-          project_name=$(basename "$project" .csproj)
+          for project in $(find . -name '*.csproj'); do
+            project_dir=$(dirname "$project")
+            project_name=$(basename "$project" .csproj)
 
-          if [[ "$project_name" == *Lambda ]]; then
-            if git diff --name-only HEAD^ HEAD -- "$project_dir" | grep -q .; then
-              echo "Found changes in project: $project_name at $project_dir"
-              
-              # Append project to dictionary
-              dict=$(echo "$dict" | jq --arg key "$project_name" --arg value "$project_dir" \
-                '. + {($key): $value}')
+            if [[ "$project_name" == *Lambda ]]; then
+              if git diff --name-only HEAD^ HEAD -- "$project_dir" | grep -q .; then
+                echo "Found changes in project: $project_name at $project_dir"
+                
+                # Append project name and directory to dictionary
+                dict=$(echo "$dict" | jq --arg key "$project_name" --arg value "$project_dir" \
+                  '. + {($key): $value}')
+              fi
             fi
-          fi
-        done
+          done
 
-        # Store the final dictionary as an output variable
-        echo "CHANGED_PROJECTS=$dict" >> $GITHUB_OUTPUT
+          # Ensure JSON output is single-line to avoid GitHub Actions errors
+          encoded_dict=$(echo "$dict" | jq -c '.')
+
+          # Store the final dictionary as an output variable
+          echo "CHANGED_PROJECTS=$encoded_dict" >> $GITHUB_OUTPUT
 
     - name: Build and deploy Lambda functions
       if: steps.changed-projects.outputs.CHANGED_PROJECTS != '{}'
       run: |
-        echo '${{ steps.changed-projects.outputs.CHANGED_PROJECTS }}' | jq -r 'to_entries[] | "\(.key) \(.value)"' | while read project_name project_dir; do
-            echo "Processing $project_name in directory $project_dir"
+        # Decode JSON dictionary before processing
+        changed_projects=$(echo '${{ steps.changed-projects.outputs.CHANGED_PROJECTS }}' | jq -c '.')
 
-            # # Build and publish
-            # dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained 
+        echo "$changed_projects" | jq -r 'to_entries[] | "\(.key) \(.value)"' | while read project_name project_dir; do
+          echo "Processing $project_name in directory $project_dir"
 
-            # # Zip function
-            # zip -r "$project_name.zip" "$project_dir/publish"
-            # echo "Lambda zipped."
+          # # Build and publish
+          # dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained 
 
-            # # Deploy to AWS Lambda
-            # function_name="${project_name}-${{ vars.ENV }}"
-            # aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
-            # echo "Lambda updated."
+          # # Zip function
+          # zip -r "$project_name.zip" "$project_dir/publish"
+          # echo "Lambda zipped."
 
-            # # Cleanup
-            # rm "$project_name.zip"
-            # echo "Zip removed."
-          done
+          # # Deploy to AWS Lambda
+          # function_name="${project_name}-${{ vars.ENV }}"
+          # aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_name.zip"
+          # echo "Lambda updated."
+
+          # # Cleanup
+          # rm "$project_name.zip"
+          # echo "Zip removed."
+        done
       env:
         AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
