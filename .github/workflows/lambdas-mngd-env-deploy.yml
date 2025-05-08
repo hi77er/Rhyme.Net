@@ -76,6 +76,8 @@ jobs:
     - name: Build and deploy Lambda functions
       if: steps.changed-projects.outputs.CHANGED_PROJECTS != '{}'
       run: |
+        initial_dir=$(pwd)
+        
         # Decode JSON dictionary
         changed_projects=$(echo '${{ steps.changed-projects.outputs.CHANGED_PROJECTS }}' | jq -c '.')
 
@@ -105,6 +107,8 @@ jobs:
           echo "Removing zip - $short_name.zip"
           rm "$short_name.zip"
           echo "Zip removed - $short_name.zip"
+
+          cd "$initial_dir"
         done
       env:
         AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
