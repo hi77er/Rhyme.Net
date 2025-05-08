@@ -95,7 +95,7 @@ jobs:
 
           # Zip function
           zip -r "$short_name.zip" "$project_dir/publish"
-          echo "Lambda zipped."
+          echo "Lambda zipped - $short_name.zip"
 
           # Deploy to AWS Lambda
           function_name="${short_name}-${{ vars.ENV }}"
@@ -104,7 +104,7 @@ jobs:
 
           # Cleanup
           rm "$short_name.zip"
-          echo "Zip removed."
+          echo "Zip removed - $short_name.zip"
         done
       env:
         AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
