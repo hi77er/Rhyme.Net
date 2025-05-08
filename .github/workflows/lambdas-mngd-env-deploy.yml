@@ -96,11 +96,13 @@ jobs:
           # Zip function
           zip -r "$short_name.zip" "$project_dir/publish"
           echo "Lambda zipped - $short_name.zip"
+          echo "Zip content:"
+          unzip -l "$project_dir/lambda_package.zip"
 
           # Deploy to AWS Lambda
           function_name="${short_name}-${{ vars.ENV }}"
           aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$short_name.zip"
-          echo "Lambda updated."
+          echo "Lambda updated - $function_name"
 
           # Cleanup
           rm "$short_name.zip"
