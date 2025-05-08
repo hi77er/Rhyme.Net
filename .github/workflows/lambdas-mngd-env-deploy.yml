@@ -90,10 +90,11 @@ jobs:
           cd "$project_dir/publish"
 
           echo "Zipping - $short_name.zip"
-          zip -r "$short_name.zip" ./*
+          zip -r "../$short_name.zip" ./*
           echo "Lambda zipped - $short_name.zip"
 
           function_name="${short_name}-${{ vars.ENV }}"
+          cd ..
 
           # Deploy to AWS Lambda
           echo "Updating lambda - $short_name.zip"
