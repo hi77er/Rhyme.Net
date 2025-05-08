@@ -98,7 +98,7 @@ jobs:
 
           # Deploy to AWS Lambda
           echo "Updating lambda - $short_name.zip"
-          aws lambda update-function-code --function-name "$function_name" --zip-file fileb://$short_name.zip"
+          aws lambda update-function-code --function-name "$function_name" --zip-file fileb://$short_name.zip
           echo "Lambda updated - $function_name"
 
           # Cleanup
