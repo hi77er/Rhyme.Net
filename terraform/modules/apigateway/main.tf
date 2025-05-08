@@ -43,7 +43,7 @@ resource "aws_api_gateway_method_response" "orders_cors_response" {
   for_each    = var.api_gateway_lambda_definitions
 
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  resource_id = aws_api_gateway_method.orders_method.id  # 👈 Explicit dependency
+  resource_id = aws_api_gateway_method.orders_method[each.key].id  # 👈 Explicit dependency
 
   http_method = each.value.http_method
   status_code = "200"
@@ -59,7 +59,7 @@ resource "aws_api_gateway_integration" "orders_integration" {
   for_each    = var.api_gateway_lambda_definitions
 
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  resource_id = aws_api_gateway_method.orders_method.id
+  resource_id = aws_api_gateway_method.orders_method[each.key].id
   http_method = aws_api_gateway_method.orders_method[each.key].http_method
   integration_http_method = each.value.http_method
   type        = "AWS_PROXY"
@@ -68,5 +68,5 @@ resource "aws_api_gateway_integration" "orders_integration" {
 
 resource "aws_api_gateway_deployment" "orders_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  depends_on = [aws_api_gateway_integration.orders_integration]
+  depends_on = [aws_api_gateway_integration.orders_integration] 
 }
