@@ -16,7 +16,8 @@ public class Function
     /// <returns></returns>
     public string FunctionHandler(string input, ILambdaContext context)
     {
-        Console.WriteLine($"Input: 35");
+        Console.WriteLine($"Lambda v36");
+        Console.WriteLine($"Input: {input}");
         return input.ToUpper();
     }
 }
