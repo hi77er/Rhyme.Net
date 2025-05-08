@@ -88,7 +88,7 @@ jobs:
           dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained
           
           cd "$project_dir/publish"
-          
+
           echo "Zipping - $short_name.zip"
           zip -r "../$short_name.zip" .
           echo "Lambda zipped - $short_name.zip"
@@ -96,7 +96,8 @@ jobs:
           # Deploy to AWS Lambda
           function_name="${short_name}-${{ vars.ENV }}"
           echo "Updating lambda - $short_name.zip"
-          aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$short_name.zip"
+          aws lambda update-function-code --function-name "$function_name" --zip-file fileb://"$project_dir/$short_name.zip"
+
           echo "Lambda updated - $function_name"
 
           # Cleanup
