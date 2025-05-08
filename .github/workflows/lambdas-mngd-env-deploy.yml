@@ -88,7 +88,7 @@ jobs:
           dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained
           
           echo "Publish content - $project_dir/publish:"
-          -l $project_dir/publish
+          ls -l $project_dir/publish
 
           # Zip function
           zip -r "$short_name.zip" "$project_dir/publish"
