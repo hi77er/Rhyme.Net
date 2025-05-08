@@ -19,10 +19,10 @@ variable "environment" {
   default     = "development"
 }
 
-variable "ecr_net_lambdas_repo_prefix" {
-  description = "Name of the ECR repository used to deploy .Net lambda containers to"
-  default     = "dotnet8-lambda-repo"
-}
+# variable "ecr_net_lambdas_repo_prefix" {
+#   description = "Name of the ECR repository used to deploy .Net lambda containers to"
+#   default     = "dotnet8-lambda-repo"
+# }
 
 variable "api_gateway_lambda_definitions" {
   default = {
