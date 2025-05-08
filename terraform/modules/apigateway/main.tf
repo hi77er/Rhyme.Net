@@ -68,5 +68,5 @@ resource "aws_api_gateway_integration" "orders_integration" {
 
 resource "aws_api_gateway_deployment" "orders_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  depends_on = [aws_api_gateway_integration.orders_integration] 
+  depends_on = [aws_api_gateway_integration.orders_integration]
 }
