@@ -90,7 +90,7 @@ jobs:
           cd "$project_dir"
 
           echo "Zipping - $short_name.zip"
-          zip -r "$short_name.zip" "publish/"
+          zip -r "$project_dir/$short_name.zip" "$project_dir/publish"
           echo "Lambda zipped - $short_name.zip"
 
           function_name="${short_name}-${{ vars.ENV }}"
