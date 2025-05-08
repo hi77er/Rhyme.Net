@@ -85,7 +85,13 @@ jobs:
           echo "Processing short name: $short_name in directory $project_dir"
 
           # Build and publish
-          dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained 
+          dotnet publish "$project_dir" -c Release -o "$project_dir/publish" -r linux-x64 --self-contained
+          
+          if find "$project_dir/publish" -name "*.deps.json"; then
+              echo "✅ .deps.json file exists in $project_dir/publish"
+          else
+              echo "❌ .deps.json file is missing! Check your build settings."
+          fi
 
           # Zip function
           zip -r "$short_name.zip" "$project_dir/publish"
