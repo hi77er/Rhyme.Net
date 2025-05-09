@@ -3,6 +3,7 @@ resource "aws_api_gateway_rest_api" "orders_api" {
   description = "API Gateway for orders service"
 }
 
+
 resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
   policy = jsonencode({
@@ -25,6 +26,17 @@ resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
     ]
   })
 }
+
+resource "aws_lambda_permission" "api_gateway_invoke" {
+  for_each      = var.api_gateway_lambda_definitions
+
+  function_name = each.lambda_name
+  statement_id  = "AllowExecutionFromAPIGateway-${each.key}"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.orders_api.execution_arn}/*/*"
+}
+
 
 resource "aws_api_gateway_resource" "orders" {
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
