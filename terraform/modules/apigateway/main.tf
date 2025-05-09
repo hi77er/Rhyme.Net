@@ -13,6 +13,14 @@ resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
         Principal = "*"
         Action    = "execute-api:Invoke"
         Resource  = "${aws_api_gateway_rest_api.orders_api.execution_arn}/*/*"
+      },
+      {
+        Effect    = "Allow"
+        Principal = {
+          "Service": "apigateway.amazonaws.com"
+        }
+        Action    = "lambda:InvokeFunction"
+        Resource  = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:*"
       }
     ]
   })
@@ -31,20 +39,20 @@ resource "aws_api_gateway_stage" "orders_api_stage" {
 }
 
 resource "aws_api_gateway_method" "orders_method" {
-  for_each      = var.api_gateway_lambda_definitions
-  resource_id   = aws_api_gateway_resource.orders.id
-  
+  for_each    = var.api_gateway_lambda_definitions
+  resource_id = aws_api_gateway_resource.orders.id
+
   rest_api_id   = aws_api_gateway_rest_api.orders_api.id
   http_method   = each.value.http_method
   authorization = "NONE"
 }
 
 resource "aws_api_gateway_method_response" "orders_cors_response" {
-  for_each    = var.api_gateway_lambda_definitions
+  for_each = var.api_gateway_lambda_definitions
 
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
   resource_id = aws_api_gateway_resource.orders.id
-  depends_on = [aws_api_gateway_method.orders_method]
+  depends_on  = [aws_api_gateway_method.orders_method]
 
   http_method = each.value.http_method
   status_code = "200"
@@ -57,18 +65,18 @@ resource "aws_api_gateway_method_response" "orders_cors_response" {
 }
 
 resource "aws_api_gateway_integration" "orders_integration" {
-  for_each    = var.api_gateway_lambda_definitions
+  for_each = var.api_gateway_lambda_definitions
 
-  rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  resource_id = aws_api_gateway_resource.orders.id
-  depends_on = [aws_api_gateway_method.orders_method]
-  http_method = aws_api_gateway_method.orders_method[each.key].http_method
+  rest_api_id             = aws_api_gateway_rest_api.orders_api.id
+  resource_id             = aws_api_gateway_resource.orders.id
+  depends_on              = [aws_api_gateway_method.orders_method]
+  http_method             = aws_api_gateway_method.orders_method[each.key].http_method
   integration_http_method = each.value.http_method
-  type        = "AWS_PROXY"
-  uri         = var.api_gateway_lambda_invoke_arns[each.key]
+  type                    = "AWS_PROXY"
+  uri                     = var.api_gateway_lambda_invoke_arns[each.key]
 }
 
 resource "aws_api_gateway_deployment" "orders_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  depends_on = [aws_api_gateway_integration.orders_integration] 
+  depends_on  = [aws_api_gateway_integration.orders_integration]
 }
