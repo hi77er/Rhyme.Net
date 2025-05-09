@@ -4,6 +4,7 @@ resource "aws_api_gateway_rest_api" "orders_api" {
 }
 
 
+
 resource "aws_iam_role" "apigateway_logging_role" {
   name = "APIGatewayLoggingRole"
 
@@ -45,6 +46,11 @@ resource "aws_iam_role_policy_attachment" "attach_logging_policy" {
   role       = aws_iam_role.apigateway_logging_role.name
   policy_arn = aws_iam_policy.apigateway_logging_policy.arn
 }
+
+resource "aws_api_gateway_account" "gateway_account_settings" {
+  cloudwatch_role_arn = aws_iam_role.apigateway_logging_role.arn
+}
+
 
 
 resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
