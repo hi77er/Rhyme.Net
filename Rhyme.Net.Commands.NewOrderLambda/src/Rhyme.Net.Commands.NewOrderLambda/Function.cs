@@ -6,7 +6,7 @@ using System.Text.Json;
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
 
-namespace Rhyme.Net.Commands.NewOrder;
+namespace Rhyme.Net.Commands.NewOrderLambda;
 
 public class Function
 {
