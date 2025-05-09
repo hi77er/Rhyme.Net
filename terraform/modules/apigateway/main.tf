@@ -85,6 +85,7 @@ resource "aws_api_gateway_resource" "orders" {
 }
 
 resource "aws_api_gateway_stage" "orders_api_stage" {
+  depends_on = [aws_cloudwatch_log_group.api_gateway_logs]
   rest_api_id   = aws_api_gateway_rest_api.orders_api.id
   deployment_id = aws_api_gateway_deployment.orders_api_deployment.id
   stage_name    = var.env
