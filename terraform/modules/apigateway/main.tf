@@ -32,13 +32,6 @@ resource "aws_api_gateway_resource" "orders" {
   path_part   = "orders"
 }
 
-resource "aws_api_gateway_stage" "orders_api_stage" {
-  depends_on    = [aws_api_gateway_deployment.orders_api_deployment]
-  rest_api_id   = aws_api_gateway_rest_api.orders_api.id
-  deployment_id = aws_api_gateway_deployment.orders_api_deployment.id
-  stage_name    = var.env
-}
-
 resource "aws_api_gateway_method" "orders_method" {
   for_each    = var.api_gateway_lambda_definitions
   resource_id = aws_api_gateway_resource.orders.id
@@ -79,5 +72,24 @@ resource "aws_api_gateway_integration" "orders_integration" {
 
 resource "aws_api_gateway_deployment" "orders_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  depends_on  = [aws_api_gateway_integration.orders_integration]
+
+  triggers = {
+    redeploy = sha1(jsonencode(aws_api_gateway_rest_api.orders_api.body))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+  
+  depends_on = [
+    aws_api_gateway_method.orders_method,
+    aws_api_gateway_integration.orders_integration
+  ]
+}
+
+resource "aws_api_gateway_stage" "orders_api_stage" {
+  rest_api_id   = aws_api_gateway_rest_api.orders_api.id
+  deployment_id = aws_api_gateway_deployment.orders_api_deployment.id
+  stage_name    = var.env
+  depends_on    = [aws_api_gateway_deployment.orders_api_deployment]
 }
