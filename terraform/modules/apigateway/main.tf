@@ -30,7 +30,7 @@ resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
 resource "aws_lambda_permission" "api_gateway_invoke" {
   for_each      = var.api_gateway_lambda_definitions
 
-  function_name = each.lambda_name
+  function_name = each.value.lambda_name
   statement_id  = "AllowExecutionFromAPIGateway-${each.key}"
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
