@@ -6,7 +6,7 @@ resource "aws_api_gateway_rest_api" "orders_api" {
 resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Effect    = "Allow"
@@ -15,16 +15,48 @@ resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
         Resource  = "${aws_api_gateway_rest_api.orders_api.execution_arn}/*/*"
       },
       {
-        Effect    = "Allow"
+        Effect = "Allow"
         Principal = {
-          "Service": "apigateway.amazonaws.com"
+          "Service" : "apigateway.amazonaws.com"
         }
-        Action    = "lambda:InvokeFunction"
-        Resource  = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:*"
+        Action   = "lambda:InvokeFunction"
+        Resource = "arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:*"
       }
     ]
   })
 }
+
+
+resource "aws_iam_role" "apigateway_logging_role" {
+  name = "ApiGatewayLoggingRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "apigateway.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "apigateway_logging_attach" {
+  role       = aws_iam_role.apigateway_logging_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSApiGatewayPushToCloudWatchLogs"
+}
+
+resource "aws_api_gateway_account" "apigateway_account" {
+  cloudwatch_role_arn = aws_iam_role.apigateway_logging_role.arn
+}
+
+resource "aws_cloudwatch_log_group" "apigateway_logs" {
+  name = "/aws/apigateway/orders_api"
+}
+
 
 resource "aws_api_gateway_resource" "orders" {
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
@@ -36,6 +68,11 @@ resource "aws_api_gateway_stage" "orders_api_stage" {
   rest_api_id   = aws_api_gateway_rest_api.orders_api.id
   deployment_id = aws_api_gateway_deployment.orders_api_deployment.id
   stage_name    = var.env
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.apigateway_logs.arn
+    format          = jsonencode("$context.requestId $context.identity.sourceIp $context.httpMethod $context.resourcePath $context.status $context.responseLength $context.error.message")
+  }
 }
 
 resource "aws_api_gateway_method" "orders_method" {
