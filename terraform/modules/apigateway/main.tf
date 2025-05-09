@@ -34,6 +34,8 @@ resource "aws_iam_policy" "apigateway_logging_policy" {
         Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams",
           "logs:PutLogEvents"
         ]
         Resource = "*"
