@@ -118,11 +118,11 @@ resource "aws_api_gateway_integration" "options_integration" {
   type                    = "MOCK"
 
   request_templates = {
-  "application/json" = <<EOF
+    "application/json" = jsonencode(
       {
-        "statusCode": 200
+        statusCode = 200
       }
-    EOF
+    )
   }
 }
 
