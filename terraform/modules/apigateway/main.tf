@@ -44,6 +44,39 @@ resource "aws_api_gateway_resource" "orders" {
   path_part   = "orders"
 }
 
+resource "aws_api_gateway_method" "options_method" {
+  rest_api_id   = aws_api_gateway_rest_api.example.id
+  resource_id   = aws_api_gateway_resource.orders.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_method_response" "options_response" {
+  rest_api_id = aws_api_gateway_rest_api.example.id
+  resource_id = aws_api_gateway_resource.orders.id
+  http_method = "OPTIONS"
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
+  }
+}
+
+resource "aws_api_gateway_integration_response" "options_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.example.id
+  resource_id = aws_api_gateway_resource.orders.id
+  http_method = "OPTIONS"
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST, PUT,DELETE'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type'"
+  }
+}
+
 resource "aws_api_gateway_method" "orders_method" {
   for_each    = var.api_gateway_lambda_definitions
   resource_id = aws_api_gateway_resource.orders.id
@@ -70,7 +103,19 @@ resource "aws_api_gateway_method_response" "orders_cors_response" {
   }
 }
 
-resource "aws_api_gateway_integration_response" "get_integration_response" {
+resource "aws_api_gateway_integration" "orders_integration" {
+  for_each = var.api_gateway_lambda_definitions
+
+  rest_api_id             = aws_api_gateway_rest_api.orders_api.id
+  resource_id             = aws_api_gateway_resource.orders.id
+  depends_on              = [aws_api_gateway_method.orders_method]
+  http_method             = aws_api_gateway_method.orders_method[each.key].http_method
+  integration_http_method = each.value.http_method
+  type                    = "AWS_PROXY"
+  uri                     = var.api_gateway_lambda_invoke_arns[each.key]
+}
+
+resource "aws_api_gateway_integration_response" "integration_cors_response" {
   for_each = var.api_gateway_lambda_definitions
 
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
@@ -88,18 +133,6 @@ resource "aws_api_gateway_integration_response" "get_integration_response" {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type'"
     "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST,PUT,DELETE'"
   }
-}
-
-resource "aws_api_gateway_integration" "orders_integration" {
-  for_each = var.api_gateway_lambda_definitions
-
-  rest_api_id             = aws_api_gateway_rest_api.orders_api.id
-  resource_id             = aws_api_gateway_resource.orders.id
-  depends_on              = [aws_api_gateway_method.orders_method]
-  http_method             = aws_api_gateway_method.orders_method[each.key].http_method
-  integration_http_method = each.value.http_method
-  type                    = "AWS_PROXY"
-  uri                     = var.api_gateway_lambda_invoke_arns[each.key]
 }
 
 resource "aws_api_gateway_deployment" "orders_api_deployment" {
