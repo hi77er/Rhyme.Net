@@ -52,12 +52,10 @@ resource "aws_iam_policy_attachment" "api_gw_logs_attachment" {
   name       = "APIGatewayLogsPolicyAttachment"
   policy_arn = aws_iam_policy.apigateway_logging_policy.arn
   roles      = [aws_iam_role.apigateway_logging_role.name]
-
 }
 
 resource "aws_api_gateway_account" "gateway_account_settings" {
   cloudwatch_role_arn = aws_iam_role.apigateway_logging_role.arn
-  depends_on          = [aws_iam_policy_attachment.api_gw_logs_attachment]
 }
 
 resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
