@@ -36,7 +36,8 @@ resource "aws_iam_policy" "apigateway_logging_policy" {
       {
         Effect = "Allow"
         Action = [
-          "logs:*"
+          "logs:*",
+          "xray:*",
         ]
         Resource = "*"
       }
