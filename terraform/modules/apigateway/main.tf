@@ -5,7 +5,7 @@ resource "aws_api_gateway_rest_api" "orders_api" {
 
 resource "aws_cloudwatch_log_group" "api_gw_logs" {
   name              = "/aws/api-gateway/orders-api"
-  retention_in_days = 2
+  retention_in_days = 1
 }
 
 resource "aws_iam_role" "apigateway_logging_role" {
@@ -51,7 +51,7 @@ resource "aws_iam_role" "apigateway_logging_role" {
 resource "aws_iam_policy_attachment" "api_gw_logs_attachment" {
   name       = "APIGatewayLogsPolicyAttachment"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSApiGatewayPushToCloudWatchLogs"
-  roles      = [aws_iam_role.api_gw_logging_role.name]
+  roles      = [aws_iam_role.apigateway_logging_role.name]
 }
 
 # resource "aws_iam_role_policy_attachment" "attach_logging_policy" {
