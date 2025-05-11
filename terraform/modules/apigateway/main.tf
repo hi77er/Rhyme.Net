@@ -23,6 +23,7 @@ resource "aws_iam_role" "apigateway_logging_role" {
 resource "aws_iam_policy" "apigateway_logging_policy" {
   name        = "APIGatewayLoggingPolicy"
   description = "Policy to allow API Gateway logging to CloudWatch"
+  depends_on = [ aws_iam_role.apigateway_logging_role ]
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -36,7 +37,7 @@ resource "aws_iam_policy" "apigateway_logging_policy" {
           "logs:DescribeLogStreams",
           "logs:PutLogEvents"
         ]
-        Resource = "arn:aws:logs:${var.aws_region}:${var.aws_account_id}:log-group:/aws/apigateway/orders-api"
+        Resource = "arn:aws:logs:${var.aws_region}:${var.aws_account_id}:log-group:/aws/apigateway/orders-api:*"
       }
     ]
   })
@@ -45,6 +46,7 @@ resource "aws_iam_policy" "apigateway_logging_policy" {
 resource "aws_iam_role_policy_attachment" "attach_logging_policy" {
   role       = aws_iam_role.apigateway_logging_role.name
   policy_arn = aws_iam_policy.apigateway_logging_policy.arn
+  depends_on = [aws_iam_policy.apigateway_logging_policy]
 }
 
 resource "aws_api_gateway_account" "gateway_account_settings" {
