@@ -36,7 +36,7 @@ resource "aws_iam_policy" "apigateway_logging_policy" {
           "logs:DescribeLogStreams",
           "logs:PutLogEvents"
         ]
-        Resource = "arn:aws:logs:${var.aws_region}:${var.aws_account_id}:log-group:/aws/apigateway/orders-api:*"
+        Resource = "arn:aws:logs:${var.aws_region}:${var.aws_account_id}:log-group:/aws/apigateway/orders-api"
       }
     ]
   })
