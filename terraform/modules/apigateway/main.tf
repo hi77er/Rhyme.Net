@@ -102,6 +102,7 @@ resource "aws_api_gateway_method_response" "options_response" {
   resource_id = aws_api_gateway_resource.orders.id
   http_method = "OPTIONS"
   status_code = "200"
+  depends_on = [aws_api_gateway_method.options_method]
 
   response_parameters = {
     "method.response.header.Access-Control-Allow-Origin"  = true
@@ -129,6 +130,7 @@ resource "aws_api_gateway_integration" "options_integration" {
 resource "aws_api_gateway_integration_response" "options_integration_response" {
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
   resource_id = aws_api_gateway_resource.orders.id
+  depends_on = [aws_api_gateway_integration.options_integration]
   http_method = "OPTIONS"
   status_code = "200"
 
