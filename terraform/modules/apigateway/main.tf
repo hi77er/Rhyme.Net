@@ -25,11 +25,6 @@ resource "aws_iam_role" "apigateway_logging_role" {
   })
 }
 
-resource "aws_cloudwatch_log_group" "api_gw_logs" {
-  name              = "/aws/api-gateway/orders-api"
-  retention_in_days = 2
-}
-
 # resource "aws_iam_policy" "apigateway_logging_policy" {
 #   name        = "APIGatewayLoggingPolicy"
 #   description = "Policy to allow API Gateway logging to CloudWatch"
