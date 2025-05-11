@@ -117,6 +117,7 @@ resource "aws_api_gateway_integration" "options_integration" {
   http_method             = "OPTIONS"
   integration_http_method = "OPTIONS"
   type                    = "MOCK"
+  depends_on              = [aws_api_gateway_method.options_method]
 
   request_templates = {
     "application/json" = jsonencode(
