@@ -17,7 +17,7 @@ resource "aws_iam_role" "apigateway_logging_role" {
       {
         Effect = "Allow"
         Principal = {
-          Service = "apigateway.amazonaws.com"
+          Service = ["apigateway.amazonaws.com", "lambda.amazonaws.com"]
         }
         Action = "sts:AssumeRole"
       }
@@ -28,7 +28,7 @@ resource "aws_iam_role" "apigateway_logging_role" {
 resource "aws_iam_policy" "apigateway_logging_policy" {
   name        = "APIGatewayLoggingPolicy"
   description = "Policy to allow API Gateway logging to CloudWatch"
-  depends_on = [ aws_iam_role.apigateway_logging_role ]
+  depends_on  = [aws_iam_role.apigateway_logging_role]
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -36,13 +36,9 @@ resource "aws_iam_policy" "apigateway_logging_policy" {
       {
         Effect = "Allow"
         Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:DescribeLogGroups",
-          "logs:DescribeLogStreams",
-          "logs:PutLogEvents"
+          "logs:*"
         ]
-        Resource = "arn:aws:logs:*:*:log-group:/aws/api-gateway/*"
+        Resource = "*"
       }
     ]
   })
