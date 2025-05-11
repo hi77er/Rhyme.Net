@@ -3,6 +3,11 @@ resource "aws_api_gateway_rest_api" "orders_api" {
   description = "API Gateway for orders service"
 }
 
+resource "aws_cloudwatch_log_group" "api_gw_logs" {
+  name              = "/aws/api-gateway/orders-api"
+  retention_in_days = 2
+}
+
 resource "aws_iam_role" "apigateway_logging_role" {
   name = "APIGatewayLoggingRole"
 
@@ -20,38 +25,49 @@ resource "aws_iam_role" "apigateway_logging_role" {
   })
 }
 
-resource "aws_iam_policy" "apigateway_logging_policy" {
-  name        = "APIGatewayLoggingPolicy"
-  description = "Policy to allow API Gateway logging to CloudWatch"
-  depends_on = [ aws_iam_role.apigateway_logging_role ]
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:DescribeLogGroups",
-          "logs:DescribeLogStreams",
-          "logs:PutLogEvents"
-        ]
-        Resource = "arn:aws:logs:${var.aws_region}:${var.aws_account_id}:log-group:/aws/apigateway/orders-api:*"
-      }
-    ]
-  })
+resource "aws_cloudwatch_log_group" "api_gw_logs" {
+  name              = "/aws/api-gateway/orders-api"
+  retention_in_days = 2
 }
 
-resource "aws_iam_role_policy_attachment" "attach_logging_policy" {
-  role       = aws_iam_role.apigateway_logging_role.name
-  policy_arn = aws_iam_policy.apigateway_logging_policy.arn
-  depends_on = [aws_iam_policy.apigateway_logging_policy]
+# resource "aws_iam_policy" "apigateway_logging_policy" {
+#   name        = "APIGatewayLoggingPolicy"
+#   description = "Policy to allow API Gateway logging to CloudWatch"
+#   depends_on = [ aws_iam_role.apigateway_logging_role ]
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "logs:CreateLogGroup",
+#           "logs:CreateLogStream",
+#           "logs:DescribeLogGroups",
+#           "logs:DescribeLogStreams",
+#           "logs:PutLogEvents"
+#         ]
+#         Resource = "arn:aws:logs:${var.aws_region}:${var.aws_account_id}:log-group:/aws/apigateway/orders-api:*"
+#       }
+#     ]
+#   })
+# }
+
+resource "aws_iam_policy_attachment" "api_gw_logs_attachment" {
+  name       = "APIGatewayLogsPolicyAttachment"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSApiGatewayPushToCloudWatchLogs"
+  roles      = [aws_iam_role.api_gw_logging_role.name]
 }
+
+# resource "aws_iam_role_policy_attachment" "attach_logging_policy" {
+#   role       = aws_iam_role.apigateway_logging_role.name
+#   policy_arn = aws_iam_policy.apigateway_logging_policy.arn
+#   depends_on = [aws_iam_policy.apigateway_logging_policy]
+# }
 
 resource "aws_api_gateway_account" "gateway_account_settings" {
   cloudwatch_role_arn = aws_iam_role.apigateway_logging_role.arn
-  depends_on          = [aws_iam_role_policy_attachment.attach_logging_policy]
+  depends_on          = [aws_iam_policy_attachment.api_gw_logs_attachment]
 }
 
 resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
@@ -225,4 +241,20 @@ resource "aws_api_gateway_stage" "orders_api_stage" {
   deployment_id = aws_api_gateway_deployment.orders_api_deployment.id
   stage_name    = var.env
   depends_on    = [aws_api_gateway_deployment.orders_api_deployment]
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gw_logs.arn
+    format = jsonencode({
+      requestId               = "$context.requestId",
+      ip                      = "$context.identity.sourceIp",
+      requestTime             = "$context.requestTime",
+      httpMethod              = "$context.httpMethod",
+      routeKey                = "$context.routeKey",
+      status                  = "$context.status",
+      responseLatency         = "$context.responseLatency"
+      integrationErrorMessage = "$context.integration.error",
+      errorMessage            = "$context.error.message",
+      errorType               = "$context.error.type"
+    })
+  }
 }
