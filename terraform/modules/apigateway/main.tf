@@ -3,57 +3,57 @@ resource "aws_api_gateway_rest_api" "orders_api" {
   description = "API Gateway for orders service"
 }
 
-resource "aws_cloudwatch_log_group" "api_gw_logs" {
-  name              = "/aws/api-gateway/orders-api"
-  retention_in_days = 1
-}
+# resource "aws_cloudwatch_log_group" "api_gw_logs" {
+#   name              = "/aws/api-gateway/orders-api"
+#   retention_in_days = 1
+# }
 
-resource "aws_iam_role" "apigateway_logging_role" {
-  name = "APIGatewayLoggingRole"
+# resource "aws_iam_role" "apigateway_logging_role" {
+#   name = "APIGatewayLoggingRole"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = ["apigateway.amazonaws.com", "lambda.amazonaws.com"]
-        }
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-}
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Principal = {
+#           Service = ["apigateway.amazonaws.com", "lambda.amazonaws.com"]
+#         }
+#         Action = "sts:AssumeRole"
+#       }
+#     ]
+#   })
+# }
 
-resource "aws_iam_policy" "apigateway_logging_policy" {
-  name        = "APIGatewayLoggingPolicy"
-  description = "Policy to allow API Gateway logging to CloudWatch"
-  depends_on  = [aws_iam_role.apigateway_logging_role]
+# resource "aws_iam_policy" "apigateway_logging_policy" {
+#   name        = "APIGatewayLoggingPolicy"
+#   description = "Policy to allow API Gateway logging to CloudWatch"
+#   depends_on  = [aws_iam_role.apigateway_logging_role]
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:*",
-          "xray:*",
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-}
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "logs:*",
+#           "xray:*",
+#         ]
+#         Resource = "*"
+#       }
+#     ]
+#   })
+# }
 
-resource "aws_iam_policy_attachment" "api_gw_logs_attachment" {
-  name       = "APIGatewayLogsPolicyAttachment"
-  policy_arn = aws_iam_policy.apigateway_logging_policy.arn
-  roles      = [aws_iam_role.apigateway_logging_role.name]
-}
+# resource "aws_iam_policy_attachment" "api_gw_logs_attachment" {
+#   name       = "APIGatewayLogsPolicyAttachment"
+#   policy_arn = aws_iam_policy.apigateway_logging_policy.arn
+#   roles      = [aws_iam_role.apigateway_logging_role.name]
+# }
 
-resource "aws_api_gateway_account" "gateway_account_settings" {
-  cloudwatch_role_arn = aws_iam_role.apigateway_logging_role.arn
-}
+# resource "aws_api_gateway_account" "gateway_account_settings" {
+#   cloudwatch_role_arn = aws_iam_role.apigateway_logging_role.arn
+# }
 
 resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
@@ -94,57 +94,57 @@ resource "aws_api_gateway_resource" "orders" {
   path_part   = "orders"
 }
 
-resource "aws_api_gateway_method" "options_method" {
-  rest_api_id   = aws_api_gateway_rest_api.orders_api.id
-  resource_id   = aws_api_gateway_resource.orders.id
-  http_method   = "OPTIONS"
-  authorization = "NONE"
-}
+# resource "aws_api_gateway_method" "options_method" {
+#   rest_api_id   = aws_api_gateway_rest_api.orders_api.id
+#   resource_id   = aws_api_gateway_resource.orders.id
+#   http_method   = "OPTIONS"
+#   authorization = "NONE"
+# }
 
-resource "aws_api_gateway_method_response" "options_response" {
-  rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  resource_id = aws_api_gateway_resource.orders.id
-  http_method = "OPTIONS"
-  status_code = "200"
-  depends_on  = [aws_api_gateway_method.options_method]
+# resource "aws_api_gateway_method_response" "options_response" {
+#   rest_api_id = aws_api_gateway_rest_api.orders_api.id
+#   resource_id = aws_api_gateway_resource.orders.id
+#   http_method = "OPTIONS"
+#   status_code = "200"
+#   depends_on  = [aws_api_gateway_method.options_method]
 
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = true
-    "method.response.header.Access-Control-Allow-Methods" = true
-    "method.response.header.Access-Control-Allow-Headers" = true
-  }
-}
+#   response_parameters = {
+#     "method.response.header.Access-Control-Allow-Origin"  = true
+#     "method.response.header.Access-Control-Allow-Methods" = true
+#     "method.response.header.Access-Control-Allow-Headers" = true
+#   }
+# }
 
-resource "aws_api_gateway_integration" "options_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.orders_api.id
-  resource_id             = aws_api_gateway_resource.orders.id
-  http_method             = "OPTIONS"
-  integration_http_method = "OPTIONS"
-  type                    = "MOCK"
-  depends_on              = [aws_api_gateway_method.options_method]
+# resource "aws_api_gateway_integration" "options_integration" {
+#   rest_api_id             = aws_api_gateway_rest_api.orders_api.id
+#   resource_id             = aws_api_gateway_resource.orders.id
+#   http_method             = "OPTIONS"
+#   integration_http_method = "OPTIONS"
+#   type                    = "MOCK"
+#   depends_on              = [aws_api_gateway_method.options_method]
 
-  request_templates = {
-    "application/json" = jsonencode(
-      {
-        statusCode = 200
-      }
-    )
-  }
-}
+#   request_templates = {
+#     "application/json" = jsonencode(
+#       {
+#         statusCode = 200
+#       }
+#     )
+#   }
+# }
 
-resource "aws_api_gateway_integration_response" "options_integration_response" {
-  rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  resource_id = aws_api_gateway_resource.orders.id
-  depends_on  = [aws_api_gateway_integration.options_integration]
-  http_method = "OPTIONS"
-  status_code = "200"
+# resource "aws_api_gateway_integration_response" "options_integration_response" {
+#   rest_api_id = aws_api_gateway_rest_api.orders_api.id
+#   resource_id = aws_api_gateway_resource.orders.id
+#   depends_on  = [aws_api_gateway_integration.options_integration]
+#   http_method = "OPTIONS"
+#   status_code = "200"
 
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
-    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST, PUT,DELETE'"
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type'"
-  }
-}
+#   response_parameters = {
+#     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+#     "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST,PUT,DELETE'"
+#     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type'"
+#   }
+# }
 
 resource "aws_api_gateway_method" "orders_method" {
   for_each    = var.api_gateway_lambda_definitions
@@ -227,31 +227,31 @@ resource "aws_api_gateway_stage" "orders_api_stage" {
   stage_name    = var.env
   depends_on    = [aws_api_gateway_deployment.orders_api_deployment]
 
-  access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.api_gw_logs.arn
-    format = jsonencode({
-      requestId               = "$context.requestId",
-      ip                      = "$context.identity.sourceIp",
-      requestTime             = "$context.requestTime",
-      httpMethod              = "$context.httpMethod",
-      routeKey                = "$context.routeKey",
-      status                  = "$context.status",
-      responseLatency         = "$context.responseLatency",
-      protocol                = "$context.protocol",
-      responseLength          = "$context.responseLength",
-      requestBody             = "$context.requestBody",
-      userAgent               = "$context.identity.userAgent",
-      caller                  = "$context.identity.caller",
-      user                    = "$context.identity.user",
-      cognitoIdentity         = "$context.identity.cognitoIdentityId",
-      apiId                   = "$context.apiId",
-      resourcePath            = "$context.resourcePath",
-      authorizer              = "$context.authorizer.claims",
-      integrationStatus       = "$context.integration.status",
-      integrationLatency      = "$context.integration.latency",
-      integrationErrorMessage = "$context.integration.error",
-      errorMessage            = "$context.error.message",
-      errorType               = "$context.error.type"
-    })
-  }
+  # access_log_settings {
+  #   destination_arn = aws_cloudwatch_log_group.api_gw_logs.arn
+  #   format = jsonencode({
+  #     requestId               = "$context.requestId",
+  #     ip                      = "$context.identity.sourceIp",
+  #     requestTime             = "$context.requestTime",
+  #     httpMethod              = "$context.httpMethod",
+  #     routeKey                = "$context.routeKey",
+  #     status                  = "$context.status",
+  #     responseLatency         = "$context.responseLatency",
+  #     protocol                = "$context.protocol",
+  #     responseLength          = "$context.responseLength",
+  #     requestBody             = "$context.requestBody",
+  #     userAgent               = "$context.identity.userAgent",
+  #     caller                  = "$context.identity.caller",
+  #     user                    = "$context.identity.user",
+  #     cognitoIdentity         = "$context.identity.cognitoIdentityId",
+  #     apiId                   = "$context.apiId",
+  #     resourcePath            = "$context.resourcePath",
+  #     authorizer              = "$context.authorizer.claims",
+  #     integrationStatus       = "$context.integration.status",
+  #     integrationLatency      = "$context.integration.latency",
+  #     integrationErrorMessage = "$context.integration.error",
+  #     errorMessage            = "$context.error.message",
+  #     errorType               = "$context.error.type"
+  #   })
+  # }
 }
