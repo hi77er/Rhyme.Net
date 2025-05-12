@@ -94,6 +94,20 @@ resource "aws_api_gateway_resource" "orders" {
   path_part   = "orders"
 }
 
+resource "aws_api_gateway_resource" "orders_by_id" {
+  rest_api_id = aws_api_gateway_rest_api.orders_api.id
+  parent_id   = aws_api_gateway_resource.orders.id
+  path_part   = "{id}"
+}
+
+variable "resource_map" {
+  type = map(string)
+  default = {
+    "orders"  = aws_api_gateway_resource.orders.id
+    "orders/{id}"  = aws_api_gateway_resource.orders_by_id.id
+  }
+}
+
 # resource "aws_api_gateway_method" "options_method" {
 #   rest_api_id   = aws_api_gateway_rest_api.orders_api.id
 #   resource_id   = aws_api_gateway_resource.orders.id
@@ -148,8 +162,9 @@ resource "aws_api_gateway_resource" "orders" {
 
 resource "aws_api_gateway_method" "orders_method" {
   for_each    = var.api_gateway_lambda_definitions
-  resource_id = aws_api_gateway_resource.orders.id
-
+  # resource_id = aws_api_gateway_resource.orders.id
+  resource_id = lookup(var.resource_map, each.value.resource_path, "INVALID_RESOURCE")
+  
   rest_api_id   = aws_api_gateway_rest_api.orders_api.id
   http_method   = each.value.http_method
   authorization = "NONE"
@@ -180,16 +195,8 @@ resource "aws_api_gateway_integration" "orders_integration" {
   depends_on              = [aws_api_gateway_method.orders_method]
   http_method             = aws_api_gateway_method.orders_method[each.key].http_method
   integration_http_method = each.value.http_method
-  type                    = "AWS"
+  type                    = "AWS_PROXY"
   uri                     = var.api_gateway_lambda_invoke_arns[each.key]
-  request_templates = {
-    "application/json" = jsonencode(
-      {
-        statusCode = 200
-        body       = "$input.body"
-      }
-    )
-  }
 }
 
 resource "aws_api_gateway_integration_response" "integration_cors_response" {

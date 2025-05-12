@@ -21,6 +21,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{80FB345B-821
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Queries.GetOrdersLambda", "Rhyme.Net.Queries.GetOrdersLambda\src\Rhyme.Net.Queries.GetOrdersLambda\Rhyme.Net.Queries.GetOrdersLambda.csproj", "{A0BCB060-C4AD-471A-A503-B23B92222516}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rhyme.Net.Queries.GetOrderLambda", "Rhyme.Net.Queries.GetOrderLambda", "{8F0F9E84-0648-59CF-DA1A-FD06F61F4319}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B75ECEA9-6141-FBAF-B6C8-DE1BD171DB96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Queries.GetOrderLambda", "Rhyme.Net.Queries.GetOrderLambda\src\Rhyme.Net.Queries.GetOrderLambda\Rhyme.Net.Queries.GetOrderLambda.csproj", "{4B7A1175-E974-4E75-B14A-0EAD2D652864}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rhyme.Net.Commands.SaveOrderLambda", "Rhyme.Net.Commands.SaveOrderLambda", "{73123CCC-306F-FB76-CD17-D0CEFAA59EA5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1CFCF90A-EA14-7E1F-AD25-6CEB8CB8D8B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Commands.SaveOrderLambda", "Rhyme.Net.Commands.SaveOrderLambda\src\Rhyme.Net.Commands.SaveOrderLambda\Rhyme.Net.Commands.SaveOrderLambda.csproj", "{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +127,30 @@ Global
 		{A0BCB060-C4AD-471A-A503-B23B92222516}.Release|x64.Build.0 = Release|Any CPU
 		{A0BCB060-C4AD-471A-A503-B23B92222516}.Release|x86.ActiveCfg = Release|Any CPU
 		{A0BCB060-C4AD-471A-A503-B23B92222516}.Release|x86.Build.0 = Release|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Debug|x64.Build.0 = Debug|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Debug|x86.Build.0 = Debug|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Release|x64.ActiveCfg = Release|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Release|x64.Build.0 = Release|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Release|x86.ActiveCfg = Release|Any CPU
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864}.Release|x86.Build.0 = Release|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Debug|x64.Build.0 = Debug|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Debug|x86.Build.0 = Debug|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Release|x64.ActiveCfg = Release|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Release|x64.Build.0 = Release|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Release|x86.ActiveCfg = Release|Any CPU
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,5 +158,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{80FB345B-8219-1F2F-EFF6-E65393CDE67F} = {8AEDC6A7-5B5F-2E5E-0FFE-A3D3DB15B7A8}
 		{A0BCB060-C4AD-471A-A503-B23B92222516} = {80FB345B-8219-1F2F-EFF6-E65393CDE67F}
+		{B75ECEA9-6141-FBAF-B6C8-DE1BD171DB96} = {8F0F9E84-0648-59CF-DA1A-FD06F61F4319}
+		{4B7A1175-E974-4E75-B14A-0EAD2D652864} = {B75ECEA9-6141-FBAF-B6C8-DE1BD171DB96}
+		{1CFCF90A-EA14-7E1F-AD25-6CEB8CB8D8B2} = {73123CCC-306F-FB76-CD17-D0CEFAA59EA5}
+		{D1E83FF7-16B0-4A16-8EFD-262260B7CD02} = {1CFCF90A-EA14-7E1F-AD25-6CEB8CB8D8B2}
 	EndGlobalSection
 EndGlobal
