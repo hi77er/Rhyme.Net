@@ -159,22 +159,22 @@ locals {
 #   }
 # }
 
-resource "aws_api_gateway_method" "orders_method" {
-  for_each    = var.api_gateway_lambda_definitions
+resource "aws_api_gateway_method" "generic_method" {
   # resource_id = aws_api_gateway_resource.orders.id
-  resource_id = lookup(local.resource_map, each.value.resource_path, "INVALID_RESOURCE")
-  
+  for_each      = var.api_gateway_lambda_definitions
+  resource_id   = lookup(local.resource_map, each.value.resource_path, "INVALID_RESOURCE")
   rest_api_id   = aws_api_gateway_rest_api.orders_api.id
   http_method   = each.value.http_method
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_method_response" "orders_cors_response" {
+resource "aws_api_gateway_method_response" "generic_method_cors_response" {
   for_each = var.api_gateway_lambda_definitions
 
+  # resource_id = aws_api_gateway_resource.orders.id
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  resource_id = aws_api_gateway_resource.orders.id
-  depends_on  = [aws_api_gateway_method.orders_method]
+  resource_id = lookup(local.resource_map, each.value.resource_path, "INVALID_RESOURCE")
+  depends_on  = [aws_api_gateway_method.generic_method]
 
   http_method = each.value.http_method
   status_code = "200"
@@ -186,26 +186,26 @@ resource "aws_api_gateway_method_response" "orders_cors_response" {
   }
 }
 
-resource "aws_api_gateway_integration" "orders_integration" {
-  for_each = var.api_gateway_lambda_definitions
-
+resource "aws_api_gateway_integration" "generic_resource_integration" {
+  # resource_id             = aws_api_gateway_resource.orders.id
+  for_each                = var.api_gateway_lambda_definitions
   rest_api_id             = aws_api_gateway_rest_api.orders_api.id
-  resource_id             = aws_api_gateway_resource.orders.id
-  depends_on              = [aws_api_gateway_method.orders_method]
-  http_method             = aws_api_gateway_method.orders_method[each.key].http_method
+  resource_id             = lookup(local.resource_map, each.value.resource_path, "INVALID_RESOURCE")
+  depends_on              = [aws_api_gateway_method.generic_method]
+  http_method             = aws_api_gateway_method.generic_method[each.key].http_method
   integration_http_method = each.value.http_method
   type                    = "AWS_PROXY"
   uri                     = var.api_gateway_lambda_invoke_arns[each.key]
 }
 
 resource "aws_api_gateway_integration_response" "integration_cors_response" {
-  for_each = var.api_gateway_lambda_definitions
-
+  # resource_id = aws_api_gateway_resource.orders.id
+  for_each    = var.api_gateway_lambda_definitions
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  resource_id = aws_api_gateway_resource.orders.id
+  resource_id = lookup(local.resource_map, each.value.resource_path, "INVALID_RESOURCE")
   depends_on = [
-    aws_api_gateway_method.orders_method,
-    aws_api_gateway_integration.orders_integration
+    aws_api_gateway_method.generic_method,
+    aws_api_gateway_integration.generic_resource_integration
   ]
 
   http_method = each.value.http_method
@@ -230,8 +230,8 @@ resource "aws_api_gateway_deployment" "orders_api_deployment" {
   }
 
   depends_on = [
-    aws_api_gateway_method.orders_method,
-    aws_api_gateway_integration.orders_integration
+    aws_api_gateway_method.generic_method,
+    aws_api_gateway_integration.generic_resource_integration
   ]
 }
 
