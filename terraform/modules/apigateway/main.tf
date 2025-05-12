@@ -162,7 +162,7 @@ locals {
 resource "aws_api_gateway_method" "orders_method" {
   for_each    = var.api_gateway_lambda_definitions
   # resource_id = aws_api_gateway_resource.orders.id
-  resource_id = lookup(var.resource_map, each.value.resource_path, "INVALID_RESOURCE")
+  resource_id = lookup(local.resource_map, each.value.resource_path, "INVALID_RESOURCE")
   
   rest_api_id   = aws_api_gateway_rest_api.orders_api.id
   http_method   = each.value.http_method
