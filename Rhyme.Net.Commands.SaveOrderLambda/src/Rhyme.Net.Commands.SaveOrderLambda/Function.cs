@@ -19,17 +19,19 @@ public class Function
     /// <returns></returns>
     public APIGatewayHttpApiV2ProxyResponse FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
     {
-        Console.WriteLine($"Lambda v47");
+        Console.WriteLine($"Lambda v48");
 
         context.Logger.LogLine($"Received request: {JsonSerializer.Serialize(request)}");
 
         // Read request body
-        string requestBody = request.Body ?? "No Body Provided";
+        string paramKey = request.PathParameters.FirstOrDefault().Key ?? "No param provided";
+        string paramValue = request.PathParameters.FirstOrDefault().Value ?? "No param provided";
+        string body = request.Body ?? "No Body Provided";
 
         return new APIGatewayHttpApiV2ProxyResponse
         {
             StatusCode = 200,
-            Body = JsonSerializer.Serialize(new { message = $"Order ID: test", body = requestBody }),
+            Body = JsonSerializer.Serialize(new { message = $"Save Order Test!", body, paramKey, paramValue }),
             Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
         };
     }
