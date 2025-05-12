@@ -182,6 +182,14 @@ resource "aws_api_gateway_integration" "orders_integration" {
   integration_http_method = each.value.http_method
   type                    = "AWS"
   uri                     = var.api_gateway_lambda_invoke_arns[each.key]
+  request_templates = {
+    "application/json" = jsonencode(
+      {
+        statusCode = 200
+        body       = "$input.body"
+      }
+    )
+  }
 }
 
 resource "aws_api_gateway_integration_response" "integration_cors_response" {
