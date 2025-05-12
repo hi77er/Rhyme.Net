@@ -180,6 +180,7 @@ resource "aws_api_gateway_method_response" "generic_method_cors_response" {
   status_code = "200"
 
   response_parameters = {
+    "method.response.header.Content-Type" = true
     "method.response.header.Access-Control-Allow-Origin"  = true
     "method.response.header.Access-Control-Allow-Methods" = true
     "method.response.header.Access-Control-Allow-Headers" = true
