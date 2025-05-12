@@ -100,11 +100,10 @@ resource "aws_api_gateway_resource" "orders_by_id" {
   path_part   = "{id}"
 }
 
-variable "resource_map" {
-  type = map(string)
-  default = {
-    "orders"  = aws_api_gateway_resource.orders.id
-    "orders/{id}"  = aws_api_gateway_resource.orders_by_id.id
+locals {
+  resource_map = {
+    "orders"      = aws_api_gateway_resource.orders.id
+    "orders/{id}" = aws_api_gateway_resource.orders_by_id.id
   }
 }
 
