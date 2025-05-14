@@ -27,11 +27,11 @@ variable "environment" {
 variable "api_gateway_lambda_definitions" {
   default = {
     "GetOrderLambda-dev" = {
-      lambda_name = "GetOrderLambda-dev"
-      memory_size = 128
-      timeout     = 60
-      handler     = "Rhyme.Net.Queries.GetOrderLambda::Rhyme.Net.Queries.GetOrderLambda.Function::FunctionHandler"
-      runtime     = "dotnet8"
+      lambda_name   = "GetOrderLambda-dev"
+      memory_size   = 128
+      timeout       = 60
+      handler       = "Rhyme.Net.Queries.GetOrderLambda::Rhyme.Net.Queries.GetOrderLambda.Function::FunctionHandler"
+      runtime       = "dotnet8"
       http_method   = "GET"
       resource_path = "orders/{id}"
     }
@@ -40,17 +40,17 @@ variable "api_gateway_lambda_definitions" {
       memory_size = 128
       timeout     = 60
       # filename    = "../Rhyme.Net.Queries.GetOrdersLambda/src/Rhyme.Net.Queries.GetOrdersLambda/publish/GetOrdersLambda.zip"
-      handler     = "Rhyme.Net.Queries.GetOrdersLambda::Rhyme.Net.Queries.GetOrdersLambda.Function::FunctionHandler"
-      runtime     = "dotnet8"
+      handler       = "Rhyme.Net.Queries.GetOrdersLambda::Rhyme.Net.Queries.GetOrdersLambda.Function::FunctionHandler"
+      runtime       = "dotnet8"
       http_method   = "GET"
       resource_path = "orders"
     }
     "NewOrderLambda-dev" = {
-      lambda_name = "NewOrderLambda-dev"
-      memory_size = 128
-      timeout     = 60
-      handler     = "Rhyme.Net.Commands.NewOrderLambda::Rhyme.Net.Commands.NewOrderLambda.Function::FunctionHandler"
-      runtime     = "dotnet8"
+      lambda_name   = "NewOrderLambda-dev"
+      memory_size   = 128
+      timeout       = 60
+      handler       = "Rhyme.Net.Commands.NewOrderLambda::Rhyme.Net.Commands.NewOrderLambda.Function::FunctionHandler"
+      runtime       = "dotnet8"
       http_method   = "POST"
       resource_path = "orders"
     }
@@ -61,6 +61,7 @@ variable "api_gateway_lambda_definitions" {
       timeout     = 60
       handler     = "Rhyme.Net.Commands.SaveOrderLambda::Rhyme.Net.Commands.SaveOrderLambda.Function::FunctionHandler"
       runtime     = "dotnet8"
+
       http_method   = "POST"
       resource_path = "orders/{id}"
     }
@@ -75,7 +76,8 @@ variable "dynamodb_lambda_definitions" {
       timeout     = 60
       handler     = "Rhyme.Net.Handlers.OrderEventsHandlerLambda::Rhyme.Net.Handlers.OrderEventsHandlerLambda.Function::FunctionHandler"
       runtime     = "dotnet8"
-      dynamodb_stream_arn = module.dynamodb.dynamodb_stream_arn
+
+      table_name = "events-dev"
     }
   }
 }

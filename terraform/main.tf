@@ -31,6 +31,7 @@ module "lambdas" {
   env                            = var.env
   api_gateway_lambda_definitions = var.api_gateway_lambda_definitions
   dynamodb_lambda_definitions    = var.dynamodb_lambda_definitions
+  dynamodb_tables                = module.dynamodb.dynamodb_tables
   # ecr_net_lambdas_repo_prefix     = var.ecr_net_lambdas_repo_prefix
 }
 

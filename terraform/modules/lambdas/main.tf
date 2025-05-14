@@ -83,9 +83,9 @@ resource "aws_lambda_function" "dynamodb_lambdas" {
   depends_on    = [module.dynamodb] # Ensures the DynamoDB resources exist before creating lambdas
 }
 
-resource "aws_lambda_event_source_mapping" "dynamodb_stream" {
+resource "aws_lambda_event_source_mapping" "dynamodb_stream_mapping" {
   for_each          = var.dynamodb_lambda_definitions
-  event_source_arn  = each.key.dynamodb_stream_arn
+  event_source_arn  = lookup({ for item in var.dynamodb_tables : item.key => item.value }, each.value.table_name, "")
   function_name     = each.key
   starting_position = "LATEST"
 }

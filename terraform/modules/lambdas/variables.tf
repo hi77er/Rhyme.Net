@@ -37,6 +37,13 @@ variable "dynamodb_lambda_definitions" {
     handler     = string # Add handler function
     runtime     = string # Add runtime (e.g., "dotnet8", "python")
 
-    dynamodb_stream_arn = string
+    table_name = string
+  }))
+}
+
+variable "dynamodb_tables" {
+  type = list(object({
+    key   = string
+    value = string
   }))
 }
