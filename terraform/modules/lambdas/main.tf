@@ -22,7 +22,6 @@ resource "aws_lambda_function" "apigateway_lambdas" {
   memory_size   = each.value.memory_size
   timeout       = each.value.timeout
   role          = aws_iam_role.apigateway_lambda_role.arn
-  depends_on    = [module.apigateway] # Ensures the ApiGateway resources exist before creating lambdas
 }
 
 resource "aws_iam_role" "apigateway_lambda_role" {
@@ -80,7 +79,6 @@ resource "aws_lambda_function" "dynamodb_lambdas" {
   role          = aws_iam_role.dynamodb_lambda_role.arn
   memory_size   = each.value.memory_size
   timeout       = each.value.timeout
-  depends_on    = [module.dynamodb] # Ensures the DynamoDB resources exist before creating lambdas
 }
 
 resource "aws_lambda_event_source_mapping" "dynamodb_stream_mapping" {
@@ -121,7 +119,7 @@ resource "aws_iam_policy" "dynamodb_lambda_policy" {
           "dynamodb:ListStreams"
         ],
         Effect : "Allow",
-        Resource : "${aws_dynamodb_table.events.stream_arn}"
+        Resource : "*"
       },
       {
         Action : [
