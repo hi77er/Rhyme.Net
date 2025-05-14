@@ -109,7 +109,7 @@ resource "aws_iam_policy" "dynamodb_lambda_policy" {
   name        = "lambda_dynamodb_access_policy"
   description = "Policy to allow Lambda to read from DynamoDB stream"
 
-  policy = jsondecode({
+  policy = jsonencode({
     Version : "2012-10-17",
     Statement : [
       {
