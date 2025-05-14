@@ -86,6 +86,8 @@ resource "aws_lambda_event_source_mapping" "dynamodb_stream_mapping" {
   event_source_arn  = lookup({ for item in var.dynamodb_tables : item.key => item.value }, each.value.table_name, "")
   function_name     = each.key
   starting_position = "LATEST"
+
+  depends_on = [aws_lambda_function.dynamodb_lambdas]
 }
 
 resource "aws_iam_role" "dynamodb_lambda_role" {
