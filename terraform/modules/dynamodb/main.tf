@@ -8,6 +8,8 @@ resource "aws_dynamodb_table" "events" {
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "aggregateName"
   range_key    = "aggregateId"
+  stream_enabled   = true
+  stream_view_type = "NEW_AND_OLD_IMAGES" # Choose from KEYS_ONLY, NEW_IMAGE, OLD_IMAGE, NEW_AND_OLD_IMAGES
 
   attribute {
     name = "aggregateName"
@@ -18,9 +20,6 @@ resource "aws_dynamodb_table" "events" {
     name = "aggregateId"
     type = "S"
   }
-
-  stream_enabled   = true
-  stream_view_type = "NEW_AND_OLD_IMAGES" # Choose from KEYS_ONLY, NEW_IMAGE, OLD_IMAGE, NEW_AND_OLD_IMAGES
 }
 
 resource "aws_dynamodb_table" "orders" {
