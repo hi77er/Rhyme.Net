@@ -10,7 +10,6 @@ public class OrderRepository : DynamoRepository<Order, Guid>
 
   }
 
-
   public Order Get(string aggregateName, Guid aggregateId)
   {
     var streamId = $"{aggregateName}-{aggregateId}";

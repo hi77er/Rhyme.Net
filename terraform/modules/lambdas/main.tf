@@ -56,6 +56,25 @@ resource "aws_iam_policy" "apigateway_lambda_policy" {
         Effect   = "Allow",
         Resource = "arn:aws:logs:*:*:*"
       },
+      {
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:Scan",
+          "dynamodb:Query",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:DescribeTable",
+          "dynamodb:ListTables",
+          "dynamodb:PutRecord",
+          "dynamodb:PutRecords",
+          "dynamodb:GetRecords",
+        ],
+        Effect   = "Allow",
+        Resource = "arn:aws:dynamodb:*:*:*"
+      },
       #Add more policies as needed for lambda execution
     ]
   })
@@ -116,13 +135,25 @@ resource "aws_iam_policy" "dynamodb_lambda_policy" {
     Statement : [
       {
         Action : [
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:Scan",
+          "dynamodb:Query",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:DescribeTable",
+          "dynamodb:ListTables",
+          "dynamodb:PutRecord",
+          "dynamodb:PutRecords",
           "dynamodb:GetRecords",
           "dynamodb:DescribeStream",
           "dynamodb:ListStreams",
-          "dynamodb:GetShardIterator"
+          "dynamodb:GetShardIterator",
         ],
         Effect : "Allow",
-        Resource : "*"
+        Resource : "arn:aws:dynamodb:*:*:*"
       },
       {
         Action : [
