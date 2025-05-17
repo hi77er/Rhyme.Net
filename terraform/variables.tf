@@ -71,7 +71,7 @@ variable "api_gateway_lambda_definitions" {
 variable "dynamodb_lambda_definitions" {
   default = {
     "OrderEventsHandler-dev" = {
-      lambda_name = "OrderEventsHandler-dev"
+      lambda_name = "OrderEventsHandlerLambda-dev"
       memory_size = 128
       timeout     = 60
       handler     = "Rhyme.Net.Handlers.OrderEventsHandlerLambda::Rhyme.Net.Handlers.OrderEventsHandlerLambda.Function::FunctionHandler"
