@@ -54,72 +54,72 @@ public class AutofacInfrastructureModule : Autofac.Module
     LoadAssemblies();
     if (_isDevelopment)
     {
-      RegisterDevelopmentOnlyDependencies(builder);
+      // RegisterDevelopmentOnlyDependencies(builder);
     }
     else
     {
       RegisterProductionOnlyDependencies(builder);
     }
-    RegisterEF(builder);
-    RegisterMediatR(builder);
+    // RegisterEF(builder);
+    // RegisterMediatR(builder);
   }
 
-  private void RegisterEF(ContainerBuilder builder)
-  {
-    builder.RegisterGeneric(typeof(EfRepository<>))
-      .As(typeof(IRepository<>))
-      .As(typeof(IReadRepository<>))
-      .InstancePerLifetimeScope();
-  }
+  // private void RegisterEF(ContainerBuilder builder)
+  // {
+  //   builder.RegisterGeneric(typeof(EfRepository<>))
+  //     .As(typeof(IRepository<>))
+  //     .As(typeof(IReadRepository<>))
+  //     .InstancePerLifetimeScope();
+  // }
 
-  private void RegisterMediatR(ContainerBuilder builder)
-  {
-    builder
-      .RegisterType<Mediator>()
-      .As<IMediator>()
-      .InstancePerLifetimeScope();
+  // private void RegisterMediatR(ContainerBuilder builder)
+  // {
+  //   builder
+  //     .RegisterType<Mediator>()
+  //     .As<IMediator>()
+  //     .InstancePerLifetimeScope();
 
-    builder
-      .RegisterGeneric(typeof(LoggingBehavior<,>))
-      .As(typeof(IPipelineBehavior<,>))
-      .InstancePerLifetimeScope();
+  //   builder
+  //     .RegisterGeneric(typeof(LoggingBehavior<,>))
+  //     .As(typeof(IPipelineBehavior<,>))
+  //     .InstancePerLifetimeScope();
 
-    builder
-      .RegisterType<MediatRDomainEventDispatcher>()
-      .As<IDomainEventDispatcher>()
-      .InstancePerLifetimeScope();
+  //   builder
+  //     .RegisterType<MediatRDomainEventDispatcher>()
+  //     .As<IDomainEventDispatcher>()
+  //     .InstancePerLifetimeScope();
 
-    var mediatrOpenTypes = new[]
-    {
-      typeof(IRequestHandler<,>),
-      typeof(IRequestExceptionHandler<,,>),
-      typeof(IRequestExceptionAction<,>),
-      typeof(INotificationHandler<>),
-    };
+  //   var mediatrOpenTypes = new[]
+  //   {
+  //     typeof(IRequestHandler<,>),
+  //     typeof(IRequestExceptionHandler<,,>),
+  //     typeof(IRequestExceptionAction<,>),
+  //     typeof(INotificationHandler<>),
+  //   };
 
-    foreach (var mediatrOpenType in mediatrOpenTypes)
-    {
-      builder
-        .RegisterAssemblyTypes([.. _assemblies])
-        .AsClosedTypesOf(mediatrOpenType)
-        .AsImplementedInterfaces();
-    }
-  }
+  //   foreach (var mediatrOpenType in mediatrOpenTypes)
+  //   {
+  //     builder
+  //       .RegisterAssemblyTypes([.. _assemblies])
+  //       .AsClosedTypesOf(mediatrOpenType)
+  //       .AsImplementedInterfaces();
+  //   }
+  // }
 
-  private void RegisterDevelopmentOnlyDependencies(ContainerBuilder builder)
-  {
-    // NOTE: Add any development only services here
-    //builder.RegisterType<FakeEmailSender>().As<IEmailSender>()
-    //  .InstancePerLifetimeScope();
+  // private void RegisterDevelopmentOnlyDependencies(ContainerBuilder builder)
+  // {
+  //   // NOTE: Add any development only services here
+  //   //builder.RegisterType<FakeEmailSender>().As<IEmailSender>()
+  //   //  .InstancePerLifetimeScope();
 
-    // NOTE: Add any production only (real) services here
-    builder.RegisterType<FakeEmailSender>().As<IEmailSender>()
-      .InstancePerLifetimeScope();
+  //   // NOTE: Add any production only (real) services here
+  //   builder.RegisterType<FakeEmailSender>().As<IEmailSender>()
+  //     .InstancePerLifetimeScope();
 
-    builder.RegisterType<FakeListStoresShallowQueryService>()
-      .As<IListStoresShallowQueryService>()
-      .InstancePerLifetimeScope();
-  }
+  //   builder.RegisterType<FakeListStoresShallowQueryService>()
+  //     .As<IListStoresShallowQueryService>()
+  //     .InstancePerLifetimeScope();
+  // }
 
   private void RegisterProductionOnlyDependencies(ContainerBuilder builder)
   {

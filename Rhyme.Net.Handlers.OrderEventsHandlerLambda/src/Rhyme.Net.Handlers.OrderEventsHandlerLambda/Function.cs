@@ -1,6 +1,8 @@
+using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.DynamoDBEvents;
+using Microsoft.Extensions.DependencyInjection;
 using Rhyme.Net.Infrastructure.Data.NoSQL;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -10,12 +12,13 @@ namespace Rhyme.Net.Handlers.OrderEventsHandlerLambda;
 
 public class Function
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly OrderRepository _orderRepository;
 
-    public Function(OrderRepository repository)
+    public Function()
     {
-        _orderRepository = repository;
-        Console.WriteLine("Constructor: OrderRepository initialized.");
+        _serviceProvider = ConfigureServices();
+        _orderRepository = _serviceProvider.GetRequiredService<OrderRepository>();
     }
 
     /// <summary>
@@ -42,5 +45,20 @@ public class Function
         }
 
         Console.WriteLine("HANDLER: Stream processing complete.");
+    }
+
+    private static IServiceProvider ConfigureServices()
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddSingleton<IDynamoDBContext>(_ =>
+            {
+                var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION") ?? "eu-central-1";
+                var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
+                return new DynamoDBContext(client);
+            })
+            .AddSingleton<OrderRepository>()
+            .BuildServiceProvider();
+
+        return serviceProvider;
     }
 }
