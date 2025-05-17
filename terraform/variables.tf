@@ -70,7 +70,7 @@ variable "api_gateway_lambda_definitions" {
 
 variable "dynamodb_lambda_definitions" {
   default = {
-    "OrderEventsHandler-dev" = {
+    "OrderEventsHandlerLambda-dev" = {
       lambda_name = "OrderEventsHandlerLambda-dev"
       memory_size = 128
       timeout     = 60
