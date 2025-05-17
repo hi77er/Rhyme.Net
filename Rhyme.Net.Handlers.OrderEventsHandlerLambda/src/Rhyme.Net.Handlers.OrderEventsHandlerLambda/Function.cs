@@ -17,6 +17,7 @@ public class Function
     /// <returns></returns>
     public void FunctionHandler(DynamoDBEvent dynamoDbEvent, ILambdaContext context)
     {
+        Console.WriteLine($"Lambda v49");
         Console.WriteLine($"Processing {dynamoDbEvent.Records.Count} records...");
 
         foreach (var record in dynamoDbEvent.Records)
