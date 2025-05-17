@@ -2,6 +2,7 @@ using System.Text.Json;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.Serialization.SystemTextJson;
+using Rhyme.Net.Infrastructure.Data.NoSQL;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
@@ -10,7 +11,7 @@ namespace Rhyme.Net.Queries.GetOrderLambda;
 
 public class Function
 {
-
+    
     /// <summary>
     /// A simple function that takes a string and does a ToUpper
     /// </summary>
