@@ -14,14 +14,14 @@ namespace Rhyme.Net.Commands.NewOrderLambda;
 
 public class Function
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly OrderRepository _orderRepository;
+    private IServiceProvider? _serviceProvider;
+    private OrderRepository? _orderRepository;
 
-    public Function()
-    {
-        _serviceProvider = ConfigureServices();
-        _orderRepository = _serviceProvider.GetRequiredService<OrderRepository>();
-    }
+    // public Function()
+    // {
+    //     _serviceProvider = ConfigureServices();
+    //     _orderRepository = _serviceProvider.GetRequiredService<OrderRepository>();
+    // }
 
     /// <summary>
     /// A simple function that takes a string and does a ToUpper
@@ -34,12 +34,14 @@ public class Function
         context.Logger.LogLine($"HANDLER: Lambda v49");
         context.Logger.LogLine($"HANDLER: Received request: {JsonSerializer.Serialize(request)}");
 
+        _serviceProvider = ConfigureServices();
+        _orderRepository = _serviceProvider.GetRequiredService<OrderRepository>();
         var allOrders = _orderRepository.GetAllAsync().Result; // Call the repository method
         context.Logger.LogLine($"HANDLER: {allOrders.Count()} orders found.");
 
         // Read request body
         string requestBody = request.Body ?? "No Body Provided";
-        
+
         return new APIGatewayHttpApiV2ProxyResponse
         {
             StatusCode = 200,
