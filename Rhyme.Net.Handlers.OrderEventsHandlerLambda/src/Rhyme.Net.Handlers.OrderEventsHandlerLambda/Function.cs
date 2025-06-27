@@ -50,6 +50,12 @@ public class Function
     private static IServiceProvider ConfigureServices()
     {
         var serviceProvider = new ServiceCollection()
+            .AddSingleton<IAmazonDynamoDB>(_ =>
+            {
+                var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION") ?? "eu-central-1";
+                var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
+                return client;
+            })
             .AddSingleton<IDynamoDBContext>(_ =>
             {
                 var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION") ?? "eu-central-1";

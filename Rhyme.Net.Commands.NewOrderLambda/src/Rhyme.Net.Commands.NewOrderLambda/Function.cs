@@ -6,6 +6,10 @@ using Rhyme.Net.Infrastructure.Data.NoSQL;
 using Microsoft.Extensions.DependencyInjection;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2;
+using Rhyme.Net.UseCases.Menus.Create;
+using Rhyme.Net.UseCases.Orders.Create;
+using Rhyme.Net.UseCases.Orders;
+using Ardalis.GuardClauses;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
@@ -15,13 +19,7 @@ namespace Rhyme.Net.Commands.NewOrderLambda;
 public class Function
 {
     private IServiceProvider? _serviceProvider;
-    private OrderRepository? _orderRepository;
-
-    // public Function()
-    // {
-    //     _serviceProvider = ConfigureServices();
-    //     _orderRepository = _serviceProvider.GetRequiredService<OrderRepository>();
-    // }
+    private CreateOrderHandler? _handler;
 
     /// <summary>
     /// A simple function that takes a string and does a ToUpper
@@ -34,25 +32,30 @@ public class Function
         context.Logger.LogLine($"HANDLER: Lambda v49");
         context.Logger.LogLine($"HANDLER: Received request: {JsonSerializer.Serialize(request)}");
 
+        var requestBody = JsonSerializer.Deserialize<NewOrderRequestBody>(request.Body);
+        Guard.Against.Null(requestBody, nameof(requestBody));
+
+        var command = new CreateOrderCommand(requestBody.StoreId);
+
         _serviceProvider = ConfigureServices();
-        _orderRepository = _serviceProvider.GetRequiredService<OrderRepository>();
-        var allOrders = _orderRepository.GetAllAsync().Result; // Call the repository method
-        context.Logger.LogLine($"HANDLER: {allOrders.Count()} orders found.");
+        _handler = _serviceProvider.GetRequiredService<CreateOrderHandler>();
+        var newOrderId = _handler.Handle(command, CancellationToken.None).Result; // Call the repository method
+        context.Logger.LogLine($"HANDLER: newOrderId = {newOrderId};");
 
-        // Read request body
-        string requestBody = request.Body ?? "No Body Provided";
+        var response = new NewOrderResponse(newOrderId);
 
-        return new APIGatewayHttpApiV2ProxyResponse
-        {
-            StatusCode = 200,
-            Body = JsonSerializer.Serialize(new { message = $"Order ID: test", body = requestBody }),
-            Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-        };
+        return BuildResponse(response);
     }
 
     private static IServiceProvider ConfigureServices()
     {
         var serviceProvider = new ServiceCollection()
+            .AddSingleton<IAmazonDynamoDB>(_ =>
+            {
+                var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION") ?? "eu-central-1";
+                var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
+                return client;
+            })
             .AddSingleton<IDynamoDBContext>(_ =>
             {
                 var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION") ?? "eu-central-1";
@@ -60,8 +63,19 @@ public class Function
                 return new DynamoDBContext(client);
             })
             .AddSingleton<OrderRepository>()
+            .AddSingleton<CreateOrderHandler>()
             .BuildServiceProvider();
 
         return serviceProvider;
+    }
+
+    private APIGatewayHttpApiV2ProxyResponse BuildResponse(NewOrderResponse response)
+    {
+        return new APIGatewayHttpApiV2ProxyResponse()
+        {
+            StatusCode = 200,
+            Body = JsonSerializer.Serialize(response),
+            Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
+        };
     }
 }

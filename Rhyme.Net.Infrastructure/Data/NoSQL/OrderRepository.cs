@@ -1,3 +1,4 @@
+using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Rhyme.Net.Core.Domain.OrderAggregate;
 
@@ -5,9 +6,8 @@ namespace Rhyme.Net.Infrastructure.Data.NoSQL;
 
 public class OrderRepository : DynamoRepository<Order, Guid>
 {
-  public OrderRepository(IDynamoDBContext dbContext) : base(dbContext)
+  public OrderRepository(IAmazonDynamoDB dbClient, IDynamoDBContext dbContext) : base(dbClient, dbContext)
   {
-
   }
 
   public Order Get(string aggregateName, Guid aggregateId)

@@ -65,6 +65,15 @@ variable "api_gateway_lambda_definitions" {
       http_method   = "POST"
       resource_path = "orders/{id}"
     }
+    "CouponsForCampaignLambda-dev" = {
+      lambda_name   = "CouponsForCampaignLambda-dev"
+      memory_size   = 128
+      timeout       = 60
+      handler       = "Rhyme.Net.Commands.CouponsForCampaignLambda::Rhyme.Net.Commands.CouponsForCampaignLambda.Function::FunctionHandler"
+      runtime       = "dotnet8"
+      http_method   = "POST"
+      resource_path = "coupons"
+    }
   }
 }
 

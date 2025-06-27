@@ -8,14 +8,10 @@ namespace Rhyme.Net.UseCases.Menus.GetForAdminPanel;
 /// <summary>
 /// Queries don't necessarily need to use repository methods, but they can if it's convenient
 /// </summary>
-public class GetMenuForAdminPanelHandler : IQueryHandler<GetMenuForAdminPanelQuery, Result<MenuForAdminPanelDTO>>
+public class GetMenuForAdminPanelHandler(IReadRepository<Menu> repository)
+  : IQueryHandler<GetMenuForAdminPanelQuery, Result<MenuForAdminPanelDTO>>
 {
-  private readonly IReadRepository<Menu> _repository;
-
-  public GetMenuForAdminPanelHandler(IReadRepository<Menu> repository)
-  {
-    _repository = repository;
-  }
+  private readonly IReadRepository<Menu> _repository = repository;
 
   public async Task<Result<MenuForAdminPanelDTO>> Handle(GetMenuForAdminPanelQuery request, CancellationToken cancellationToken)
   {

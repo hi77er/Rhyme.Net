@@ -1,3 +1,4 @@
+using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Rhyme.Net.Core.Domain.OrderAggregate;
 using Rhyme.Net.Core.Interfaces;
@@ -5,17 +6,21 @@ using Rhyme.Net.Core.Interfaces;
 public class DynamoRepository<T, TId> where T : class
 {
   protected readonly Dictionary<string, IList<IEvent>> _eventStreams = new();
+  protected readonly string _tableName;
 
   private DynamoDBOperationConfig _config => new DynamoDBOperationConfig()
   {
     OverrideTableName = ConstructTableName()
   };
 
-  private readonly IDynamoDBContext _dbContext;
+  protected readonly IAmazonDynamoDB _dbClient;
+  protected readonly IDynamoDBContext _dbContext;
 
-  public DynamoRepository(IDynamoDBContext dbContext)
+  public DynamoRepository(IAmazonDynamoDB dbClient, IDynamoDBContext dbContext)
   {
+    _dbClient = dbClient;
     _dbContext = dbContext;
+    _tableName = _config.OverrideTableName;
   }
 
   public async Task<IEnumerable<T>> GetAllAsync()
