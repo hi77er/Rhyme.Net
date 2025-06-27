@@ -19,10 +19,10 @@ namespace Rhyme.Net.Core.Services;
 // /// <param name="_repository"></param>
 // /// <param name="_mediator"></param>
 /// <param name="_logger"></param>
-public class GenerateCampaignCouponsService(
-  // IDynamoRepository<Coupon, string> _repository,
-  // IMediator _mediator,
-  ILogger<GenerateCampaignCouponsService> _logger) : IGenerateCampaignCouponsService
+public class GenerateCampaignCouponsService() : IGenerateCampaignCouponsService
+// IDynamoRepository<Coupon, string> _repository,
+// IMediator _mediator,
+// ILogger<GenerateCampaignCouponsService> _logger
 {
   // NOTE: 
   // This is a Domain Service.
@@ -32,10 +32,10 @@ public class GenerateCampaignCouponsService(
   public async Task<Result> GenerateAsync(string campaignId, int totalCouponsCount)
   {
     Guard.Against.Default(campaignId, nameof(campaignId));
-    _logger.LogInformation("Starting Coupon generation for campaign: {campaignId}", campaignId);
+    Console.WriteLine("Starting Coupon generation for campaign: {campaignId}", campaignId);
 
     HashSet<string> results = new HashSet<string>(totalCouponsCount);
-    _logger.LogInformation($"Generating {totalCouponsCount:N0} unique 12-character Base32 strings...");
+    Console.WriteLine($"Generating {totalCouponsCount:N0} unique 12-character Base32 strings...");
 
     while (results.Count < totalCouponsCount)
     {
@@ -47,7 +47,7 @@ public class GenerateCampaignCouponsService(
       results.Add(encoded);
     }
 
-    _logger.LogInformation($"✅ Done. Generated {results.Count:N0} unique coupon IDs.");
+    Console.WriteLine($"✅ Done. Generated {results.Count:N0} unique coupon IDs.");
 
     // var domainEvent = new MenuDeletedEvent(aggregateToDelete);
     // await _mediator.Publish(domainEvent);
