@@ -1,4 +1,4 @@
-resource "aws_api_gateway_rest_api" "orders_api" {
+resource "aws_api_gateway_rest_api" "generic_api" {
   name        = "OrdersAPI"
   description = "API Gateway for orders service"
 }
@@ -55,8 +55,8 @@ resource "aws_api_gateway_rest_api" "orders_api" {
 #   cloudwatch_role_arn = aws_iam_role.apigateway_logging_role.arn
 # }
 
-resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
-  rest_api_id = aws_api_gateway_rest_api.orders_api.id
+resource "aws_api_gateway_rest_api_policy" "generic_api_policy" {
+  rest_api_id = aws_api_gateway_rest_api.generic_api.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -64,7 +64,7 @@ resource "aws_api_gateway_rest_api_policy" "orders_api_policy" {
         Effect    = "Allow"
         Principal = "*"
         Action    = "execute-api:Invoke"
-        Resource  = "${aws_api_gateway_rest_api.orders_api.execution_arn}/*/*"
+        Resource  = "${aws_api_gateway_rest_api.generic_api.execution_arn}/*/*"
       },
       {
         Effect = "Allow"
@@ -85,37 +85,44 @@ resource "aws_lambda_permission" "api_gateway_invoke" {
   statement_id  = "AllowExecutionFromAPIGateway-${each.key}"
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.orders_api.execution_arn}/*/*"
+  source_arn    = "${aws_api_gateway_rest_api.generic_api.execution_arn}/*/*"
 }
 
 resource "aws_api_gateway_resource" "orders" {
-  rest_api_id = aws_api_gateway_rest_api.orders_api.id
-  parent_id   = aws_api_gateway_rest_api.orders_api.root_resource_id
-  path_part   = "orders"
+  rest_api_id = aws_api_gateway_rest_api.generic_api.id
+  parent_id   = aws_api_gateway_rest_api.generic_api.root_resource_id
+  path_part   = "api/orders"
 }
 
 resource "aws_api_gateway_resource" "orders_by_id" {
-  rest_api_id = aws_api_gateway_rest_api.orders_api.id
+  rest_api_id = aws_api_gateway_rest_api.generic_api.id
   parent_id   = aws_api_gateway_resource.orders.id
   path_part   = "{id}"
 }
 
+resource "aws_api_gateway_resource" "coupons" {
+  rest_api_id = aws_api_gateway_rest_api.generic_api.id
+  parent_id   = aws_api_gateway_rest_api.generic_api.root_resource_id
+  path_part   = "api/coupons"
+}
+
 locals {
   resource_map = {
-    "orders"      = aws_api_gateway_resource.orders.id
-    "orders/{id}" = aws_api_gateway_resource.orders_by_id.id
+    "api/orders"      = aws_api_gateway_resource.orders.id
+    "api/orders/{id}" = aws_api_gateway_resource.orders_by_id.id
+    "api/coupons"      = aws_api_gateway_resource.coupons.id
   }
 }
 
 # resource "aws_api_gateway_method" "options_method" {
-#   rest_api_id   = aws_api_gateway_rest_api.orders_api.id
+#   rest_api_id   = aws_api_gateway_rest_api.generic_api.id
 #   resource_id   = aws_api_gateway_resource.orders.id
 #   http_method   = "OPTIONS"
 #   authorization = "NONE"
 # }
 
 # resource "aws_api_gateway_method_response" "options_response" {
-#   rest_api_id = aws_api_gateway_rest_api.orders_api.id
+#   rest_api_id = aws_api_gateway_rest_api.generic_api.id
 #   resource_id = aws_api_gateway_resource.orders.id
 #   http_method = "OPTIONS"
 #   status_code = "200"
@@ -129,7 +136,7 @@ locals {
 # }
 
 # resource "aws_api_gateway_integration" "options_integration" {
-#   rest_api_id             = aws_api_gateway_rest_api.orders_api.id
+#   rest_api_id             = aws_api_gateway_rest_api.generic_api.id
 #   resource_id             = aws_api_gateway_resource.orders.id
 #   http_method             = "OPTIONS"
 #   integration_http_method = "OPTIONS"
@@ -146,7 +153,7 @@ locals {
 # }
 
 # resource "aws_api_gateway_integration_response" "options_integration_response" {
-#   rest_api_id = aws_api_gateway_rest_api.orders_api.id
+#   rest_api_id = aws_api_gateway_rest_api.generic_api.id
 #   resource_id = aws_api_gateway_resource.orders.id
 #   depends_on  = [aws_api_gateway_integration.options_integration]
 #   http_method = "OPTIONS"
@@ -163,7 +170,7 @@ resource "aws_api_gateway_method" "generic_method" {
   # resource_id = aws_api_gateway_resource.orders.id
   for_each      = var.api_gateway_lambda_definitions
   resource_id   = lookup(local.resource_map, each.value.resource_path, "INVALID_RESOURCE")
-  rest_api_id   = aws_api_gateway_rest_api.orders_api.id
+  rest_api_id   = aws_api_gateway_rest_api.generic_api.id
   http_method   = each.value.http_method
   authorization = "NONE"
 }
@@ -172,7 +179,7 @@ resource "aws_api_gateway_method_response" "generic_method_cors_response" {
   for_each = var.api_gateway_lambda_definitions
 
   # resource_id = aws_api_gateway_resource.orders.id
-  rest_api_id = aws_api_gateway_rest_api.orders_api.id
+  rest_api_id = aws_api_gateway_rest_api.generic_api.id
   resource_id = lookup(local.resource_map, each.value.resource_path, "INVALID_RESOURCE")
   depends_on  = [aws_api_gateway_method.generic_method]
 
@@ -189,7 +196,7 @@ resource "aws_api_gateway_method_response" "generic_method_cors_response" {
 resource "aws_api_gateway_integration" "generic_resource_integration" {
   # resource_id             = aws_api_gateway_resource.orders.id
   for_each                = var.api_gateway_lambda_definitions
-  rest_api_id             = aws_api_gateway_rest_api.orders_api.id
+  rest_api_id             = aws_api_gateway_rest_api.generic_api.id
   resource_id             = lookup(local.resource_map, each.value.resource_path, "INVALID_RESOURCE")
   depends_on              = [aws_api_gateway_method.generic_method]
   http_method             = aws_api_gateway_method.generic_method[each.key].http_method
@@ -201,7 +208,7 @@ resource "aws_api_gateway_integration" "generic_resource_integration" {
 resource "aws_api_gateway_integration_response" "integration_cors_response" {
   # resource_id = aws_api_gateway_resource.orders.id
   for_each    = var.api_gateway_lambda_definitions
-  rest_api_id = aws_api_gateway_rest_api.orders_api.id
+  rest_api_id = aws_api_gateway_rest_api.generic_api.id
   resource_id = lookup(local.resource_map, each.value.resource_path, "INVALID_RESOURCE")
   depends_on = [
     aws_api_gateway_method.generic_method,
@@ -218,11 +225,11 @@ resource "aws_api_gateway_integration_response" "integration_cors_response" {
   }
 }
 
-resource "aws_api_gateway_deployment" "orders_api_deployment" {
-  rest_api_id = aws_api_gateway_rest_api.orders_api.id
+resource "aws_api_gateway_deployment" "generic_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.generic_api.id
 
   triggers = {
-    redeploy = sha1(jsonencode(aws_api_gateway_rest_api.orders_api.body))
+    redeploy = sha1(jsonencode(aws_api_gateway_rest_api.generic_api.body))
   }
 
   lifecycle {
@@ -235,11 +242,11 @@ resource "aws_api_gateway_deployment" "orders_api_deployment" {
   ]
 }
 
-resource "aws_api_gateway_stage" "orders_api_stage" {
-  rest_api_id   = aws_api_gateway_rest_api.orders_api.id
-  deployment_id = aws_api_gateway_deployment.orders_api_deployment.id
+resource "aws_api_gateway_stage" "generic_api_stage" {
+  rest_api_id   = aws_api_gateway_rest_api.generic_api.id
+  deployment_id = aws_api_gateway_deployment.generic_api_deployment.id
   stage_name    = var.env
-  depends_on    = [aws_api_gateway_deployment.orders_api_deployment]
+  depends_on    = [aws_api_gateway_deployment.generic_api_deployment]
 
   # access_log_settings {
   #   destination_arn = aws_cloudwatch_log_group.api_gw_logs.arn

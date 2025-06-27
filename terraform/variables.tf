@@ -33,7 +33,7 @@ variable "api_gateway_lambda_definitions" {
       handler       = "Rhyme.Net.Queries.GetOrderLambda::Rhyme.Net.Queries.GetOrderLambda.Function::FunctionHandler"
       runtime       = "dotnet8"
       http_method   = "GET"
-      resource_path = "orders/{id}"
+      resource_path = "api/orders/{id}"
     }
     "GetOrdersLambda-dev" = {
       lambda_name = "GetOrdersLambda-dev"
@@ -43,7 +43,7 @@ variable "api_gateway_lambda_definitions" {
       handler       = "Rhyme.Net.Queries.GetOrdersLambda::Rhyme.Net.Queries.GetOrdersLambda.Function::FunctionHandler"
       runtime       = "dotnet8"
       http_method   = "GET"
-      resource_path = "orders"
+      resource_path = "api/orders"
     }
     "NewOrderLambda-dev" = {
       lambda_name   = "NewOrderLambda-dev"
@@ -52,7 +52,7 @@ variable "api_gateway_lambda_definitions" {
       handler       = "Rhyme.Net.Commands.NewOrderLambda::Rhyme.Net.Commands.NewOrderLambda.Function::FunctionHandler"
       runtime       = "dotnet8"
       http_method   = "POST"
-      resource_path = "orders"
+      resource_path = "api/orders"
     }
     "SaveOrderLambda-dev" = {
       lambda_name = "SaveOrderLambda-dev"
@@ -63,7 +63,7 @@ variable "api_gateway_lambda_definitions" {
       runtime     = "dotnet8"
 
       http_method   = "POST"
-      resource_path = "orders/{id}"
+      resource_path = "api/orders/{id}"
     }
     "CouponsForCampaignLambda-dev" = {
       lambda_name   = "CouponsForCampaignLambda-dev"
@@ -72,7 +72,7 @@ variable "api_gateway_lambda_definitions" {
       handler       = "Rhyme.Net.Commands.CouponsForCampaignLambda::Rhyme.Net.Commands.CouponsForCampaignLambda.Function::FunctionHandler"
       runtime       = "dotnet8"
       http_method   = "POST"
-      resource_path = "coupons"
+      resource_path = "api/coupons"
     }
   }
 }
