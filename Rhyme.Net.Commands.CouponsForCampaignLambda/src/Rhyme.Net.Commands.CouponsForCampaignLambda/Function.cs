@@ -36,7 +36,7 @@ public class Function
         var requestBody = JsonSerializer.Deserialize<CouponsForCampaignRequestBody>(request.Body);
         Guard.Against.Null(requestBody, nameof(requestBody));
 
-        var command = new GenerateForCampaignCommand(requestBody.CampaignId);
+        var command = new GenerateForCampaignCommand(requestBody.CampaignId, requestBody.TotalCouponCount);
 
         _serviceProvider = ConfigureServices();
         context.Logger.LogLine($"HANDLER: Services configured successfully.");

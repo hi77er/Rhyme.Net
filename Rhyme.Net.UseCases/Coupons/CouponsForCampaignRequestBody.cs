@@ -1,3 +1,3 @@
 ﻿namespace Rhyme.Net.UseCases.Coupons;
 
-public record CouponsForCampaignRequestBody(string CampaignId);
+public record CouponsForCampaignRequestBody(string CampaignId, int TotalCouponCount);

@@ -24,10 +24,7 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
       Stopwatch sw = Stopwatch.StartNew();
 
       Console.WriteLine($"Generating coupons for campaign {request.CampaignId}...");
-      string campaignId = $"CAMPAIGN-{Guid.NewGuid()}";
-      const int total = 10_000_000;
-
-      await _service.GenerateAsync(campaignId, total);
+      await _service.GenerateAsync(request.CampaignId, request.TotalCouponCount);
 
       sw.Stop();
       Console.WriteLine($"⏱ Time taken: {sw.Elapsed.TotalSeconds:N2} seconds.");

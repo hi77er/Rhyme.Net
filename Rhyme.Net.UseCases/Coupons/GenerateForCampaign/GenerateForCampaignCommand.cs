@@ -6,4 +6,5 @@ namespace Rhyme.Net.UseCases.Coupons.GenerateForCampaign;
 /// Create a batch of Coupons.
 /// </summary>
 /// <param name="CampaignId"></param>
-public record GenerateForCampaignCommand(string CampaignId) : Ardalis.SharedKernel.ICommand<Result<bool>>;
+/// <param name="TotalCouponCount"></param>
+public record GenerateForCampaignCommand(string CampaignId, int TotalCouponCount) : Ardalis.SharedKernel.ICommand<Result<bool>>;
