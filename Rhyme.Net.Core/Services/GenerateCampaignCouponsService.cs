@@ -1,13 +1,6 @@
 ﻿using Ardalis.Result;
-using Ardalis.SharedKernel;
-using Rhyme.Net.Core.Domain.MenuAggregate;
-using Rhyme.Net.Core.Domain.MenuAggregate.Events;
 using Rhyme.Net.Core.Interfaces;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using Ardalis.GuardClauses;
-using Rhyme.Net.Core.Domain.CouponAggregate;
-using System.Diagnostics;
 using System.Text;
 
 namespace Rhyme.Net.Core.Services;
@@ -31,7 +24,7 @@ public class GenerateCampaignCouponsService() : IGenerateCampaignCouponsService
 
   public async Task<Result> GenerateAsync(string campaignId, int totalCouponsCount)
   {
-    Guard.Against.Default(campaignId, nameof(campaignId));
+    Guard.Against.NullOrEmpty(campaignId, nameof(campaignId));
     Console.WriteLine("Starting Coupon generation for campaign: {campaignId}", campaignId);
 
     HashSet<string> results = new HashSet<string>(totalCouponsCount);

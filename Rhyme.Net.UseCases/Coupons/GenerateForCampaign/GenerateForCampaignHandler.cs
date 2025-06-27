@@ -17,20 +17,20 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
 
   public async Task<Result<bool>> Handle(GenerateForCampaignCommand command, CancellationToken cancellationToken)
   {
+    Stopwatch sw = Stopwatch.StartNew();
+
     try
     {
-      Stopwatch sw = Stopwatch.StartNew();
-
       Console.WriteLine($"Generating coupons for campaign {command.CampaignId}...");
       await _service.GenerateAsync(command.CampaignId, command.TotalCouponsCount);
-
-      sw.Stop();
-      Console.WriteLine($"⏱ Time taken: {sw.Elapsed.TotalSeconds:N2} seconds.");
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"Error generating coupons for campaign {command.CampaignId}: {ex.Message}");
+      Console.WriteLine($"Error generating coupons for campaign {command.CampaignId}: {ex.Message}, {ex.StackTrace}");
     }
+
+    sw.Stop();
+    Console.WriteLine($"⏱ Time taken: {sw.Elapsed.TotalSeconds:N2} seconds.");
 
     return Result.Success(true);
   }
