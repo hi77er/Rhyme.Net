@@ -8,30 +8,28 @@ namespace Rhyme.Net.UseCases.Coupons.GenerateForCampaign;
 
 public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCommand, Result<bool>>
 {
-  private readonly IDynamoRepository<Coupon, string> _repository;
   private readonly IGenerateCampaignCouponsService _service;
 
-  public GenerateForCampaignHandler(IDynamoRepository<Coupon, string> repository, IGenerateCampaignCouponsService service)
+  public GenerateForCampaignHandler(IGenerateCampaignCouponsService service)
   {
-    _repository = repository;
     _service = service;
   }
 
-  public async Task<Result<bool>> Handle(GenerateForCampaignCommand request, CancellationToken cancellationToken)
+  public async Task<Result<bool>> Handle(GenerateForCampaignCommand command, CancellationToken cancellationToken)
   {
     try
     {
       Stopwatch sw = Stopwatch.StartNew();
 
-      Console.WriteLine($"Generating coupons for campaign {request.CampaignId}...");
-      await _service.GenerateAsync(request.CampaignId, request.TotalCouponCount);
+      Console.WriteLine($"Generating coupons for campaign {command.CampaignId}...");
+      await _service.GenerateAsync(command.CampaignId, command.TotalCouponsCount);
 
       sw.Stop();
       Console.WriteLine($"⏱ Time taken: {sw.Elapsed.TotalSeconds:N2} seconds.");
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"Error generating coupons for campaign {request.CampaignId}: {ex.Message}");
+      Console.WriteLine($"Error generating coupons for campaign {command.CampaignId}: {ex.Message}");
     }
 
     return Result.Success(true);

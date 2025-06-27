@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Rhyme.Net.Core.Domain.CouponAggregate;
 using Rhyme.Net.Core.Interfaces;
 using Rhyme.Net.Core.Services;
-using Rhyme.Net.Infrastructure.Data.NoSQL;
 using Rhyme.Net.UseCases.Coupons;
 using Rhyme.Net.UseCases.Coupons.GenerateForCampaign;
 
@@ -38,7 +37,7 @@ public class Function
         var requestBody = JsonSerializer.Deserialize<CouponsForCampaignRequestBody>(request.Body);
         Guard.Against.Null(requestBody, nameof(requestBody));
 
-        var command = new GenerateForCampaignCommand(requestBody.CampaignId, requestBody.TotalCouponCount);
+        var command = new GenerateForCampaignCommand(requestBody.CampaignId, requestBody.TotalCouponsCount);
 
         _serviceProvider = ConfigureServices();
         context.Logger.LogLine($"HANDLER: Services configured successfully.");
