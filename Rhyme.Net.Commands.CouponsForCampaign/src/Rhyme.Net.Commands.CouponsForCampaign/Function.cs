@@ -29,7 +29,7 @@ public class Function
     /// <returns></returns>
     public APIGatewayHttpApiV2ProxyResponse FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
     {
-        context.Logger.LogLine($"HANDLER: Lambda v49");
+        context.Logger.LogLine($"HANDLER: Lambda v50");
         context.Logger.LogLine($"HANDLER: Received request: {JsonSerializer.Serialize(request)}");
 
         var requestBody = JsonSerializer.Deserialize<CouponsForCampaignRequestBody>(request.Body);
@@ -38,7 +38,11 @@ public class Function
         var command = new GenerateForCampaignCommand(requestBody.CampaignId);
 
         _serviceProvider = ConfigureServices();
+        context.Logger.LogLine($"HANDLER: Services configured successfully.");
+
         _handler = _serviceProvider.GetRequiredService<GenerateForCampaignHandler>();
+        context.Logger.LogLine($"HANDLER: Got _handler.");
+
         var result = _handler.Handle(command, CancellationToken.None).Result; // Call the repository method
         context.Logger.LogLine($"HANDLER: Success = {result};");
 

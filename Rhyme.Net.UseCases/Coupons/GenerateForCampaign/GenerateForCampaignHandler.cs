@@ -17,8 +17,11 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
   {
     try
     {
-      var newOrder = new Coupon(string.Empty, request.CampaignId);
-      var createdItem = await _repository.AddAsync(newOrder, cancellationToken);
+      Console.WriteLine($"Generating coupons for campaign {request.CampaignId}...");
+      await Task.Delay(10); // Simulate some delay for coupon generation
+
+      // var newOrder = new Coupon(string.Empty, request.CampaignId);
+      // var createdItem = await _repository.AddAsync(newOrder, cancellationToken);
     }
     catch (Exception ex)
     {
