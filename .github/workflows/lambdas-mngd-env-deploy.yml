@@ -50,7 +50,6 @@ jobs:
     - name: Get changed projects
       id: changed-projects
       run: |
-        set -x
         dict="{}"
 
         if git rev-parse HEAD^ >/dev/null 2>&1; then
@@ -64,6 +63,7 @@ jobs:
         for project in $(find . -name '*.csproj'); do
           project_dir=$(dirname "$project")
           project_name=$(basename "$project" .csproj)
+          echo project_name
 
           if [[ "$project_name" == *Lambda ]]; then
             if git diff --name-only $diff_range | grep -q "^${project_dir#/}/"; then
