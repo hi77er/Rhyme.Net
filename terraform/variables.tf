@@ -35,16 +35,16 @@ variable "api_gateway_lambda_definitions" {
     #   http_method   = "GET"
     #   resource_path = "api/orders/{id}"
     # }
-    # "GetOrdersLambda-dev" = {
-    #   lambda_name = "GetOrdersLambda-dev"
-    #   memory_size = 128
-    #   timeout     = 60
-    #   # filename    = "../Rhyme.Net.Queries.GetOrdersLambda/src/Rhyme.Net.Queries.GetOrdersLambda/publish/GetOrdersLambda.zip"
-    #   handler       = "Rhyme.Net.Queries.GetOrdersLambda::Rhyme.Net.Queries.GetOrdersLambda.Function::FunctionHandler"
-    #   runtime       = "dotnet8"
-    #   http_method   = "GET"
-    #   resource_path = "api/orders"
-    # }
+    "GetOrdersLambda-dev" = {
+      lambda_name = "GetOrdersLambda-dev"
+      memory_size = 128
+      timeout     = 60
+      # filename    = "../Rhyme.Net.Queries.GetOrdersLambda/src/Rhyme.Net.Queries.GetOrdersLambda/publish/GetOrdersLambda.zip"
+      handler       = "Rhyme.Net.Queries.GetOrdersLambda::Rhyme.Net.Queries.GetOrdersLambda.Function::FunctionHandler"
+      runtime       = "dotnet8"
+      http_method   = "GET"
+      resource_path = "api/orders"
+    }
     # "NewOrderLambda-dev" = {
     #   lambda_name   = "NewOrderLambda-dev"
     #   memory_size   = 128

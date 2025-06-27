@@ -114,7 +114,7 @@ resource "aws_api_gateway_resource" "coupons" {
 
 locals {
   resource_map = {
-    # "api/orders"      = aws_api_gateway_resource.orders.id
+    "api/orders"      = aws_api_gateway_resource.orders.id
     # "api/orders/{id}" = aws_api_gateway_resource.orders_by_id.id
     "api/coupons"     = aws_api_gateway_resource.coupons.id
   }
