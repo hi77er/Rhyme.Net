@@ -100,11 +100,11 @@ resource "aws_api_gateway_resource" "orders" {
   path_part   = "orders"
 }
 
-resource "aws_api_gateway_resource" "orders_by_id" {
-  rest_api_id = aws_api_gateway_rest_api.generic_api.id
-  parent_id   = aws_api_gateway_resource.orders.id
-  path_part   = "{id}"
-}
+# resource "aws_api_gateway_resource" "orders_by_id" {
+#   rest_api_id = aws_api_gateway_rest_api.generic_api.id
+#   parent_id   = aws_api_gateway_resource.orders.id
+#   path_part   = "{id}"
+# }
 
 resource "aws_api_gateway_resource" "coupons" {
   rest_api_id = aws_api_gateway_rest_api.generic_api.id

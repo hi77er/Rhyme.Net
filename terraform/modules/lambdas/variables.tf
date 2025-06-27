@@ -14,6 +14,10 @@ variable "env" {
   type = string
 }
 
+variable "generic_api_arn" {
+  type = string
+}
+
 variable "api_gateway_lambda_definitions" {
   type = map(object({
     # filename      = string # Add filename for the zip archive

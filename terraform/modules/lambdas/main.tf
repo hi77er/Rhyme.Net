@@ -24,6 +24,16 @@ resource "aws_lambda_function" "apigateway_lambdas" {
   role          = aws_iam_role.apigateway_lambda_role.arn
 }
 
+resource "aws_lambda_permission" "allow_api_gateway" {
+  for_each      = var.api_gateway_lambda_definitions
+  depends_on    = [aws_lambda_function.apigateway_lambdas]
+  statement_id  = "AllowApiGatewayInvoke-${each.value}"
+  action        = "lambda:InvokeFunction"
+  function_name = each.value
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${var.generic_api_arn}/*/*"
+}
+
 resource "aws_iam_role" "apigateway_lambda_role" {
   name = "apigateway_lambda_role"
 
@@ -36,7 +46,7 @@ resource "aws_iam_role" "apigateway_lambda_role" {
         Principal = {
           Service = "lambda.amazonaws.com"
         }
-      },
+      }
     ]
   })
 }
