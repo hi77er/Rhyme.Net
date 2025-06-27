@@ -22,22 +22,22 @@ namespace Rhyme.Net.Core.Services;
 public class GenerateCampaignCouponsService(
   // IDynamoRepository<Coupon, string> _repository,
   // IMediator _mediator,
-  ILogger<DeleteMenuService> _logger) : IGenerateCampaignCouponsService
+  ILogger<GenerateCampaignCouponsService> _logger) : IGenerateCampaignCouponsService
 {
   // NOTE: 
   // This is a Domain Service.
   // Domain services are used to encapsulate domain logic that doesn't naturally fit within an entity or value object.
   // This often involves logic that spans multiple aggregates or requires external dependencies. 
 
-  public async Task<Result> GenerateAsync(string campaignId, int total)
+  public async Task<Result> GenerateAsync(string campaignId, int totalCouponsCount)
   {
     Guard.Against.Default(campaignId, nameof(campaignId));
     _logger.LogInformation("Starting Coupon generation for campaign: {campaignId}", campaignId);
 
-    HashSet<string> results = new HashSet<string>(total);
-    _logger.LogInformation($"Generating {total:N0} unique 12-character Base32 strings...");
+    HashSet<string> results = new HashSet<string>(totalCouponsCount);
+    _logger.LogInformation($"Generating {totalCouponsCount:N0} unique 12-character Base32 strings...");
 
-    while (results.Count < total)
+    while (results.Count < totalCouponsCount)
     {
       Guid guid = Guid.NewGuid();
       byte[] shortBytes = new byte[8]; // 64 bits
