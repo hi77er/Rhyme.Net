@@ -52,26 +52,32 @@ jobs:
       run: |
         dict="{}"
 
-          for project in $(find . -name '*.csproj'); do
-            project_dir=$(dirname "$project")
-            project_name=$(basename "$project" .csproj)
-
-            if [[ "$project_name" == *Lambda ]]; then
-              if git diff --name-only HEAD^ HEAD -- "$project_dir" | grep -q .; then
-                echo "Found changes in project: $project_name at $project_dir"
-                
-                # Append project name and directory to dictionary
-                dict=$(echo "$dict" | jq --arg key "$project_name" --arg value "$project_dir" \
-                  '. + {($key): $value}')
-              fi
+        # Detect what commit range to diff
+        if git rev-parse HEAD^ >/dev/null 2>&1; then
+          diff_range="HEAD^ HEAD"
+        else
+          diff_range="HEAD"
+        fi
+        
+        # Loop through all csproj files
+        for project in $(find . -name '*.csproj'); do
+          project_dir=$(dirname "$project")
+          project_name=$(basename "$project" .csproj)
+        
+          if [[ "$project_name" == *Lambda ]]; then
+            if git diff --name-only $diff_range | grep -q "^${project_dir#/}/"; then
+              echo "Found changes in project: $project_name at $project_dir"
+        
+              # Append to JSON dictionary
+              dict=$(echo "$dict" | jq --arg key "$project_name" --arg value "$project_dir" '. + {($key): $value}')
             fi
-          done
-
-          # Ensure JSON output is single-line to avoid GitHub Actions errors
-          encoded_dict=$(echo "$dict" | jq -c '.')
-
-          # Store the final dictionary as an output variable
-          echo "CHANGED_PROJECTS=$encoded_dict" >> $GITHUB_OUTPUT
+          fi
+        done
+        
+        # Output result as a single-line JSON object
+        encoded_dict=$(echo "$dict" | jq -c '.')
+        
+        echo "CHANGED_PROJECTS=$encoded_dict" >> "$GITHUB_OUTPUT"
 
     - name: Build and deploy Lambda functions
       if: steps.changed-projects.outputs.CHANGED_PROJECTS != '{}'
