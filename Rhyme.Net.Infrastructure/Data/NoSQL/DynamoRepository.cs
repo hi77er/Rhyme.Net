@@ -1,9 +1,10 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Rhyme.Net.Core.Domain.OrderAggregate;
 using Rhyme.Net.Core.Interfaces;
 
-public class DynamoRepository<T, TId> where T : class
+public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
+  where T : class
+  where TId : notnull
 {
   protected readonly Dictionary<string, IList<IEvent>> _eventStreams = new();
   protected readonly string _tableName;

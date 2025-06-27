@@ -41,11 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Handlers.OrderEve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Console", "Rhyme.Net.Console\Rhyme.Net.Console.csproj", "{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rhyme.Net.Commands.CouponsForCampaign", "Rhyme.Net.Commands.CouponsForCampaign", "{5DA548FA-5E57-173A-D507-21006DFCB795}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9E1724F8-2476-8963-A141-7CAA0265D102}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Commands.CouponsForCampaign", "Rhyme.Net.Commands.CouponsForCampaign\src\Rhyme.Net.Commands.CouponsForCampaign\Rhyme.Net.Commands.CouponsForCampaign.csproj", "{3AD1F217-AEED-4EFF-8F81-FF4FA74D9485}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rhyme.Net.Commands.CouponsForCampaignLambda", "Rhyme.Net.Commands.CouponsForCampaignLambda", "{C2189B7B-34A1-E06F-9428-5BA4049CAA5E}"
 EndProject

@@ -6,9 +6,9 @@ namespace Rhyme.Net.UseCases.Coupons.GenerateForCampaign;
 
 public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCommand, Result<bool>>
 {
-  private readonly IRepository<Coupon> _repository;
+  private readonly IDynamoRepository<Coupon, string> _repository;
 
-  public GenerateForCampaignHandler(IRepository<Coupon> repository)
+  public GenerateForCampaignHandler(IDynamoRepository<Coupon, string> repository)
   {
     _repository = repository;
   }

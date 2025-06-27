@@ -6,6 +6,7 @@ using Amazon.Lambda.Core;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
+using Rhyme.Net.Core.Domain.CouponAggregate;
 using Rhyme.Net.Infrastructure.Data.NoSQL;
 using Rhyme.Net.UseCases.Coupons;
 using Rhyme.Net.UseCases.Coupons.GenerateForCampaign;
@@ -66,7 +67,7 @@ public class Function
                 var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
                 return new DynamoDBContext(client);
             })
-            .AddSingleton<CouponRepository>()
+            .AddSingleton<IDynamoRepository<Coupon, string>, CouponRepository>()
             .AddSingleton<GenerateForCampaignHandler>()
             .BuildServiceProvider();
 
