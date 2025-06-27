@@ -12,7 +12,7 @@ using Rhyme.Net.Core.Sourcing.Payloads;
 namespace Rhyme.Net.Core.Domain.OrderAggregate;
 
 [DynamoDBTable("orders")]
-public class Order : HasDomainEventsBase, IAggregateRoot
+public class Order : DynamoDbEntity, IAggregateRoot
 {
   [DynamoDBHashKey("id")]
   [DynamoDBProperty(Converter = typeof(GuidConverter))]

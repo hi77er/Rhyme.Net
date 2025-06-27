@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model;
 using Ardalis.GuardClauses;
 using Ardalis.SharedKernel;
 using Rhyme.Net.Core.Converters;
@@ -6,7 +7,7 @@ using Rhyme.Net.Core.Converters;
 namespace Rhyme.Net.Core.Domain.CouponAggregate;
 
 [DynamoDBTable("coupons")]
-public class Coupon : IAggregateRoot
+public class Coupon : DynamoDbEntity, IAggregateRoot
 {
   [DynamoDBHashKey("id")]
   [DynamoDBProperty(Converter = typeof(GuidConverter))]
@@ -27,5 +28,12 @@ public class Coupon : IAggregateRoot
     CampaignId = Guard.Against.NullOrEmpty(campaignId, nameof(campaignId));
   }
 
-
+  public override Dictionary<string, AttributeValue> ToAttributeValues()
+  {
+    return new Dictionary<string, AttributeValue>
+    {
+      ["id"] = new AttributeValue { S = Id },
+      ["campaignId"] = new AttributeValue { S = CampaignId }
+    };
+  }
 }

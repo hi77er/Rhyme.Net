@@ -2,6 +2,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
 using Ardalis.SharedKernel;
+using Rhyme.Net.Core.Domain.CouponAggregate;
 using Rhyme.Net.Core.Domain.OrderAggregate;
 using Rhyme.Net.Core.Sourcing;
 using Rhyme.Net.Infrastructure.Data.NoSQL;
@@ -64,8 +65,8 @@ public class DynamoDbTestFixture<TDomainAggregate> where TDomainAggregate : clas
     return new DynamoRepository<Event, Guid>(_dbClient, _dbContext);
   }
 
-  protected CouponRepository GetCouponsRepository()
+  protected DynamoRepository<Coupon, string> GetCouponsRepository()
   {
-    return new CouponRepository(_dbClient, _dbContext);
+    return new DynamoRepository<Coupon, string>(_dbClient, _dbContext);
   }
 }

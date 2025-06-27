@@ -67,7 +67,7 @@ public class Function
                 var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
                 return new DynamoDBContext(client);
             })
-            .AddSingleton<IDynamoRepository<Coupon, string>, CouponRepository>()
+            .AddSingleton<IDynamoRepository<Coupon, string>, DynamoRepository<Coupon, string>>()
             .AddSingleton<GenerateForCampaignHandler>()
             .BuildServiceProvider();
 

@@ -5,7 +5,7 @@ using Rhyme.Net.Core.Interfaces;
 namespace Rhyme.Net.Core.Sourcing;
 
 [DynamoDBTable("events")]
-public class Event : IEvent
+public class Event : DynamoDbEntity, IEvent
 {
   [DynamoDBHashKey("aggregateName")]
   public string AggregateName { get; set; } = string.Empty;
