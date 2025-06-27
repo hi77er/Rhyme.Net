@@ -27,7 +27,7 @@ resource "aws_lambda_function" "apigateway_lambdas" {
 resource "aws_lambda_permission" "allow_api_gateway" {
   for_each      = var.api_gateway_lambda_definitions
   depends_on    = [aws_lambda_function.apigateway_lambdas]
-  statement_id  = "AllowApiGatewayInvoke-${each.value}"
+  statement_id  = "AllowApiGatewayInvoke-${each.key}"
   action        = "lambda:InvokeFunction"
   function_name = each.value
   principal     = "apigateway.amazonaws.com"
