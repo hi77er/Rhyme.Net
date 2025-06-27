@@ -18,7 +18,7 @@ public class Function
     /// <returns></returns>
     public APIGatewayHttpApiV2ProxyResponse FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
     {
-        Console.WriteLine($"Lambda v51");
+        Console.WriteLine($"Lambda v52");
 
         context.Logger.LogLine($"Received request: {JsonSerializer.Serialize(request)}");
 
