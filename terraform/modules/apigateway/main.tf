@@ -114,8 +114,8 @@ resource "aws_api_gateway_resource" "coupons" {
 
 locals {
   resource_map = {
-    "api/orders"      = aws_api_gateway_resource.orders.id
-    "api/orders/{id}" = aws_api_gateway_resource.orders_by_id.id
+    # "api/orders"      = aws_api_gateway_resource.orders.id
+    # "api/orders/{id}" = aws_api_gateway_resource.orders_by_id.id
     "api/coupons"     = aws_api_gateway_resource.coupons.id
   }
 }
@@ -225,16 +225,10 @@ resource "aws_api_gateway_integration_response" "integration_cors_response" {
   status_code = "200"
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin"  = true
-    "method.response.header.Access-Control-Allow-Methods" = true
-    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST,PUT,DELETE'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type'"
   }
-
-  #   response_parameters = {
-  #     "method.response.header.Access-Control-Allow-Origin"  = "'*'"
-  #     "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET,POST,PUT,DELETE'"
-  #     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type'"
-  #   }
 }
 
 resource "aws_api_gateway_deployment" "generic_api_deployment" {
