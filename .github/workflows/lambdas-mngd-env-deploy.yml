@@ -67,12 +67,12 @@ jobs:
           if [[ "$project_name" == *Lambda ]]; then
             echo Found Lambda project: $project_name
 
-            if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^$project_dir/"; then
-              echo "Found changes in project: $project_name at $project_dir"
+            # if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^$project_dir/"; then
+            # echo "Found changes in project: $project_name at $project_dir"
           
-              # Append to JSON dictionary
-              dict=$(echo "$dict" | jq --arg key "$project_name" --arg value "$project_dir" '. + {($key): $value}')
-            fi
+            # Append to JSON dictionary
+            dict=$(echo "$dict" | jq --arg key "$project_name" --arg value "$project_dir" '. + {($key): $value}')
+            # fi
           fi
         done
 
