@@ -13,7 +13,7 @@ using Rhyme.Net.UseCases.Coupons.GenerateForCampaign;
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
 
-namespace Rhyme.Net.Commands.CouponsForCampaign;
+namespace Rhyme.Net.Commands.CouponsForCampaignLambda;
 
 public class Function
 {

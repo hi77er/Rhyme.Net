@@ -12,5 +12,5 @@
   "function-runtime": "dotnet8",
   "function-memory-size": 128,
   "function-timeout": 60,
-  "function-handler": "Rhyme.Net.Commands.CouponsForCampaign::Rhyme.Net.Commands.CouponsForCampaign.Function::FunctionHandler"
+  "function-handler": "Rhyme.Net.Commands.CouponsForCampaignLambda::Rhyme.Net.Commands.CouponsForCampaignLambda.Function::FunctionHandler"
 }

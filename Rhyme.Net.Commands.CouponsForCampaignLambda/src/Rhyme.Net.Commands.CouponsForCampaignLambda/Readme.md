@@ -38,12 +38,12 @@ If already installed check if new version is available.
 
 Execute unit tests
 ```
-    cd "Rhyme.Net.Commands.CouponsForCampaign/test/Rhyme.Net.Commands.CouponsForCampaign.Tests"
+    cd "Rhyme.Net.Commands.CouponsForCampaignLambda/test/Rhyme.Net.Commands.CouponsForCampaignLambda.Tests"
     dotnet test
 ```
 
 Deploy function to AWS Lambda
 ```
-    cd "Rhyme.Net.Commands.CouponsForCampaign/src/Rhyme.Net.Commands.CouponsForCampaign"
+    cd "Rhyme.Net.Commands.CouponsForCampaignLambda/src/Rhyme.Net.Commands.CouponsForCampaignLambda"
     dotnet lambda deploy-function
 ```

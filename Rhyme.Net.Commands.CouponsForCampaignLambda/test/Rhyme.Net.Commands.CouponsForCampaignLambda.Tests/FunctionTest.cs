@@ -2,7 +2,7 @@ using Xunit;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.TestUtilities;
 
-namespace Rhyme.Net.Commands.CouponsForCampaign.Tests;
+namespace Rhyme.Net.Commands.CouponsForCampaignLambda.Tests;
 
 public class FunctionTest
 {

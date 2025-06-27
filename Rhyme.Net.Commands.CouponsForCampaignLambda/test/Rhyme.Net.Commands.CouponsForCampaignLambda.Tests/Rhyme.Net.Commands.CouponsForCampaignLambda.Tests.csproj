@@ -13,6 +13,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Rhyme.Net.Commands.CouponsForCampaign\Rhyme.Net.Commands.CouponsForCampaign.csproj" />
+    <ProjectReference Include="..\..\src\Rhyme.Net.Commands.CouponsForCampaignLambda\Rhyme.Net.Commands.CouponsForCampaignLambda.csproj" />
   </ItemGroup>
 </Project>
