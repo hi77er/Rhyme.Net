@@ -1,10 +1,10 @@
 resource "aws_api_gateway_rest_api" "generic_api" {
-  name        = "OrdersAPI"
-  description = "API Gateway for orders service"
+  name        = "GenericAPI"
+  description = "API Gateway for generic API services"
 }
 
 # resource "aws_cloudwatch_log_group" "api_gw_logs" {
-#   name              = "/aws/api-gateway/orders-api"
+#   name              = "/aws/api-gateway/generic-api"
 #   retention_in_days = 1
 # }
 
