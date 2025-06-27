@@ -25,7 +25,7 @@ public class GenerateCampaignCouponsService() : IGenerateCampaignCouponsService
   public async Task<Result> GenerateAsync(string campaignId, int totalCouponsCount)
   {
     Guard.Against.NullOrEmpty(campaignId, nameof(campaignId));
-    Console.WriteLine("Starting Coupon generation for campaign: {campaignId}", campaignId);
+    Console.WriteLine($"Starting Coupon generation for campaign: {campaignId}");
 
     HashSet<string> results = new HashSet<string>(totalCouponsCount);
     Console.WriteLine($"Generating {totalCouponsCount:N0} unique 12-character Base32 strings...");
