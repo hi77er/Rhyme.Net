@@ -62,6 +62,7 @@ jobs:
         # Loop through all csproj files
         for project in $(find . -name '*.csproj'); do
           project_dir=$(dirname "$project")
+          echo project_dir
           project_name=$(basename "$project" .csproj)
           echo project_name
 
