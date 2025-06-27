@@ -32,7 +32,7 @@ public class Function
     public APIGatewayHttpApiV2ProxyResponse FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
     {
         context.Logger.LogLine($"HANDLER: Lambda v58");
-        // context.Logger.LogLine($"HANDLER: Received request: {JsonSerializer.Serialize(request)}");
+        context.Logger.LogLine($"HANDLER: Received request: {JsonSerializer.Serialize(request)}");
 
         var requestBody = JsonSerializer.Deserialize<CouponsForCampaignRequestBody>(request.Body);
         Guard.Against.Null(requestBody, nameof(requestBody));
