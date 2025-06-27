@@ -88,10 +88,16 @@ resource "aws_lambda_permission" "api_gateway_invoke" {
   source_arn    = "${aws_api_gateway_rest_api.generic_api.execution_arn}/*/*"
 }
 
-resource "aws_api_gateway_resource" "orders" {
+resource "aws_api_gateway_resource" "api" {
   rest_api_id = aws_api_gateway_rest_api.generic_api.id
   parent_id   = aws_api_gateway_rest_api.generic_api.root_resource_id
-  path_part   = "api/orders"
+  path_part   = "api"
+}
+
+resource "aws_api_gateway_resource" "orders" {
+  rest_api_id = aws_api_gateway_rest_api.generic_api.id
+  parent_id   = aws_api_gateway_resource.api.id
+  path_part   = "orders"
 }
 
 resource "aws_api_gateway_resource" "orders_by_id" {
@@ -102,15 +108,15 @@ resource "aws_api_gateway_resource" "orders_by_id" {
 
 resource "aws_api_gateway_resource" "coupons" {
   rest_api_id = aws_api_gateway_rest_api.generic_api.id
-  parent_id   = aws_api_gateway_rest_api.generic_api.root_resource_id
-  path_part   = "api/coupons"
+  parent_id   = aws_api_gateway_resource.api.id
+  path_part   = "coupons"
 }
 
 locals {
   resource_map = {
     "api/orders"      = aws_api_gateway_resource.orders.id
     "api/orders/{id}" = aws_api_gateway_resource.orders_by_id.id
-    "api/coupons"      = aws_api_gateway_resource.coupons.id
+    "api/coupons"     = aws_api_gateway_resource.coupons.id
   }
 }
 
