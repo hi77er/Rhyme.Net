@@ -67,8 +67,8 @@ variable "api_gateway_lambda_definitions" {
     }
     "CouponsForCampaignLambda-dev" = {
       lambda_name   = "CouponsForCampaignLambda-dev"
-      memory_size   = 128
-      timeout       = 60
+      memory_size   = 256
+      timeout       = 360
       handler       = "Rhyme.Net.Commands.CouponsForCampaignLambda::Rhyme.Net.Commands.CouponsForCampaignLambda.Function::FunctionHandler"
       runtime       = "dotnet8"
       http_method   = "POST"
