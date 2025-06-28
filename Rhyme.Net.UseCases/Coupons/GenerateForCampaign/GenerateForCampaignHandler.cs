@@ -40,6 +40,9 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
       await _repository.WriteBatchAsync(coupons);
       Console.WriteLine($"BatchWrite complete.");
 
+      sw.Stop();
+      Console.WriteLine($"⏱ Time taken: {sw.Elapsed.TotalSeconds:N2} seconds.");
+
       // await _repository.FlushTableAsync();
       // Console.WriteLine($"Table flushed.");
     }
@@ -47,9 +50,6 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
     {
       Console.WriteLine($"Error generating coupons for campaign {command.CampaignId}: {ex.Message}, {ex.StackTrace}");
     }
-
-    sw.Stop();
-    Console.WriteLine($"⏱ Time taken: {sw.Elapsed.TotalSeconds:N2} seconds.");
 
     return Result.Success(true);
   }
