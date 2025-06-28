@@ -22,7 +22,7 @@ public class GenerateCampaignCouponsService() : IGenerateCampaignCouponsService
   // Domain services are used to encapsulate domain logic that doesn't naturally fit within an entity or value object.
   // This often involves logic that spans multiple aggregates or requires external dependencies. 
 
-  public async Task<Result> GenerateAsync(string campaignId, int totalCouponsCount)
+  public async Task<Result<HashSet<string>>> GenerateAsync(string campaignId, int totalCouponsCount)
   {
     Guard.Against.NullOrEmpty(campaignId, nameof(campaignId));
     Console.WriteLine($"Starting Coupon generation for campaign: {campaignId}");
@@ -46,7 +46,7 @@ public class GenerateCampaignCouponsService() : IGenerateCampaignCouponsService
     // await _mediator.Publish(domainEvent);
 
     await Task.Delay(1);
-    return Result.Success();
+    return Result.Success(results);
   }
 
 

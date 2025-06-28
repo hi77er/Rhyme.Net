@@ -8,10 +8,12 @@ namespace Rhyme.Net.UseCases.Coupons.GenerateForCampaign;
 
 public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCommand, Result<bool>>
 {
+  private readonly IDynamoRepository<Coupon, string> _repository;
   private readonly IGenerateCampaignCouponsService _service;
 
-  public GenerateForCampaignHandler(IGenerateCampaignCouponsService service)
+  public GenerateForCampaignHandler(IDynamoRepository<Coupon, string> repository, IGenerateCampaignCouponsService service)
   {
+    _repository = repository;
     _service = service;
   }
 
@@ -21,8 +23,22 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
 
     try
     {
-      Console.WriteLine($"Generating coupons for campaign {command.CampaignId}...");
-      await _service.GenerateAsync(command.CampaignId, command.TotalCouponsCount);
+      Console.WriteLine($"Generating coupons for campaign {command.CampaignId} ...");
+      var couponsResult = await _service.GenerateAsync(command.CampaignId, command.TotalCouponsCount);
+      Console.WriteLine($"Generation complete.");
+
+      var coupons = couponsResult
+        .Value
+        .Select(couponId => new Coupon
+        {
+          Id = couponId,
+          CampaignId = command.CampaignId,
+        })
+        .AsEnumerable();
+      Console.WriteLine($"Projection complete.");
+
+      await _repository.WriteBatchAsync(coupons);
+      Console.WriteLine($"BatchWrite complete.");
     }
     catch (Exception ex)
     {

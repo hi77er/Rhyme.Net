@@ -79,7 +79,7 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
     if (response.UnprocessedItems.Count > 0)
     {
       // Simple retry (can be expanded with exponential backoff)
-      await Task.Delay(250);
+      await Task.Delay(50);
       await FlushBatchAsync(response.UnprocessedItems[_tableName]);
     }
   }
