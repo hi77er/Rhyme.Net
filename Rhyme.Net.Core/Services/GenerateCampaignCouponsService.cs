@@ -27,6 +27,9 @@ public class GenerateCampaignCouponsService() : IGenerateCampaignCouponsService
     Guard.Against.NullOrEmpty(campaignId, nameof(campaignId));
     Console.WriteLine($"Starting Coupon generation for campaign: {campaignId}");
 
+    GC.Collect();
+    long before = GC.GetTotalMemory(true);
+
     HashSet<string> results = new HashSet<string>(totalCouponsCount);
     Console.WriteLine($"Generating {totalCouponsCount:N0} unique 12-character Base32 strings...");
 
@@ -39,8 +42,11 @@ public class GenerateCampaignCouponsService() : IGenerateCampaignCouponsService
 
       results.Add(encoded);
     }
-
     Console.WriteLine($"✅ Done. Generated {results.Count:N0} unique coupon IDs.");
+
+    GC.Collect();
+    long after = GC.GetTotalMemory(true);
+    Console.WriteLine($"Used ~{(after - before) / (1024 * 1024)} MB");
 
     // var domainEvent = new MenuDeletedEvent(aggregateToDelete);
     // await _mediator.Publish(domainEvent);
