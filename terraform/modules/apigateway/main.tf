@@ -209,7 +209,6 @@ resource "aws_api_gateway_integration" "generic_resource_integration" {
   integration_http_method = each.value.http_method
   type                    = "AWS_PROXY"
   uri                     = var.api_gateway_lambda_invoke_arns[each.key]
-  timeout_milliseconds = each.value.timeout * 1000
 }
 
 resource "aws_api_gateway_integration_response" "integration_cors_response" {
