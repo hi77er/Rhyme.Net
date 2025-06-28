@@ -39,6 +39,9 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
 
       await _repository.WriteBatchAsync(coupons);
       Console.WriteLine($"BatchWrite complete.");
+
+      await _repository.FlushTableAsync();
+      Console.WriteLine($"Table flushed.");
     }
     catch (Exception ex)
     {

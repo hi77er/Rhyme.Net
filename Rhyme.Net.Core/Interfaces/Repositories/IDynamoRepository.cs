@@ -10,5 +10,8 @@ public interface IDynamoRepository<T, TKey> where T : class
   Task<T> GetByIdAsync(string id, string hashKey);
   Task SaveAsync(T item);
   Task WriteBatchAsync(IEnumerable<T> entities);
+  Task DeleteBatchAsync(IEnumerable<T> entities);
   Task DeleteAsync(T item);
+  Task FlushTableAsync();
+  
 }
