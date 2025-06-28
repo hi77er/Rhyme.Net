@@ -40,42 +40,47 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
   public async Task SaveAsync(T item) => await _dbContext.SaveAsync(item, _config);
   public async Task DeleteAsync(T item) => await _dbContext.DeleteAsync(item, _config);
 
-  public async Task FlushTableAsync()
+  public async Task<ScanResponse> ScanAsync(Dictionary<string, AttributeValue> lastEvaluatedKey, int limit = 1000, CancellationToken cancellationToken = default)
+  {
+    var scanRequest = new ScanRequest
+    {
+      TableName = _tableName,
+      ExclusiveStartKey = lastEvaluatedKey,
+      Limit = limit
+    };
+
+    var scanResponse = await _dbClient.ScanAsync(scanRequest, cancellationToken);
+
+    return scanResponse;
+  }
+
+  public async Task FlushTableAsync(CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"Deleting all items from table '{_tableName}'...");
     var lastEvaluatedKey = new Dictionary<string, AttributeValue>();
 
     do
     {
-      var scanRequest = new ScanRequest
-      {
-        TableName = _tableName,
-        ExclusiveStartKey = lastEvaluatedKey,
-        ProjectionExpression = "id" // Adjust this if your partition key has a different name
-      };
-
-      var scanResponse = await _dbClient.ScanAsync(scanRequest);
+      var scanResponse = await ScanAsync(lastEvaluatedKey, 500, cancellationToken);
       lastEvaluatedKey = scanResponse.LastEvaluatedKey;
 
-      var allItems = scanResponse.Items;
-      await DeleteBatchAsync(allItems);
-
+      await DeleteBatchAsync(scanResponse.Items, cancellationToken);
     } while (lastEvaluatedKey.Count > 0);
 
     Console.WriteLine("All records deleted.");
   }
 
-  public async Task DeleteBatchAsync(IEnumerable<T> entities)
+  public async Task DeleteBatchAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
   {
     var batch = new List<WriteRequest>();
     var attributeValueItems = entities
       .Select(entity => entity.ToAttributeValues())
       .ToList();
 
-    await DeleteBatchAsync(attributeValueItems);
+    await DeleteBatchAsync(attributeValueItems, cancellationToken);
   }
 
-  public async Task DeleteBatchAsync(IEnumerable<Dictionary<string, AttributeValue>> items)
+  public async Task DeleteBatchAsync(IEnumerable<Dictionary<string, AttributeValue>> items, CancellationToken cancellationToken = default)
   {
     var batch = new List<WriteRequest>();
 
@@ -88,26 +93,26 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
 
       if (batch.Count == BatchSize)
       {
-        await FlushBatchAsync(batch);
+        await FlushBatchAsync(batch, cancellationToken);
         batch.Clear();
       }
     }
 
     if (batch.Count > 0)
-      await FlushBatchAsync(batch);
+      await FlushBatchAsync(batch, cancellationToken);
   }
 
-  public async Task WriteBatchAsync(IEnumerable<T> entities)
+  public async Task WriteBatchAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
   {
     var batch = new List<WriteRequest>();
     var attributeValueItems = entities
       .Select(entity => entity.ToAttributeValues())
       .ToList();
 
-    await WriteBatchAsync(attributeValueItems);
+    await WriteBatchAsync(attributeValueItems, cancellationToken);
   }
 
-  public async Task WriteBatchAsync(IEnumerable<Dictionary<string, AttributeValue>> items)
+  public async Task WriteBatchAsync(IEnumerable<Dictionary<string, AttributeValue>> items, CancellationToken cancellationToken = default)
   {
     var batch = new List<WriteRequest>();
 
@@ -120,16 +125,16 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
 
       if (batch.Count == BatchSize)
       {
-        await FlushBatchAsync(batch);
+        await FlushBatchAsync(batch, cancellationToken);
         batch.Clear();
       }
     }
 
     if (batch.Count > 0)
-      await FlushBatchAsync(batch);
+      await FlushBatchAsync(batch, cancellationToken);
   }
 
-  private async Task FlushBatchAsync(List<WriteRequest> batch)
+  private async Task FlushBatchAsync(List<WriteRequest> batch, CancellationToken cancellationToken = default)
   {
     var request = new BatchWriteItemRequest
     {
@@ -139,13 +144,13 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
       }
     };
 
-    var response = await _dbClient.BatchWriteItemAsync(request);
+    var response = await _dbClient.BatchWriteItemAsync(request, cancellationToken);
 
     if (response.UnprocessedItems.Count > 0)
     {
       // Simple retry (can be expanded with exponential backoff)
       await Task.Delay(50);
-      await FlushBatchAsync(response.UnprocessedItems[_tableName]);
+      await FlushBatchAsync(response.UnprocessedItems[_tableName], cancellationToken);
     }
   }
 
@@ -157,5 +162,4 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
     var newTableName = $"{pluralized}-{env}";
     return newTableName;
   }
-
 }

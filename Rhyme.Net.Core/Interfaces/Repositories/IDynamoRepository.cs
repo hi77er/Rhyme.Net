@@ -1,4 +1,5 @@
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model;
 using Ardalis.SharedKernel;
 
 public interface IDynamoRepository<T, TKey> where T : class
@@ -9,9 +10,10 @@ public interface IDynamoRepository<T, TKey> where T : class
   Task<T> GetByIdAsync(Guid id, Guid hashKey);
   Task<T> GetByIdAsync(string id, string hashKey);
   Task SaveAsync(T item);
-  Task WriteBatchAsync(IEnumerable<T> entities);
-  Task DeleteBatchAsync(IEnumerable<T> entities);
+  Task<ScanResponse> ScanAsync(Dictionary<string, AttributeValue> lastEvaluatedKey, int limit = 1000, CancellationToken cancellationToken = default);
+  Task WriteBatchAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
+  Task DeleteBatchAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
   Task DeleteAsync(T item);
-  Task FlushTableAsync();
+  Task FlushTableAsync(CancellationToken cancellationToken = default);
   
 }
