@@ -24,21 +24,21 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
     try
     {
       Console.WriteLine($"Generating coupons for campaign {command.CampaignId} ...");
-      // var couponsResult = await _service.GenerateAsync(command.CampaignId, command.TotalCouponsCount);
-      // Console.WriteLine($"Generation complete.");
+      var couponsResult = await _service.GenerateAsync(command.CampaignId, command.TotalCouponsCount);
+      Console.WriteLine($"Generation complete.");
 
-      // var coupons = couponsResult
-      //   .Value
-      //   .Select(couponId => new Coupon
-      //   {
-      //     Id = couponId,
-      //     CampaignId = command.CampaignId,
-      //   })
-      //   .AsEnumerable();
-      // Console.WriteLine($"Projection complete.");
+      var coupons = couponsResult
+        .Value
+        .Select(couponId => new Coupon
+        {
+          Id = couponId,
+          CampaignId = command.CampaignId,
+        })
+        .AsEnumerable();
+      Console.WriteLine($"Projection complete.");
 
-      // await _repository.WriteBatchAsync(coupons);
-      // Console.WriteLine($"BatchWrite complete.");
+      await _repository.WriteBatchAsync(coupons);
+      Console.WriteLine($"BatchWrite complete.");
 
       await _repository.FlushTableAsync();
       Console.WriteLine($"Table flushed.");
