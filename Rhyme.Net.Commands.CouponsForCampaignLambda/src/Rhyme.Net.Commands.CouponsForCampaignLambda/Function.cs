@@ -1,14 +1,11 @@
 using System.Text.Json;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
+using Amazon.Batch;
+using Amazon.Batch.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
-using Rhyme.Net.Core.Domain.CouponAggregate;
-using Rhyme.Net.Core.Interfaces;
-using Rhyme.Net.Core.Services;
 using Rhyme.Net.UseCases.Coupons;
 using Rhyme.Net.UseCases.Coupons.GenerateForCampaign;
 
@@ -19,9 +16,8 @@ namespace Rhyme.Net.Commands.CouponsForCampaignLambda;
 
 public class Function
 {
-    
-    private IServiceProvider? _serviceProvider;
-    private GenerateForCampaignHandler? _handler;
+
+    // private GenerateForCampaignHandler? _handler;
 
     /// <summary>
     /// A simple function that takes a string and does a ToUpper
@@ -29,7 +25,7 @@ public class Function
     /// <param name="request">The API gateway request object for the Lambda function handler to process.</param>
     /// <param name="context">The ILambdaContext that provides methods for logging and describing the Lambda environment.</param>
     /// <returns></returns>
-    public APIGatewayHttpApiV2ProxyResponse FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
+    public async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
     {
         context.Logger.LogLine($"HANDLER: Lambda v58");
         context.Logger.LogLine($"HANDLER: Received request: {JsonSerializer.Serialize(request)}");
@@ -37,37 +33,44 @@ public class Function
         var requestBody = JsonSerializer.Deserialize<CouponsForCampaignRequestBody>(request.Body);
         Guard.Against.Null(requestBody, nameof(requestBody));
 
-        var command = new GenerateForCampaignCommand(requestBody.CampaignId, requestBody.TotalCouponsCount);
+        var batchClient = new AmazonBatchClient();
+        var submitRequest = new SubmitJobRequest
+        {
+            JobName = "CouponsForCampaignJob",
+            JobQueue = "your-job-queue-name",
+            JobDefinition = "your-job-definition-name",
+            ContainerOverrides = new ContainerOverrides
+            {
+                Command = new List<string> { requestBody.CampaignId, requestBody.TotalCouponsCount.ToString() }
+            }
+        };
 
-        _serviceProvider = ConfigureServices();
-        _handler = _serviceProvider.GetRequiredService<GenerateForCampaignHandler>();
+        var jobResponse = await batchClient.SubmitJobAsync(submitRequest);
 
-        var result = _handler.Handle(command, CancellationToken.None).Result; // Call the repository method
-        context.Logger.LogLine($"HANDLER: Success = {result.IsSuccess};");
 
-        var response = new CouponsForCampaignResponse(result);
-
+        context.Logger.LogLine($"HANDLER: Йоб респонсе: {JsonSerializer.Serialize(jobResponse)}");
+        var response = new CouponsForCampaignResponse(jobResponse.HttpStatusCode == System.Net.HttpStatusCode.OK);
         return BuildResponse(response);
     }
 
     private static IServiceProvider ConfigureServices()
     {
         var serviceProvider = new ServiceCollection()
-            .AddSingleton<IAmazonDynamoDB>(_ =>
-            {
-                var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION") ?? "eu-central-1";
-                var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
-                return client;
-            })
-            .AddSingleton<IDynamoDBContext>(_ =>
-            {
-                var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION") ?? "eu-central-1";
-                var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
-                return new DynamoDBContext(client);
-            })
-            .AddSingleton<IDynamoRepository<Coupon, string>, DynamoRepository<Coupon, string>>()
-            .AddSingleton<IGenerateCampaignCouponsService, GenerateCampaignCouponsService>()
-            .AddSingleton<GenerateForCampaignHandler>()
+            // .AddSingleton<IAmazonDynamoDB>(_ =>
+            // {
+            //     var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION") ?? "eu-central-1";
+            //     var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
+            //     return client;
+            // })
+            // .AddSingleton<IDynamoDBContext>(_ =>
+            // {
+            //     var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION") ?? "eu-central-1";
+            //     var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
+            //     return new DynamoDBContext(client);
+            // })
+            // .AddSingleton<IDynamoRepository<Coupon, string>, DynamoRepository<Coupon, string>>()
+            // .AddSingleton<IGenerateCampaignCouponsService, GenerateCampaignCouponsService>()
+            // .AddSingleton<GenerateForCampaignHandler>()
             .BuildServiceProvider();
 
         return serviceProvider;

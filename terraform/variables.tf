@@ -90,3 +90,11 @@ variable "dynamodb_lambda_definitions" {
     }
   }
 }
+
+variable "batch_job_definitions" {
+  default = {
+    "CouponsForCampaignJob-dev" = {
+      job_name = "CouponsForCampaignJob-dev"
+    }
+  }
+}

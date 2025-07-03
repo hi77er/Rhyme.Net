@@ -15,6 +15,7 @@
     <PackageVersion Include="Ardalis.Specification.EntityFrameworkCore" Version="8.0.0" />
     <PackageVersion Include="Autofac" Version="7.0.1" />
     <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageVersion Include="AWSSDK.Batch" Version="3.7.2.1" />
     <PackageVersion Include="AWSSDK.DynamoDBv2" Version="3.7.300" />
     <PackageVersion Include="AWSSDK.SecretsManager" Version="3.7.102" />
     <PackageVersion Include="Azure.Identity" Version="1.13.1" />

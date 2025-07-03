@@ -1,0 +1,96 @@
+name: Deploy .NET Console Apps (Batch Jobs) as Container Images to AWS ECR
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select environment'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - production
+
+env:
+  ECR_REPOSITORY: batch-jobs-repo-dev
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} 
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
+          aws-region: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Get changed projects
+        id: changed-projects
+        run: |
+          dict="{}"
+
+          if git rev-parse HEAD^ >/dev/null 2>&1; then
+            diff_range="HEAD^ HEAD"
+          else
+            # This case is for the very first commit, or if you want to see uncommitted changes relative to HEAD
+            diff_range="HEAD" # Still compares to HEAD, which won't show uncommitted.
+          fi
+
+          # Loop through all csproj files
+          for project in $(find . -name '*.csproj'); do
+            project_dir=$(dirname "$project")
+            project_name=$(basename "$project" .csproj)
+
+            if [[ "$project_name" == *Job ]]; then
+              echo Found Batch Job project: $project_name
+
+              # if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q "^$project_dir/"; then
+              # echo "Found changes in project: $project_name at $project_dir"
+
+              # Append to JSON dictionary
+              dict=$(echo "$dict" | jq --arg key "$project_name" --arg value "$project_dir" '. + {($key): $value}')
+              # fi
+            fi
+          done
+
+          # Output result as a single-line JSON object
+          encoded_dict=$(echo "$dict" | jq -c '.')
+
+          echo "CHANGED_PROJECTS=$encoded_dict" >> "$GITHUB_OUTPUT"
+
+      - name: Build and deploy Lambda functions
+        if: steps.changed-projects.outputs.CHANGED_PROJECTS != '{}'
+        run: |
+          initial_dir=$(pwd)
+
+          # Decode JSON dictionary
+          changed_projects=$(echo '${{ steps.changed-projects.outputs.CHANGED_PROJECTS }}' | jq -c '.')
+
+          echo "$changed_projects" | jq -r 'to_entries[] | "\(.key) \(.value)"' | while read project_name project_dir; do
+            # Extract substring after the last `.`
+            short_name="${project_name##*.}"
+            echo "Processing short name: $short_name in directory $project_dir"
+
+            # Build the Docker image
+            docker build -t $ECR_REPOSITORY:$short_name "$project_dir"
+
+            # Tag 
+            IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:$short_name"
+            docker tag $ECR_REPOSITORY:$short_name $IMAGE_URI
+
+            # Push
+            docker push $IMAGE_URI
+            echo "Pushed $IMAGE_URI"
+          done
+        env:
+          AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}

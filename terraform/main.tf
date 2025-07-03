@@ -19,6 +19,14 @@ provider "aws" {
   region = var.aws_region
 }
 
+module "batch" {
+  source         = "./modules/batch"
+  aws_account_id = var.aws_account_id
+  aws_region     = var.aws_region
+  env            = var.env
+  batch_job_definitions = var.batch_job_definitions
+}
+
 module "dynamodb" {
   source = "./modules/dynamodb"
   env    = var.env
