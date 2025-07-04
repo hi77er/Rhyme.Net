@@ -97,9 +97,6 @@ resource "aws_batch_job_definition" "coupon_generation_job_def" {
     command          = []
     jobRoleArn       = aws_iam_role.ecs_task_execution_role.arn
     executionRoleArn = aws_iam_role.ecs_task_execution_role.arn
-    networkConfiguration = {
-      assignPublicIp = "ENABLED"
-    }
     platformCapabilities = ["FARGATE"]
   })
 }
