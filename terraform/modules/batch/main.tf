@@ -66,7 +66,7 @@ resource "aws_batch_compute_environment" "coupon_generation_fargate_env" {
   compute_environment_name = "coupon-generation-fargate-ce-${var.env}"
   compute_resources {
     max_vcpus          = 16
-    subnets            = ["<YOUR_SUBNET_ID_1>", "<YOUR_SUBNET_ID_2>"]
+    subnets            = ["subnet-0a420baeba3391c2f", "subnet-0d3dfd7e7e2b58ed4"]
     security_group_ids = [aws_security_group.batch_security_group.id]
     type               = "FARGATE"
   }
