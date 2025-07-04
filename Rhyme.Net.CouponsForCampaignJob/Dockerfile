@@ -1,5 +1,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
+COPY Rhyme.Net.CouponsForCampaignJob/*.csproj ./Rhyme.Net.CouponsForCampaignJob/
+COPY Rhyme.Net.Infrastructure/*.csproj ./Rhyme.Net.Infrastructure/
+COPY Rhyme.Net.UseCases/*.csproj ./Rhyme.Net.UseCases/
 COPY . ./
 RUN dotnet publish -c Release -o /app/publish
 
