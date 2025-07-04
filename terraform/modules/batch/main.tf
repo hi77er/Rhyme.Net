@@ -63,7 +63,7 @@ resource "aws_batch_compute_environment" "coupon_generation_fargate_env" {
     security_group_ids  = [aws_security_group.batch_security_group.id]
     type                = "FARGATE"
   }
-  service_role = aws_iam_role.batch_service_role.arn
+  service_role = aws_iam_role.batch_role.arn
   type         = "MANAGED"
 }
 
