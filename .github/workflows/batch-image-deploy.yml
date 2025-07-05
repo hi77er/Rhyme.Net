@@ -22,6 +22,8 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    env:
+      ENV: ${{ inputs.environment == 'production' && 'prod' || 'dev' }}
 
     steps:
       - name: Checkout code
@@ -107,7 +109,7 @@ jobs:
             project_name=$(basename "$project_dir")
             echo "Project name: $project_name"
 
-            docker_image_name="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:$short_name-${{ vars.ENV }}"
+            docker_image_name="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:$short_name-${{ env.ENV }}"
             echo "Docker image name: $docker_image_name"
             
             docker_build_context="."
