@@ -89,17 +89,28 @@ jobs:
             short_name="${project_name##*.}"
             echo "Processing short name: $short_name in directory $project_dir"
 
-            # Build the Docker image
-            docker build -t $ECR_REPOSITORY:$short_name . 
-            # "$project_dir"
 
-            # Tag 
-            IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:$short_name"
-            docker tag $ECR_REPOSITORY:$short_name $IMAGE_URI
+            # # # # Build the Docker image
+            # # # docker build -t $ECR_REPOSITORY:$short_name . 
+            # # # # "$project_dir"
 
-            # Push
-            docker push $IMAGE_URI
-            echo "Pushed $IMAGE_URI"
+            # # # # Tag 
+            # # # IMAGE_URI="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:$short_name"
+            # # # docker tag $ECR_REPOSITORY:$short_name $IMAGE_URI
+
+            # # # # Push
+            # # # docker push $IMAGE_URI
+            # # # echo "Pushed $IMAGE_URI"
+
+
+            project_name=$(basename "$project_dir")
+            docker_image_name="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:$short_name"
+            docker_build_context="$project_dir"
+            docker_file="$project_dir/Dockerfile"
+            
+            docker build -t "$docker_image_name" -f "$docker_file" "$docker_build_context"
+            aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin "${{ secrets.ECR_REPO_URL }}"
+            docker push "$docker_image_name"
           done
         env:
           AWS_REGION: ${{ vars.AWS_EU_CENTRAL_1_REGION }}
