@@ -115,7 +115,7 @@ jobs:
             docker_file="$project_dir/Dockerfile"
             echo "Docker file: $docker_file"
 
-            docker build -t "$docker_image_name" -f "$docker_file" "$docker_build_context"
+            docker build -t "$docker_image_name" -f "$docker_file" .
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin "${{ secrets.ECR_REPO_URL }}"
             docker push "$docker_image_name"
           done
