@@ -4,6 +4,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
+RUN dotner restore "Rhyme.Net.CouponsForCampaignJob.csproj"
 RUN dotnet publish "Rhyme.Net.CouponsForCampaignJob.csproj" -c Release -o /app/publish
 
 FROM base AS final
