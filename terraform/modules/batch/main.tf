@@ -99,7 +99,6 @@ resource "aws_batch_compute_environment" "coupon_generation_fargate_env" {
     aws_iam_role.ecs_task_execution_role,
     aws_iam_role_policy_attachment.ecs_task_execution_policy_attachment,
     aws_iam_role_policy_attachment.batch_full_access_attachment,
-    aws_iam_role_policy_attachment.ecs_full_access_attachment,
   ]
   compute_resources {
     max_vcpus          = 16
