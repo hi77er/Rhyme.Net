@@ -1,8 +1,5 @@
 data "aws_caller_identity" "current" {}
 
-resource "aws_ecr_repository" "batch_jobs_repo" {
-  name = "batch-jobs-repo-${var.env}"
-}
 
 data "aws_iam_policy_document" "batch_policy" {
   statement {
@@ -15,33 +12,61 @@ data "aws_iam_policy_document" "batch_policy" {
 }
 
 resource "aws_iam_role" "batch_role" {
+  depends_on = [ data.aws_iam_policy_document.batch_policy ]
   name               = "aws-batch-service-role-${var.env}"
   assume_role_policy = data.aws_iam_policy_document.batch_policy.json
 }
 
-resource "aws_iam_role_policy_attachment" "batch_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "batch_full_access_attachment" {
+  depends_on = [aws_iam_role.batch_role]
   role       = aws_iam_role.batch_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole"
+  policy_arn = "arn:aws:iam::aws:policy/AWSBatchFullAccess"
 }
 
-resource "aws_iam_role_policy" "ecs_delete_cluster_policy" {
-  name = "allow-ecs-delete-cluster"
-  role = aws_iam_role.batch_role.id
+# resource "aws_ecr_repository" "batch_jobs_repo" {
+#   name = "batch-jobs-repo-${var.env}"
+# }
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "ecs:DeleteCluster",
-          "ecs:ListClusters"
-        ],
-        Resource = "arn:aws:ecs:eu-central-1:${data.aws_caller_identity.current.account_id}:cluster/*"
-      }
-    ]
-  })
-}
+# data "aws_iam_policy_document" "batch_policy" {
+#   statement {
+#     actions = ["sts:AssumeRole"]
+#     principals {
+#       type        = "Service"
+#       identifiers = ["batch.amazonaws.com"]
+#     }
+#   }
+# }
+
+# resource "aws_iam_role" "batch_role" {
+#   name               = "aws-batch-service-role-${var.env}"
+#   assume_role_policy = data.aws_iam_policy_document.batch_policy.json
+# }
+
+# resource "aws_iam_role_policy_attachment" "batch_policy_attachment" {
+#   depends_on = [ aws_iam_role.batch_role ]
+#   role       = aws_iam_role.batch_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole"
+# }
+
+# resource "aws_iam_role_policy" "ecs_delete_cluster_policy" {
+#   name = "allow-ecs-delete-cluster"
+#   depends_on = [ aws_iam_role.batch_role ]
+#   role = aws_iam_role.batch_role.id
+
+#   policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Effect = "Allow",
+#         Action = [
+#           "ecs:DeleteCluster",
+#           "ecs:ListClusters"
+#         ],
+#         Resource = "arn:aws:ecs:eu-central-1:${data.aws_caller_identity.current.account_id}:cluster/*"
+#       }
+#     ]
+#   })
+# }
 
 data "aws_iam_policy_document" "ecs_task_policy" {
   statement {
