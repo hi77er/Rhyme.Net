@@ -26,12 +26,6 @@ resource "aws_iam_role_policy_attachment" "batch_full_access_attachment" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_service_role_policy_attachment" {
-  depends_on = [aws_iam_role.batch_role]
-  role       = aws_iam_role.batch_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-}
-
 resource "aws_iam_role_policy" "ecs_cluster_management_policy" {
   depends_on = [aws_iam_role.batch_role]
   name       = "ecs-cluster-management-policy-${var.env}"
