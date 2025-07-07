@@ -75,6 +75,13 @@ resource "aws_iam_policy" "apigateway_lambda_policy" {
         Effect   = "Allow",
         Resource = "arn:aws:dynamodb:*:*:*"
       },
+      {
+        Action = [
+          "batch:SubmitJob"
+        ],
+        Effect   = "Allow",
+        Resource = "arn:aws:batch:eu-central-1:533792392727:job-definition/*"
+      },
       #Add more policies as needed for lambda execution
     ]
   })
