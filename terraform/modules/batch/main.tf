@@ -33,7 +33,10 @@ resource "aws_iam_role_policy" "ecs_delete_cluster_policy" {
     Statement = [
       {
         Effect = "Allow",
-        Action = ["ecs:DeleteCluster"],
+        Action = [
+          "ecs:DeleteCluster",
+          "ecs:ListClusters"
+        ],
         Resource = "arn:aws:ecs:eu-central-1:${data.aws_caller_identity.current.account_id}:cluster/*"
       }
     ]
