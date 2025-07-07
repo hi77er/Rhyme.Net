@@ -23,6 +23,12 @@ resource "aws_iam_role_policy_attachment" "batch_full_access_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AWSBatchFullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "ecs_full_access_attachment" {
+  depends_on = [aws_iam_role.batch_role]
+  role       = aws_iam_role.batch_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerServiceFullAccess"
+}
+
 resource "aws_ecr_repository" "batch_jobs_repo" {
   name = "batch-jobs-repo-${var.env}"
 }
