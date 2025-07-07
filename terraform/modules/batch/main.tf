@@ -26,6 +26,15 @@ resource "aws_iam_role_policy_attachment" "batch_full_access_attachment" {
   }
 }
 
+resource "aws_iam_role_policy_attachment" "ecs_full_access_attachment" {
+  depends_on = [aws_iam_role.batch_role]
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECS_FullAccess"
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "aws_iam_role_policy" "ecs_cluster_management_policy" {
   depends_on = [aws_iam_role.batch_role]
   name       = "ecs-cluster-management-policy-${var.env}"
@@ -74,7 +83,6 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment" {
-  depends_on = [aws_batch_compute_environment.coupon_generation_fargate_env]
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
@@ -128,10 +136,13 @@ resource "aws_batch_job_queue" "coupon_generation_job_queue" {
 }
 
 resource "aws_batch_job_definition" "coupon_generation_job_def" {
-  depends_on = [aws_batch_compute_environment.coupon_generation_fargate_env]
-  for_each   = var.batch_job_definitions
-  name       = "${each.value.job_name}-def"
-  type       = "container"
+  depends_on = [
+    aws_ecr_repository.batch_jobs_repo,
+    aws_iam_role.ecs_task_execution_role
+  ]
+  for_each = var.batch_job_definitions
+  name     = "${each.value.job_name}-def"
+  type     = "container"
 
   container_properties = jsonencode({
     image                = "${aws_ecr_repository.batch_jobs_repo.repository_url}:${each.value.job_name}"
