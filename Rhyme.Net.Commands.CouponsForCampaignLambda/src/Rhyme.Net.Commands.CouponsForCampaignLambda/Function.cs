@@ -43,7 +43,7 @@ public class Function
         var jobId = await _scheduler.ScheduleAsync(
             jobName: "GenerateCouponsForCampaign",
             jobQueue: "coupon-generation-job-queue",
-            jobDefinition: "coupon-generation-job-definition",
+            jobDefinition: "CouponsForCampaignJob-dev-def",
             args: args);
 
         context.Logger.LogLine($"HANDLER: JobId: {jobId}");
