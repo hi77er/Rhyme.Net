@@ -39,8 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D1D4E22A-981
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Handlers.OrderEventsHandlerLambda", "Rhyme.Net.Handlers.OrderEventsHandlerLambda\src\Rhyme.Net.Handlers.OrderEventsHandlerLambda\Rhyme.Net.Handlers.OrderEventsHandlerLambda.csproj", "{99A58A1C-A29D-4741-80DD-4C3303E11D79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhyme.Net.Console", "Rhyme.Net.Console\Rhyme.Net.Console.csproj", "{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9E1724F8-2476-8963-A141-7CAA0265D102}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rhyme.Net.Commands.CouponsForCampaignLambda", "Rhyme.Net.Commands.CouponsForCampaignLambda", "{C2189B7B-34A1-E06F-9428-5BA4049CAA5E}"
@@ -181,18 +179,6 @@ Global
 		{99A58A1C-A29D-4741-80DD-4C3303E11D79}.Release|x64.Build.0 = Release|Any CPU
 		{99A58A1C-A29D-4741-80DD-4C3303E11D79}.Release|x86.ActiveCfg = Release|Any CPU
 		{99A58A1C-A29D-4741-80DD-4C3303E11D79}.Release|x86.Build.0 = Release|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Debug|x64.Build.0 = Debug|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Debug|x86.Build.0 = Debug|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Release|x64.ActiveCfg = Release|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Release|x64.Build.0 = Release|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Release|x86.ActiveCfg = Release|Any CPU
-		{2DDD61F8-3BEB-4666-9596-DB16E2AE9DB6}.Release|x86.Build.0 = Release|Any CPU
 		{6A07D428-1DBD-472D-8967-F9C1EA227873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6A07D428-1DBD-472D-8967-F9C1EA227873}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A07D428-1DBD-472D-8967-F9C1EA227873}.Debug|x64.ActiveCfg = Debug|Any CPU

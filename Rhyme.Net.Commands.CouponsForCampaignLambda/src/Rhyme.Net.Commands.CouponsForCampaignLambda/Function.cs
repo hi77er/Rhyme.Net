@@ -18,6 +18,7 @@ public class Function
 {
 
     // private GenerateForCampaignHandler? _handler;
+    private IBatchJobScheduler? _scheduler;
 
     /// <summary>
     /// A simple function that takes a string and does a ToUpper
@@ -32,24 +33,21 @@ public class Function
 
         var requestBody = JsonSerializer.Deserialize<CouponsForCampaignRequestBody>(request.Body);
         Guard.Against.Null(requestBody, nameof(requestBody));
+        var args = new List<string> { requestBody.CampaignId, requestBody.TotalCouponsCount.ToString() };
 
-        var batchClient = new AmazonBatchClient();
-        var submitRequest = new SubmitJobRequest
-        {
-            JobName = "CouponsForCampaignJob",
-            JobQueue = "your-job-queue-name",
-            JobDefinition = "your-job-definition-name",
-            ContainerOverrides = new ContainerOverrides
-            {
-                Command = new List<string> { requestBody.CampaignId, requestBody.TotalCouponsCount.ToString() }
-            }
-        };
+        var provider = ConfigureServices();
+        Guard.Against.Null(provider, nameof(provider));
 
-        var jobResponse = await batchClient.SubmitJobAsync(submitRequest);
+        _scheduler = provider.GetRequiredService<IBatchJobScheduler>();
 
+        var jobId = await _scheduler.ScheduleAsync(
+            jobName: "GenerateCouponsForCampaign",
+            jobQueue: "coupon-generation-job-queue",
+            jobDefinition: "coupon-generation-job-definition",
+            args: args);
 
-        context.Logger.LogLine($"HANDLER: Йоб респонсе: {JsonSerializer.Serialize(jobResponse)}");
-        var response = new CouponsForCampaignResponse(jobResponse.HttpStatusCode == System.Net.HttpStatusCode.OK);
+        context.Logger.LogLine($"HANDLER: JobId: {jobId}");
+        var response = new CouponsForCampaignResponse(jobId);
         return BuildResponse(response);
     }
 
@@ -62,15 +60,8 @@ public class Function
             //     var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
             //     return client;
             // })
-            // .AddSingleton<IDynamoDBContext>(_ =>
-            // {
-            //     var region = Environment.GetEnvironmentVariable("DYNAMODB_REGION") ?? "eu-central-1";
-            //     var client = new AmazonDynamoDBClient(Amazon.RegionEndpoint.GetBySystemName(region));
-            //     return new DynamoDBContext(client);
-            // })
-            // .AddSingleton<IDynamoRepository<Coupon, string>, DynamoRepository<Coupon, string>>()
-            // .AddSingleton<IGenerateCampaignCouponsService, GenerateCampaignCouponsService>()
-            // .AddSingleton<GenerateForCampaignHandler>()
+            .AddSingleton<IAmazonBatch, AmazonBatchClient>()
+            .AddSingleton<IBatchJobScheduler, BatchJobScheduler>()
             .BuildServiceProvider();
 
         return serviceProvider;
@@ -81,7 +72,7 @@ public class Function
         return new APIGatewayHttpApiV2ProxyResponse()
         {
             StatusCode = 200,
-            Body = JsonSerializer.Serialize(response.Success),
+            Body = $"JobId: {response.JobId}",
             Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
         };
     }

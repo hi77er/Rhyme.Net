@@ -1,3 +1,3 @@
 ﻿namespace Rhyme.Net.UseCases.Coupons;
 
-public record CouponsForCampaignResponse(bool Success);
+public record CouponsForCampaignResponse(string JobId);
