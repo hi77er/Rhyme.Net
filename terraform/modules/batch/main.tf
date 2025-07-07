@@ -22,6 +22,22 @@ resource "aws_iam_role_policy_attachment" "batch_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole"
 }
 
+resource "aws_iam_role_policy" "ecs_delete_cluster_policy" {
+  name = "allow-ecs-delete-cluster"
+  role = aws_iam_role.batch_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = ["ecs:DeleteCluster"],
+        Resource = "arn:aws:ecs:eu-central-1:${data.aws_caller_identity.current.account_id}:cluster/*"
+      }
+    ]
+  })
+}
+
 data "aws_iam_policy_document" "ecs_task_policy" {
   statement {
     actions = ["sts:AssumeRole"]
