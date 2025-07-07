@@ -64,6 +64,7 @@ resource "aws_security_group" "batch_security_group" {
 
 resource "aws_batch_compute_environment" "coupon_generation_fargate_env" {
   compute_environment_name = "coupon-generation-fargate-ce-${var.env}"
+  depends_on               = [aws_security_group.batch_security_group]
   compute_resources {
     max_vcpus          = 16
     subnets            = ["subnet-0a420baeba3391c2f", "subnet-0d3dfd7e7e2b58ed4"]
@@ -75,9 +76,10 @@ resource "aws_batch_compute_environment" "coupon_generation_fargate_env" {
 }
 
 resource "aws_batch_job_queue" "coupon_generation_job_queue" {
-  name     = "coupon-generation-job-queue"
-  state    = "ENABLED"
-  priority = 1
+  depends_on = [aws_batch_compute_environment.coupon_generation_fargate_env]
+  name       = "coupon-generation-job-queue"
+  state      = "ENABLED"
+  priority   = 1
 
   compute_environment_order {
     order               = 1
@@ -87,17 +89,17 @@ resource "aws_batch_job_queue" "coupon_generation_job_queue" {
 
 resource "aws_batch_job_definition" "coupon_generation_job_def" {
   depends_on = [aws_batch_compute_environment.coupon_generation_fargate_env]
-  for_each = var.batch_job_definitions
-  name     = "${each.value.job_name}-def"
-  type     = "container"
+  for_each   = var.batch_job_definitions
+  name       = "${each.value.job_name}-def"
+  type       = "container"
 
   container_properties = jsonencode({
-    image            = "${aws_ecr_repository.batch_jobs_repo.repository_url}:${each.value.job_name}"
-    vcpus            = 1
-    memory           = 1024
-    command          = []
-    jobRoleArn       = aws_iam_role.ecs_task_execution_role.arn
-    executionRoleArn = aws_iam_role.ecs_task_execution_role.arn
+    image                = "${aws_ecr_repository.batch_jobs_repo.repository_url}:${each.value.job_name}"
+    vcpus                = 1
+    memory               = 1024
+    command              = []
+    jobRoleArn           = aws_iam_role.ecs_task_execution_role.arn
+    executionRoleArn     = aws_iam_role.ecs_task_execution_role.arn
     platformCapabilities = ["FARGATE"]
   })
 }
