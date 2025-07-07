@@ -94,11 +94,8 @@ resource "aws_security_group" "batch_security_group" {
 resource "aws_batch_compute_environment" "coupon_generation_fargate_env" {
   compute_environment_name = "coupon-generation-fargate-ce-${var.env}"
   depends_on = [
-    aws_security_group.batch_security_group,
     aws_iam_role.batch_role,
-    aws_iam_role.ecs_task_execution_role,
-    aws_iam_role_policy_attachment.ecs_task_execution_policy_attachment,
-    aws_iam_role_policy_attachment.batch_full_access_attachment,
+    aws_security_group.batch_security_group
   ]
   compute_resources {
     max_vcpus          = 16
