@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_ecr_repository" "batch_jobs_repo" {
   name = "batch-jobs-repo-${var.env}"
 }
