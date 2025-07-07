@@ -21,12 +21,19 @@ resource "aws_iam_role_policy_attachment" "batch_full_access_attachment" {
   depends_on = [aws_iam_role.batch_role]
   role       = aws_iam_role.batch_role.name
   policy_arn = "arn:aws:iam::aws:policy/AWSBatchFullAccess"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_iam_role_policy" "ecs_cluster_management_policy" {
   depends_on = [aws_iam_role.batch_role]
   name       = "ecs-cluster-management-policy-${var.env}"
   role       = aws_iam_role.batch_role.id
+
+  lifecycle {
+    prevent_destroy = true
+  }
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -67,6 +74,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment" {
+  depends_on = [aws_batch_compute_environment.coupon_generation_fargate_env]
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
