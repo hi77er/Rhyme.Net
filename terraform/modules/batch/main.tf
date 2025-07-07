@@ -86,6 +86,7 @@ resource "aws_batch_job_queue" "coupon_generation_job_queue" {
 }
 
 resource "aws_batch_job_definition" "coupon_generation_job_def" {
+  depends_on = [aws_batch_compute_environment.coupon_generation_fargate_env]
   for_each = var.batch_job_definitions
   name     = "${each.value.job_name}-def"
   type     = "container"
