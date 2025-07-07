@@ -23,9 +23,9 @@ resource "aws_iam_role_policy_attachment" "batch_full_access_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AWSBatchFullAccess"
 }
 
-# resource "aws_ecr_repository" "batch_jobs_repo" {
-#   name = "batch-jobs-repo-${var.env}"
-# }
+resource "aws_ecr_repository" "batch_jobs_repo" {
+  name = "batch-jobs-repo-${var.env}"
+}
 
 # data "aws_iam_policy_document" "batch_policy" {
 #   statement {
