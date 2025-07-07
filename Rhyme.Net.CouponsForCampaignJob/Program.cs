@@ -16,7 +16,7 @@ public class Program
 
   static void Main(string[] args)
   {
-    Console.WriteLine($"HANDLER: Lambda v60");
+    Console.WriteLine($"HANDLER: Lambda v61; Args[]: {string.Join(", ", args)};");
 
     // var request = MapRequest(args);
     // Console.WriteLine($"HANDLER: Received request: {JsonSerializer.Serialize(request)}");

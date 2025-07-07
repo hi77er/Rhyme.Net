@@ -74,8 +74,8 @@ resource "aws_batch_compute_environment" "coupon_generation_fargate_env" {
   type         = "MANAGED"
 }
 
-resource "aws_batch_job_queue" "coupon_generatio_job_queue" {
-  name     = "coupon-generatio-job-queue"
+resource "aws_batch_job_queue" "coupon_generation_job_queue" {
+  name     = "coupon-generation-job-queue"
   state    = "ENABLED"
   priority = 1
 

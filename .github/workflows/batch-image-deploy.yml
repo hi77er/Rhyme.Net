@@ -1,4 +1,4 @@
-name: Deploy .NET Console Apps (Batch Jobs) as Container Images to AWS ECR
+name: Deploy .NET Batch Jobs (Console Apps) as Container Images to AWS ECR
 
 on:
   push:
