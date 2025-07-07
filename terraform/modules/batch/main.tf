@@ -23,10 +23,28 @@ resource "aws_iam_role_policy_attachment" "batch_full_access_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AWSBatchFullAccess"
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_full_access_attachment" {
+resource "aws_iam_role_policy" "ecs_cluster_management_policy" {
   depends_on = [aws_iam_role.batch_role]
-  role       = aws_iam_role.batch_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerServiceFullAccess"
+  name       = "ecs-cluster-management-policy-${var.env}"
+  role       = aws_iam_role.batch_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ecs:CreateCluster",
+          "ecs:DeleteCluster",
+          "ecs:ListClusters",
+          "ecs:DescribeClusters",
+          "ecs:TagResource",
+          "ecs:UntagResource"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
 }
 
 resource "aws_ecr_repository" "batch_jobs_repo" {
