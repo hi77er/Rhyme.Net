@@ -111,10 +111,10 @@ resource "aws_batch_job_queue" "coupon_generation_job_queue" {
   depends_on = [aws_batch_compute_environment.coupon_generation_fargate_env]
   name       = "coupon-generation-job-queue"
   state      = "ENABLED"
-  priority   = 1
+  priority   = 0
 
   compute_environment_order {
-    order               = 1
+    order               = 0
     compute_environment = aws_batch_compute_environment.coupon_generation_fargate_env.arn
   }
 }
