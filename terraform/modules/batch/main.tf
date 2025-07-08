@@ -39,7 +39,11 @@ resource "aws_iam_role_policy" "ecs_cluster_management_policy" {
           "ecs:ListClusters",
           "ecs:DescribeClusters",
           "ecs:TagResource",
-          "ecs:UntagResource"
+          "ecs:UntagResource",
+          "ecs:RunTask",
+          "iam:PassRole",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
         ],
         Resource = "*"
       }
@@ -145,8 +149,8 @@ resource "aws_batch_job_definition" "coupon_generation_job_def" {
         value = "1024"
       }
     ]
-    command              = []
-    jobRoleArn           = aws_iam_role.ecs_task_execution_role.arn
-    executionRoleArn     = aws_iam_role.ecs_task_execution_role.arn
+    command          = []
+    jobRoleArn       = aws_iam_role.ecs_task_execution_role.arn
+    executionRoleArn = aws_iam_role.ecs_task_execution_role.arn
   })
 }
