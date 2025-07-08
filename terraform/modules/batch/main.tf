@@ -34,16 +34,20 @@ resource "aws_iam_role_policy" "ecs_cluster_management_policy" {
       {
         Effect = "Allow",
         Action = [
+          "ec2:CreateNetworkInterface",
+          "ec2:AttachNetworkInterface",
+          "ec2:DeleteNetworkInterface",
           "ecs:CreateCluster",
           "ecs:DeleteCluster",
           "ecs:ListClusters",
           "ecs:DescribeClusters",
           "ecs:TagResource",
           "ecs:UntagResource",
+          "ecs:DescribeTasks",
           "ecs:RunTask",
           "iam:PassRole",
           "logs:CreateLogStream",
-          "logs:PutLogEvents"
+          "logs:PutLogEvents",
         ],
         Resource = "*"
       }
@@ -152,7 +156,16 @@ resource "aws_batch_job_definition" "coupon_generation_job_def" {
     ]
     command = ["echo", "Hello from Fargate"]
     #[]
-    jobRoleArn       = aws_iam_role.ecs_task_execution_role.arn
-    executionRoleArn = aws_iam_role.ecs_task_execution_role.arn
+    jobRoleArn           = aws_iam_role.ecs_task_execution_role.arn
+    executionRoleArn     = aws_iam_role.ecs_task_execution_role.arn
+    platformCapabilities = ["FARGATE"]
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        awslogs-group         = "/aws/batch/job"
+        awslogs-region        = "eu-central-1" // replace with your actual region
+        awslogs-stream-prefix = "coupon-gen"
+      }
+    }
   })
 }
