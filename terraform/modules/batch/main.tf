@@ -128,13 +128,25 @@ resource "aws_batch_job_definition" "coupon_generation_job_def" {
   name     = "${each.value.job_name}-def"
   type     = "container"
 
+  platform_capabilities = ["FARGATE"]
+
   container_properties = jsonencode({
-    image                = "${aws_ecr_repository.batch_jobs_repo.repository_url}:${each.value.job_name}"
-    vcpus                = 1
-    memory               = 1024
+    image = "${aws_ecr_repository.batch_jobs_repo.repository_url}:${each.value.job_name}"
+    fargatePlatformConfiguration = {
+      platformVersion = "LATEST"
+    }
+    resourceRequirements = [
+      {
+        type  = "VCPU"
+        value = "1.0"
+      },
+      {
+        type  = "MEMORY"
+        value = "1024"
+      }
+    ]
     command              = []
     jobRoleArn           = aws_iam_role.ecs_task_execution_role.arn
     executionRoleArn     = aws_iam_role.ecs_task_execution_role.arn
-    platformCapabilities = ["FARGATE"]
   })
 }
