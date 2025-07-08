@@ -135,8 +135,16 @@ resource "aws_batch_job_definition" "coupon_generation_job_def" {
     fargatePlatformConfiguration = {
       platformVersion = "LATEST"
     }
-    memory               = 1024,
-    vcpus                = 1,
+    resourceRequirements = [
+      {
+        type  = "VCPU"
+        value = "1"
+      },
+      {
+        type  = "MEMORY"
+        value = "512"
+      }
+    ]
     command              = []
     jobRoleArn           = aws_iam_role.ecs_task_execution_role.arn
     executionRoleArn     = aws_iam_role.ecs_task_execution_role.arn
