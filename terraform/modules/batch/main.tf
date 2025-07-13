@@ -141,6 +141,7 @@ resource "aws_batch_job_definition" "coupon_generation_job_def" {
 
   container_properties = jsonencode({
     image = "${aws_ecr_repository.batch_jobs_repo.repository_url}:${each.value.job_name}"
+    #"https://public.ecr.aws/amazonlinux/amazonlinux:latest"
     fargatePlatformConfiguration = {
       platformVersion = "LATEST"
     }
@@ -159,6 +160,9 @@ resource "aws_batch_job_definition" "coupon_generation_job_def" {
     jobRoleArn           = aws_iam_role.ecs_task_execution_role.arn
     executionRoleArn     = aws_iam_role.ecs_task_execution_role.arn
     platformCapabilities = ["FARGATE"]
+    networkConfiguration = {
+      assignPublicIp = "ENABLED"
+    }
     logConfiguration = {
       logDriver = "awslogs"
       options = {
