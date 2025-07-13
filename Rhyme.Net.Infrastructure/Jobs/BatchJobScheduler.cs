@@ -23,7 +23,7 @@ public class BatchJobScheduler : IBatchJobScheduler
       JobDefinition = jobDefinition,
       ContainerOverrides = new ContainerOverrides
       {
-        Command = new List<string> { "-c", "ls -l /app && sleep 300" } // args.ToList()
+        Command = args.ToList() // new List<string> { "-c", "ls -l /app && sleep 300" } 
       }
     };
 
