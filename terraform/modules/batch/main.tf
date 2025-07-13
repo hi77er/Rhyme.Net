@@ -155,8 +155,9 @@ resource "aws_batch_job_definition" "coupon_generation_job_def" {
         value = "1024"
       }
     ]
-    command = []
-    #["echo", "Hello from Fargate"]
+    #command = []
+    #command = ["echo", "Hello from Fargate"]
+    command              = ["-c", "ls -l /app && sleep 300"]
     jobRoleArn           = aws_iam_role.ecs_task_execution_role.arn
     executionRoleArn     = aws_iam_role.ecs_task_execution_role.arn
     platformCapabilities = ["FARGATE"]
