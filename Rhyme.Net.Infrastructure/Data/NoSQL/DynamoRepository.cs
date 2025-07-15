@@ -109,6 +109,7 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
       .Select(entity => entity.ToAttributeValues())
       .ToList();
 
+    Console.WriteLine($"Writing {attributeValueItems.Count:N0} items to table '{_tableName}'...");
     await WriteBatchAsync(attributeValueItems, cancellationToken);
   }
 
@@ -125,6 +126,7 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
 
       if (batch.Count == BatchSize)
       {
+        Console.WriteLine($"Flushing batch of {batch.Count:N0} items to table '{_tableName}'...");
         await FlushBatchAsync(batch, cancellationToken);
         batch.Clear();
       }
