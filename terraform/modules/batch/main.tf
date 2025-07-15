@@ -80,6 +80,32 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_role_policy" "ecs_task_dynamodb_rw" {
+  name = "ecs-task-dynamodb-rw-${var.env}"
+  role = aws_iam_role.ecs_task_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:BatchGetItem",
+          "dynamodb:Query",
+          "dynamodb:Scan"
+        ],
+        Resource = "*"
+        # For stricter security, replace "*" with the specific DynamoDB table ARN(s)
+      }
+    ]
+  })
+}
+
 resource "aws_security_group" "batch_security_group" {
   name        = "batch-fargate-sg-${var.env}"
   description = "Allow all egress"
