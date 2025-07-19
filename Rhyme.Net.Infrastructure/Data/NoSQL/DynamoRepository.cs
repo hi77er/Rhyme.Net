@@ -109,6 +109,9 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
       .Select(entity => entity.ToAttributeValues())
       .ToList();
 
+    long memoryUsed = GC.GetTotalMemory(forceFullCollection: false);
+    Console.WriteLine($"Memory used [Step 3]: {memoryUsed / 1048576:N0} MBs");
+
     Console.WriteLine($"Writing {attributeValueItems.Count:N0} items to table '{_tableName}'...");
     await WriteBatchAsync(attributeValueItems, cancellationToken);
   }

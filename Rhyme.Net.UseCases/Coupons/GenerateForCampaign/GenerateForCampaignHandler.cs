@@ -27,6 +27,9 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
       var couponsResult = await _service.GenerateAsync(command.CampaignId, command.TotalCouponsCount);
       Console.WriteLine($"Generation complete for {couponsResult.Value.Count} randomly generated coupon IDs.");
 
+      long memoryUsed = GC.GetTotalMemory(forceFullCollection: false);
+      Console.WriteLine($"Memory used [Step 1]: {memoryUsed / 1048576:N0} MBs");
+
       var coupons = couponsResult
         .Value
         .Select(couponId => new Coupon
@@ -36,6 +39,9 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
         })
         .AsEnumerable();
       Console.WriteLine($"Projection complete for {coupons.Count():N0} coupons to write to DynamoDB.");
+
+      long memoryUsed2 = GC.GetTotalMemory(forceFullCollection: false);
+      Console.WriteLine($"Memory used [Step 1]: {memoryUsed2 / 1048576:N0} MBs");
 
       await _repository.WriteBatchAsync(coupons);
       Console.WriteLine($"BatchWrite complete.");
