@@ -126,7 +126,6 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
 
       if (batch.Count == BatchSize)
       {
-        Console.WriteLine($"Flushing batch of {batch.Count:N0} items to table '{_tableName}'...");
         await FlushBatchAsync(batch, cancellationToken);
         batch.Clear();
       }
@@ -146,6 +145,7 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
       }
     };
 
+    Console.WriteLine($"Flushing batch of {batch.Count:N0} items to table '{_tableName}'...");
     var response = await _dbClient.BatchWriteItemAsync(request, cancellationToken);
 
     if (response.UnprocessedItems.Count > 0)

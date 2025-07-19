@@ -25,7 +25,7 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
     {
       Console.WriteLine($"Generating coupons for campaign {command.CampaignId} ...");
       var couponsResult = await _service.GenerateAsync(command.CampaignId, command.TotalCouponsCount);
-      Console.WriteLine($"Generation complete.");
+      Console.WriteLine($"Generation complete for {couponsResult.Value.Count} randomly generated coupon IDs.");
 
       var coupons = couponsResult
         .Value
@@ -35,7 +35,7 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
           CampaignId = command.CampaignId,
         })
         .AsEnumerable();
-      Console.WriteLine($"Projection complete.");
+      Console.WriteLine($"Projection complete for {coupons.Count():N0} coupons to write to DynamoDB.");
 
       await _repository.WriteBatchAsync(coupons);
       Console.WriteLine($"BatchWrite complete.");
