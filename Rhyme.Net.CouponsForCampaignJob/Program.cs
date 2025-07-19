@@ -21,7 +21,7 @@ public class Program
     Console.WriteLine($"HANDLER: Received request: {JsonSerializer.Serialize(request)}");
 
     Guard.Against.Null(request, nameof(request));
-    var command = new GenerateForCampaignCommand(request.CampaignId, request.TotalCouponsCount);
+    var command = new GenerateForCampaignCommand(request.HousekeepingOn, request.CampaignId, request.TotalCouponsCount);
 
     _serviceProvider = ConfigureServices();
     _handler = _serviceProvider.GetRequiredService<GenerateForCampaignHandler>();
@@ -61,13 +61,20 @@ public class Program
       return null;
     }
 
-    var campaignId = args[0];
-    if (!int.TryParse(args[1], out var totalCouponsCount))
+    if (!bool.TryParse(args[0], out var housekeepingOn))
+    {
+      Console.WriteLine("Invalid HousekeepingOn argument.");
+      return null;
+    }
+
+    var campaignId = args[1];
+
+    if (!int.TryParse(args[2], out var totalCouponsCount))
     {
       Console.WriteLine("Invalid TotalCouponsCount argument.");
       return null;
     }
 
-    return new CouponsForCampaignRequestBody(campaignId, totalCouponsCount);
+    return new CouponsForCampaignRequestBody(housekeepingOn, campaignId, totalCouponsCount);
   }
 }

@@ -7,4 +7,4 @@ namespace Rhyme.Net.UseCases.Coupons.GenerateForCampaign;
 /// </summary>
 /// <param name="CampaignId"></param>
 /// <param name="TotalCouponCount"></param>
-public record GenerateForCampaignCommand(string CampaignId, int TotalCouponsCount) : Ardalis.SharedKernel.ICommand<Result<bool>>;
+public record GenerateForCampaignCommand(bool HousekeepingOn, string CampaignId, int TotalCouponsCount) : Ardalis.SharedKernel.ICommand<Result<bool>>;

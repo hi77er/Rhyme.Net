@@ -174,11 +174,11 @@ resource "aws_batch_job_definition" "coupon_generation_job_def" {
     resourceRequirements = [
       {
         type  = "VCPU"
-        value = "1"
+        value = "0.5"
       },
       {
         type  = "MEMORY"
-        value = "2048"
+        value = "1024"
       }
     ]
     command = []
