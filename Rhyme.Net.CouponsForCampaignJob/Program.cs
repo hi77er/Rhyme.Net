@@ -55,9 +55,9 @@ public class Program
 
   private static CouponsForCampaignRequestBody? MapRequest(string[] args)
   {
-    if (args.Length < 2)
+    if (args.Length < 3)
     {
-      Console.WriteLine("Usage: <CampaignId> <TotalCouponsCount>");
+      Console.WriteLine("Usage: <HousekeepingOn>:string(\"true\"|\"false\"), <CampaignId>:string, <TotalCouponsCount>:int");
       return null;
     }
 

@@ -33,7 +33,7 @@ public class Function
 
         var requestBody = JsonSerializer.Deserialize<CouponsForCampaignRequestBody>(request.Body);
         Guard.Against.Null(requestBody, nameof(requestBody));
-        var args = new List<string> { requestBody.CampaignId, requestBody.TotalCouponsCount.ToString() };
+        var args = new List<string> { requestBody.HousekeepingOn.ToString(), requestBody.CampaignId, requestBody.TotalCouponsCount.ToString() };
 
         var provider = ConfigureServices();
         Guard.Against.Null(provider, nameof(provider));
