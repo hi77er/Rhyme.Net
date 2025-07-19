@@ -41,9 +41,9 @@ public class GenerateForCampaignHandler : ICommandHandler<GenerateForCampaignCom
       Console.WriteLine($"Projection complete for {coupons.Count():N0} coupons to write to DynamoDB.");
 
       long memoryUsed2 = GC.GetTotalMemory(forceFullCollection: false);
-      Console.WriteLine($"Memory used [Step 1]: {memoryUsed2 / 1048576:N0} MBs");
+      Console.WriteLine($"Memory used [Step 2]: {memoryUsed2 / 1048576:N0} MBs");
 
-      await _repository.WriteBatchAsync(coupons);
+      await _repository.GentleWriteBatchAsync(coupons);
       Console.WriteLine($"BatchWrite complete.");
 
       sw.Stop();

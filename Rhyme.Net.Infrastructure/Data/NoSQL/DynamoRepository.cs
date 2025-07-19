@@ -102,6 +102,58 @@ public class DynamoRepository<T, TId> : IDynamoRepository<T, TId>
       await FlushBatchAsync(batch, cancellationToken);
   }
 
+  public async Task GentleWriteBatchAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+  {
+    List<WriteRequest>? batch = null;
+    int count = 0;
+
+    foreach (var entity in entities)
+    {
+      batch = batch ?? new List<WriteRequest>();
+      var item = entity.ToAttributeValues();
+
+      batch.Add(new WriteRequest
+      {
+        PutRequest = new PutRequest { Item = item }
+      });
+
+      count++;
+
+      if (batch.Count == BatchSize)
+      {
+        Console.WriteLine($"Writing batch of {BatchSize:N0} items to table '{_tableName}'...");
+        await FlushBatchAsync(batch, cancellationToken);
+
+        // Memory tracking after each flush
+        long memoryUsed = GC.GetTotalMemory(forceFullCollection: false);
+        Console.WriteLine($"Memory used [Step 3] after flush of batch {count / BatchSize}: {memoryUsed / 1048576:N0} MBs");
+
+        batch.Clear();
+        batch = null;
+        GC.Collect(); // Hint to GC, not guaranteed
+
+        // Memory tracking after each flush
+        long memoryUsed2 = GC.GetTotalMemory(forceFullCollection: false);
+        Console.WriteLine($"Memory used [Step 4] after GC hint: {memoryUsed2 / 1048576:N0} MBs");
+      }
+    }
+
+    if ((batch?.Count ?? 0) > 0)
+    {
+      Console.WriteLine($"Writing final batch of {batch!.Count:N0} items to table '{_tableName}'...");
+      await FlushBatchAsync(batch, cancellationToken);
+    }
+
+    // Optional: clean up memory
+    batch?.Clear();
+    batch = null;
+    GC.Collect(); // Hint to GC, not guaranteed
+
+    // Memory tracking after each flush
+    long memoryUsed3 = GC.GetTotalMemory(forceFullCollection: false);
+    Console.WriteLine($"Memory used [Step 5] after final GC hint: {memoryUsed3 / 1048576:N0} MBs");
+  }
+
   public async Task WriteBatchAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
   {
     var batch = new List<WriteRequest>();
